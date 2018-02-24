@@ -2,4 +2,4 @@
 
 ## Planning
 
-![](/assets/Timeline - Projektplan.svg)
+![](assets/Timeline - Projektplan.svg)
