@@ -1,10 +1,5 @@
 # Strategy
 
-## Planning![](/assets/Timeline - Projektplan.png)
+## Planning
 
-## 
-
-## 
-
-
-
+![](/assets/Timeline - Projektplan.svg)
