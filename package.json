@@ -1,5 +1,29 @@
 {
-	"devDependencies": {
-		"lerna": "^2.9.0"
-	}
+  "name": "reporting-thesis",
+  "description":
+    "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
+  "version": "0.0.1",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "gitbook": "gitbook serve",
+    "gitbook:pdf": "gitbook pdf"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/melonproject/reporting-thesis.git"
+  },
+  "keywords": ["melon", "reporting", "soldity", "visualisation"],
+  "author": "",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/melonproject/reporting-thesis/issues"
+  },
+  "devDependencies": {
+    "gitbook-cli": "^2.3.2",
+    "lerna": "^2.9.0"
+  },
+  "homepage": "https://github.com/melonproject/reporting-thesis#readme"
 }
