@@ -1,5 +1,25 @@
 # Strategy
 
+## Vision
+
+From Mona:
+
+> a) something that a real fund would be able to confidently be able to say - “this solves my reporting issues and makes my life a lot easier” - I’m willing to pilot test this
+
+> b) something that can be show-cased to FINMA (and others) and show them how “this will make THEIR life over-seeing a lot easier”
+
+## Hypothesis
+
+## Risks
+
+| Name                                                   | Description                     | Counter measures | Severity |
+| ------------------------------------------------------ | ------------------------------- | ---------------- | -------- |
+| Distractions from classes                              | asdf sdfas dfasdf sadf asdf sdf | adf              | adf      |
+| Distractions from job                                  |                                 |                  |          |
+| Team out of sync                                       |                                 |                  |          |
+| Dependency on systems out of project scope (i.e Melon) |                                 |                  |          |
+|                                                        |                                 |                  |          |
+
 ## Planning
 
 ![](assets/Timeline - Projektplan.svg)
