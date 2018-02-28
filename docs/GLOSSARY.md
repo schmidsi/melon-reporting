@@ -88,3 +88,10 @@ https://www.admin.ch/opc/en/classified-compilation/20062920/index.html
 Ordinance of the Swiss Financial Market Supervisory Authority on Collective Investment Schemes / Kollektivanlagenverordnung-FINMA, KKV-FINMA
 
 https://www.admin.ch/opc/en/classified-compilation/20140344/index.html
+
+## UCITS
+
+Undertakings For The Collective Investment Of Transferable Securities
+
+https://www.investopedia.com/terms/u/ucits.asp
+https://en.wikipedia.org/wiki/Undertakings_for_Collective_Investment_in_Transferable_Securities_Directive_2009
