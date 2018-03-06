@@ -28,11 +28,11 @@ This is a technical thesis and therefore we do not deeply research into the lega
 | Distractions from job                      | Clear timeboxing. Clear planning. Clear and upfront communication of availabilities. Support from management. | 1 \* 1 = 1 |
 | Project team out of sync                   | Weekly team work time slots. Open communication. Weekly reports.                                              | 2 \* 2 = 4 |
 | Dependency on systems out of project scope | Apply subsystem decomposition and isolation techniques from the beginning.                                    | 3 \* 2 = 6 |
-| Loosing focus / distraction by details     | Weekly reports to coaches and project sponsors to gather feedback.                                            | 3 \* 2 = 4 |
+| Losing focus / distraction by details     | Weekly reports to coaches and project sponsors to gather feedback.                                            | 3 \* 2 = 4 |
 |                                            |                                                                                                               |            |
 |                                            |                                                                                                               |            |
 
-(\*) Probability of occurence (1-3) \* severity (1-3) = risk
+(\*) Probability of occurrence (1-3) \* severity (1-3) = risk
 
 ## Planning
 
@@ -40,7 +40,7 @@ This is a technical thesis and therefore we do not deeply research into the lega
 
 ### Strategy
 
-In a first step the foundation of the project is laid. Vision, hypothesis and boundaries are defined and agreed upon with the stake holders and a rough planning is created. Furthermore repositories are created, docs initialized, etc.
+In a first step the foundation of the project is laid. Vision, hypothesis and boundaries are defined and agreed upon with the stakeholders and a rough planning is created. Furthermore repositories are created, docs initialized, etc.
 
 **Deadline**: 2.3.2018
 
@@ -61,12 +61,12 @@ The next step is to deep dive into the problem domain. We read and summarize the
 **Expected results**:
 
 * Overview & summary of material: Articles, law, templates, ...
-* Knowledge of underlying technologies (Blockchain, Solidity, React, Redux, Digital signing, etc.)
+* Knowledge of underlying technologies (Blockchain, Solidity, React, Redux, digital signing, etc.)
 * Transcripts of interviews
 
 ### Prototype
 
-The collected knowledge from the research phase is now transformed into a first prototype which can be challenged by the stake holders and test users.
+The collected knowledge from the research phase is now transformed into a first prototype which can be challenged by the stakeholders and test users.
 
 **Deadline**: 27.4.2018
 
@@ -77,7 +77,7 @@ The collected knowledge from the research phase is now transformed into a first 
 
 ### Evaluate
 
-Testing & discussing the prototype with the stake holders and test users give us valuable insights for the further development.
+Testing & discussing the prototype with the stakeholders and test users give us valuable insights for the further development.
 
 **Deadline**: 22.6.2018
 
@@ -100,7 +100,7 @@ Already during the evaluation phase we start the design phase to have an iterati
 
 ### Production
 
-Iterative development and finish a release candidate. Also in combination with design and review phase. Basically in the following loop:
+Iterative development and finishing a release candidate. This will also take place in combination with design and review phase. Basically in the following loop:
 Design -> Production -> Review -> Design -> ...
 
 **Deadline**: 10.8.2018
@@ -117,7 +117,7 @@ Collect feedback of the release candidate, finish documentation and submission o
 
 ## Journal
 
-We send a short status update every week to our stakeholders. They are also pasted here for reference.
+We send a short status update every week to our stakeholders. They are also stored here for reference.
 
 ### Calendar Week 8
 
