@@ -131,4 +131,4 @@ We started working on the thesis and made a first broad overview over the topics
 In the second week we already deep dived into the specific domains:
 
 * Benjamin set up the Solidity development environment according to the Melon setup with dapp.tools, parity dev chain but also looked into truffle suite.
-* Simon researched MiFID II and PRIIP and started the glossary for these confusing abbreviations: https://github.com/melonproject/reporting-thesis/blob/master/docs/GLOSSARY.md
+* Simon researched MiFID II and PRIIP and started the [glossary](https://github.com/melonproject/reporting-thesis/blob/master/docs/GLOSSARY.md) for these confusing abbreviations. Furthermore, he finished the strategy part.
