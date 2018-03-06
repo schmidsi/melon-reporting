@@ -36,7 +36,7 @@ This is a technical thesis and therefore we do not deeply research into the lega
 
 ## Planning
 
-![](assets/Timeline - Projektplan.svg)
+![](../assets/Timeline - Projektplan.svg)
 
 ### Strategy
 
