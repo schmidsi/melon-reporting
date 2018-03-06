@@ -95,3 +95,9 @@ Undertakings For The Collective Investment Of Transferable Securities
 
 https://www.investopedia.com/terms/u/ucits.asp
 https://en.wikipedia.org/wiki/Undertakings_for_Collective_Investment_in_Transferable_Securities_Directive_2009
+
+## ISO 4217
+
+Currency codes, usually 3 characters whereas the first two are indicating the country and the 3rd the currency name. Example: CHF, USD, ...
+
+Special currencies start with an X. Therefore, XBT would be the official code for Bitcoin, this isn't yet standardised.
