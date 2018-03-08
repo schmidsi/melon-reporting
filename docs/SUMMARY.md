@@ -16,4 +16,5 @@
 
 ---
 
+* [Appendix](Appendix.md)
 * [Glossary](GLOSSARY.md)
