@@ -1,14 +1,20 @@
 # Summary
 
 * [Cover](README.md)
-* [Abstract](Abstract-Abstract.md)
-* [Introduction](Introduction.md)
-* [Strategy](Strategy.md)
-* [Research](Research.md)
-* [Prototype](Prototype.md)
-* [Evaluate](Evaluate.md)
-* [Design](Design.md)
-* [Production](Production.md)
-* [Review](Review.md)
-* [Appendix](Appendix.md)
+* [Abstract](00-intro/Abstract.md)
+* [Introduction](00-intro/README.md)
 
+---
+
+* [Strategy](01-strategy/README.md)
+* [Research](02-research/README.md)
+* [Prototype](03-prototype/README.md)
+* [Evaluate](04-evaluate/README.md)
+* [Design](05-design/README.md)
+* [Production](06-production/README.md)
+* [Review](07-review/Review.md)
+
+---
+
+* [Appendix](Appendix.md)
+* [Glossary](GLOSSARY.md)
