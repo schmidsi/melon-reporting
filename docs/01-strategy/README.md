@@ -28,21 +28,20 @@ This is a technical thesis and therefore we do not deeply research into the lega
 | Distractions from job                      | Clear timeboxing. Clear planning. Clear and upfront communication of availabilities. Support from management. | 1 \* 1 = 1 |
 | Project team out of sync                   | Weekly team work time slots. Open communication. Weekly reports.                                              | 2 \* 2 = 4 |
 | Dependency on systems out of project scope | Apply subsystem decomposition and isolation techniques from the beginning.                                    | 3 \* 2 = 6 |
-| Losing focus / distraction by details     | Weekly reports to coaches and project sponsors to gather feedback.                                            | 3 \* 2 = 4 |
-|                                            |                                                                                                               |            |
+| Losing focus / distraction by details      | Weekly reports to coaches and project sponsors to gather feedback.                                            | 3 \* 2 = 4 |
 |                                            |                                                                                                               |            |
 
 (\*) Probability of occurrence (1-3) \* severity (1-3) = risk
 
 ## Planning
 
-![](../assets/Timeline - Projektplan.svg)
+![](../assets/Timeline - Projektplan-v2.svg)
 
 ### Strategy
 
 In a first step the foundation of the project is laid. Vision, hypothesis and boundaries are defined and agreed upon with the stakeholders and a rough planning is created. Furthermore repositories are created, docs initialized, etc.
 
-**Deadline**: 2.3.2018
+**Deadline**: 30.3.2018
 
 **Expected results**:
 
@@ -90,7 +89,8 @@ Testing & discussing the prototype with the stakeholders and test users give us 
 
 Already during the evaluation phase we start the design phase to have an iterative process: The prototype and wireframes are adjusted from the feedback but also the work on the final mockups and software architecture is started.
 
-**Deadline**: 29.6.2018 (+ ongoing iterations)
+**Deadline 1**: 22.6.2018
+**Deadline 2**: 27.7.2018
 
 **Expected results**:
 
@@ -103,9 +103,12 @@ Already during the evaluation phase we start the design phase to have an iterati
 Iterative development and finishing a release candidate. This will also take place in combination with design and review phase. Basically in the following loop:
 Design -> Production -> Review -> Design -> ...
 
-**Deadline**: 10.8.2018
+**Deadline 1**: 29.6.2018
+**Deadline 2**: 10.8.2018
 
 **Expected results**:
+
+* Final product first and second version
 
 ### Review
 
@@ -114,6 +117,64 @@ Collect feedback of the release candidate, finish documentation and submission o
 **Deadline**: 17.8.2018
 
 **Expected results**:
+
+* Review reports
+* Final thesis report
+
+## Milestones
+
+### 19.3.2018 - Prototype & goals specified
+
+* _Via email_
+* Specified what's in the prototype and what not
+* General project goals specified with Melonport
+
+### 3.5.2018 - Prototype presentation (Meeting in Zug)
+
+* Presentation of the finished prototype in Zug
+* All stakeholders invited
+
+### 8.6.2018 - Final specification
+
+* _Via email_
+* The specification for the final product is finished and agreed upon
+
+### 5.7.2018 - Presentation of results second iteration (Meeting in Zug)
+
+* Presentation of the results of second iteration in Zug
+* All stakeholders invited
+
+### 6.8.2018 - Presentation of release candidate (Meeting in Zug)
+
+* Presentation of the release candidate in Zug
+* Collection of last feedback and adjustments for final release
+* All stakeholders invited
+
+### 16.8.2018 - Final submission
+
+* Official submission of thesis as bound paper
+* Final version deployed
+
+## Iterations
+
+### Iteration 1: Prototype
+
+The first iteration is a functional prototype. The goal is to have something clickable as soon as possible. For this phase, it is not yet important to have all fields and data.
+But something that can be shown to fund managers to collect first valuable feedback.
+
+**Deadline**: 27.4.2018
+
+### Iteration 2: First draft
+
+The second iteration aims already at the final goal & specification knowing that it is not possible to cover all topics yet. Still, it should be as functional as possbile to gather more detailed user feedback already.
+
+**Deadline**: 29.6.2018
+
+### Iteration 3: Final product
+
+Finally, all feedback is collected and the final product can emerge from the first draft.
+
+**Deadline**: 10.8.2018
 
 ## Journal
 
@@ -132,3 +193,10 @@ In the second week we already deep dived into the specific domains:
 
 * Benjamin set up the Solidity development environment according to the Melon setup with dapp.tools, parity dev chain but also looked into truffle suite.
 * Simon researched MiFID II and PRIIP and started the [glossary](https://github.com/melonproject/reporting-thesis/blob/master/docs/GLOSSARY.md) for these confusing abbreviations. Furthermore, he finished the strategy part.
+
+### Calendar Week 10
+
+This week we had the official kick-off meeting with all stakeholders. See minutes in [Appendix](https://schmidsi.gitbooks.io/melon-reporting/content/Appendix.html).
+
+* Simon updated the project plan according to the feedback and discussed the KIID template provided by PwC with Mona
+* Benjamin further read into Solidity, especially data structures like strings and byte64.
