@@ -176,6 +176,18 @@ Finally, all feedback is collected and the final product can emerge from the fir
 
 **Deadline**: 10.8.2018
 
+## Summary of Meetings
+
+* 23.3.2018 - 3pm - In Brugg with coaches
+* 17.4.2018 - 3pm - In Brugg with coaches
+* 3.5.2018 - 2pm - In Zug with all stakeholders
+* 22.5.2018 - 4pm - In Brugg with Markus Knecht
+* 12.6.2018 - 3pm - In Brugg with all coaches
+* 5.7.2018 - 2pm - In Zug with all stakeholders
+* 17.7.2018 - 3pm - In Brugg with coaches
+* 6.8.2018 - 2pm - In Zug with all stakeholders
+* 13.8.2018 - 3pm - In Brugg with coaches
+
 ## Journal
 
 We send a short status update every week to our stakeholders. They are also stored here for reference.
