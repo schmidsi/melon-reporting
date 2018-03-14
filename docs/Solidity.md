@@ -548,6 +548,121 @@ selfdestruct(address recipient) // destroy current contract, send funds to addre
 
 # Expressions and control structures
 
+## Input parameters
+```
+function taker(uint _a, uint _b) public pure {
+    // do something with _a and _b.
+}
+```
+## Output parameters
+Returning multiple values is possible.
+```
+function arithmetics(uint _a, uint _b)
+    public
+    pure
+    returns (uint a, uint b)
+{
+    a = 1;
+    b = 2;
+}
+```
+Return parameters are initialized to zero.
+
+## Control structures
+They can be used the same as in C or Javascript:
+* `if`
+* `else`
+* `while`
+* `do`
+* `for`
+* `break`
+* `continue`
+* `return`
+* `? :`
+
+There is no type conversion from non-boolean to boolean (`1` is not `true`!).
+
+## Function calls
+
+### Internal function calls
+Internal functions (from the same contract) can be used recursively.
+
+### External function calls
+```
+this.g(8);
+c.g(8) // where c is a contract instance
+```
+
+Amount of wei and gas can be specified when calling functions from other contracts:
+```
+contract InfoFeed {
+    function info() public payable returns (uint ret) { return 42; }
+}
+
+contract Consumer {
+    InfoFeed feed; // contract instance
+    function callFeed() public { feed.info.value(10).gas(800)(); }
+}
+```
+`payable` must be used for `info()` to have the `.value()` option.
+
+**WARNING**:<br>
+Called contracts can change state from our own contracts. Write functions in a way that calls to external functions happen after any changes to state variables in our contract so our contract is not vulnerable to a *reentrancy exploit*.
+
+### Named calls
+Enclose args in `{}`, then the order doesn't matter:
+```
+f({value: 2, key: 3});
+```
+
+## Creating contracts with new & constructors
+Contracts can create other contracts with `new`:
+```
+contract D {
+    uint x;
+    function D(uint a) public payable { // ctor
+        x = a;
+    }
+}
+
+contract C {
+    D d = new D(4); // will be executed as part of C's constructor
+
+    function createD(uint arg) public {
+        D newD = new D(arg);
+    }
+}
+```
+
+## Assignment
+Tuple syntax is possible:
+```
+function f() public pure returns (uint, bool, uint) {
+    return (7, true, 2);
+}
+
+var (x, b, y) = f(); // specifying types is not possible here
+(x, y) = (2, 7); // assign to predefined variables
+(x, y) = (y, x); // swap
+(data.length,) = f(); // rest of the values can be ignored (returns 2 values but we only care about first)
+(,data[3]) = f(); // ignore beginning values
+(x,) = (1,); // one component tuple
+```
+
+## Scoping and declarations
+For version 0.4.x, a variable declared anywhere in a function is available everywhere in the function (like Javascript).<br>
+In version 0.5.x, this will change.
+
+## Error handling (Assert, Require, Revert, Exceptions)
+Solidity uses state-reverting exceptions.
+
+* Use `assert` to check invariants
+* Use `require` to ensure input values
+* Use `revert` to throw an exception, revert the current call (and done subcalls)
+
+Catching exceptions is not yet possible.
+
+`assert` will use all gas, `require` uses none.
 
 # Contracts
 
