@@ -41,6 +41,7 @@ solc github.com/ethereum/dapp-bin/=/usr/local/dapp-bin/ source.sol
 */
 ```
 
+
 ## Natspec comments
 ```
 /// single line
@@ -63,6 +64,7 @@ contract shapeCalculator {
     }
 }
 ```
+
 
 # Structure of a contract
 
@@ -666,6 +668,345 @@ Catching exceptions is not yet possible.
 
 # Contracts
 
+## Creating Contracts
+With web3js: [web3.eth.Contract](https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#new-contract)
 
-# Solidity Assembly
+Only one constructor is allowed --> ctor overloading is not possible.
+Cyclic dependencies between contracts are not possible.
 
+## Visibility and getters
+
+There are two kinds of function calls in Solidity, so there are four types of **visibilities for functions**.
+
+### external
+Called via other contracts and transactions.
+
+To call it from inside a contract, we have to use `this.f()`.
+
+### public (default)
+Call internally or via messages.
+For public state variables, a getter is generated automatically.
+
+### internal
+Functions and state variables can only be accessed from within the *contract (or deriving contracts)*.
+
+### private
+Functions and state variables can only be accessed from within the *contract*.
+
+**NOTE:** private stuff is still visible for everyone, just not accessible!
+
+## Getter functions
+The compiler automatically creates getter-functions for public state variables.
+
+This:
+```
+contract Complex {
+    struct Data {
+        uint a;
+        bytes3 b;
+        mapping (uint => uint) map;
+    }
+    mapping (uint => mapping(bool => Data[])) public data;
+}
+```
+will generate the following function:
+```
+function data(uint arg1, bool arg2, uint arg3) public returns (uint a, bytes3 b) {
+    a = data[arg1][arg2][arg3].a;
+    b = data[arg1][arg2][arg3].b;
+}
+```
+
+## Function modifiers
+Modifiers can change the behaviour of functions.
+The function body is inserted where the special symbol **_** appears.
+
+```
+modifier onlyOwner {
+    require(msg.sender == owner);
+    _;
+}
+
+function changePrice(uint _price) public onlyOwner {
+    price = _price;
+}
+```
+
+Multiple modifiers can be used in a whitespace-separated list.
+All symbols visible in the function are visible for the modifier.
+
+## Constant state variables
+State variables can be declared as `constant`. Then they have to be assigned from an expression which is a constant at compile time.
+
+These functions are allowed:
+* `keccak256`
+* `sha256`
+* `ripemd160`
+* `ecrecover`
+* `addmod`
+* `mulmod`
+
+The only supported types valid for now are **value types** and **strings**.
+
+
+## Funtions
+
+### View functions
+Promise **not to modify state**. Can be declared with `view`.
+
+These things are considered to modify state:
+* Writing to state variables
+* Emitting events
+* Creating other contracts
+* Using `selfdestruct`
+* Sending ether
+* Calling functions not marked `view` or `pure`
+* Using low-level calls
+* Using inline assembly with opcodes
+
+**NOTE:** getter methods are marked `view`.
+
+### Pure functions
+Functions that do **not read from or modify the state**.
+
+These things are considered to read from state:
+* Reading from state variables
+* Accessing `this.balance` or `<address>.balance`
+* Accessing `block`, `tx` or `msg`
+* Calling functions not marked with `pure`
+* Inline assembly with opcodes
+
+### Fallback function
+The unnamed function. This is called when no other function matches the function identifier.
+
+Sending ether to this contract will cause an exception (no other functions are defined):
+```
+uint x;
+function() public { x = 1; }
+```
+
+If ether is sent to this contract, there is no way to get it back:
+```
+function() public payable { }
+```
+
+### Function overloading
+Function overloading is possible (but not for ctors).
+
+```
+contract A {
+    function f(uint _in) public pure returns (uint out) {
+        out = 1;
+    }
+
+    function f(uint _in, bytes32 _key) public pure returns (uint out) {
+        out = 2;
+    }
+}
+```
+
+If there is not exactly one candidate for the function, resolution fails.
+For example: `f(unit8)` and `f(uint256)` fails when `f` is called with a `uint8` value or below.
+
+## Events
+The "logging" mechanism of ethereum.
+
+SPV proofs are possible:
+If an external entity supplies a contract with an SPV proof, it can check that the log actually exists in the blockchain (but block headers have to be supplied).
+
+Up to three arguments can receive the attribute `indexed`. We can then search for these arguments.
+Indexed arguments will not be stored themselves, we can only search for these values.
+If arrays are used as indexed arguments, their `keccak256` hash will be stored.
+
+With `anonymous`, the signature of the event is not stored.
+All non-indexed arguments will be stored in the data part of the log.
+
+Event example:
+```
+contract ClientReceipt {
+    event Deposit(
+        address indexed _from,
+        bytes32 indexed _id,
+        uint _value
+    );
+
+    function deposit(bytes32 _id) public payable {
+        emit Deposit(msg.sender, _id, msg.value); // 'Deposit' is now filterable with JS
+    }
+}
+```
+
+Look for events with *javascript*:
+```
+var abi = /* abi as generated by the compiler */;
+var ClientReceipt = web3.eth.contract(abi);
+var clientReceipt = ClientReceipt.at("0x1234...ab67" /* address */);
+
+var event = clientReceipt.Deposit();
+
+// watch for changes
+event.watch(function(error, result){
+    // result will contain various information
+    // including the argumets given to the `Deposit`
+    // call.
+    if (!error)
+        console.log(result);
+});
+
+// or callback to start watching immediately
+var event = clientReceipt.Deposit(function(error, result) {
+    if (!error)
+        console.log(result);
+});
+```
+
+There is also a **low-level interface** for logs.
+
+
+## Inheritance
+Solidity supports multiple inheritance.
+All functions are *virtual* (most derived function is called).
+
+The code from inherited contracts is copied into one contract.
+
+Use `is` to derive from another contract.
+
+If a contract doesn't implement all functions, it can only be used as an interface:
+```
+function lookup(uint id) public returns (address adr); // 'abstract' function
+```
+
+Multiple inheritance is possible:
+```
+contract named is owned, mortal { ... }
+```
+
+Functions can be overridden by another function with the same name and the same number/types of inputs.
+
+If the constructor takes an argument, it must be provided like this:
+```
+contract PriceFeed is named("GoldFeed") { ... }
+```
+
+To specifically access functions from base contracts, use `super`:
+```
+contract Base is mortal {
+    function kill() public { super.kill(); }
+}
+```
+
+### Constructors
+Constructor functions can be `public` or `internal`.
+
+```
+contract B is A(1) {
+    function B() public {}
+}
+```
+
+An `internal` ctor marks the contract as abstract!
+
+### Arguments for base constructors
+```
+contract Base {
+    uint x;
+    function Base(uint _x) public { x = _x; }
+}
+
+contract Derived is Base(7) {
+    function Derived(uint _y) Base(_y * _y) public {
+    }
+}
+```
+
+
+## Abstract contracts
+Contracts where at least one function is not implemented.
+
+This is a function declaration:
+```
+function foo(address) external returns (address);
+```
+
+Careful: this is a function type (variable which type is a function):
+```
+function(address) external returns (address) foo;
+```
+
+
+## Interfaces
+* Cannot have any functions implemented
+* Cannot inherit other contracts or interfaces
+* Cannot define variables
+* Cannot define structs
+* Cannot define enums
+
+Use keyword `interface`:
+```
+interface Token {
+    function transfer(address recipient, uint amount) public;
+}
+```
+
+
+## Libraries
+Libraries are assumed to be stateless. They are deployed only once at a specific address.
+
+Restrictions in comparison to contracts
+* No state variables
+* Cannot inherit or be inherited
+* Cannot receive ether
+
+Example:
+```
+library Set {
+  // type of Data is 'storage reference', so only the storage address, not the content is saved here
+  struct Data { mapping(uint => bool) flags; } // will be used in the calling contract!
+
+  function insert(Data storage self, uint value)
+      public
+      returns (bool)
+  {
+      if (self.flags[value])
+          return false; // already there
+      self.flags[value] = true;
+      return true;
+  }
+  // ...
+
+contract C {
+    Set.Data knownValues;
+
+    function register(uint value) public {
+        // library functions can be called without a specific instance!
+        // the 'instance' is the current contract...
+        require(Set.insert(knownValues, value));
+    }
+```
+
+## Using for
+Attach library functions to any type:
+```
+using A for B; // where A is the library and B the type
+```
+
+With the example from above:
+```
+contract C {
+    using Set for Set.Data; // this is the crucial change
+    Set.Data knownValues;
+
+    function register(uint value) public {
+        // Here, all variables of type Set.Data have
+        // corresponding member functions.
+        // The following function call is identical to
+        // `Set.insert(knownValues, value)`
+        require(knownValues.insert(value));
+    }
+}
+```
+
+We can also extend elementary types:
+```
+using Search for uint[];
+```
