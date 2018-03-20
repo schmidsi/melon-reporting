@@ -8,7 +8,8 @@
   },
   "scripts": {
     "gitbook": "gitbook serve",
-    "gitbook:pdf": "gitbook pdf"
+    "gitbook:pdf": "gitbook pdf",
+    "gitbook:install": "gitbook install"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,8 @@
     "gitbook-cli": "^2.3.2",
     "lerna": "^2.9.0"
   },
-  "homepage": "https://github.com/melonproject/reporting-thesis#readme"
+  "homepage": "https://github.com/melonproject/reporting-thesis#readme",
+  "dependencies": {
+    "gitbook-plugin-katex": "^1.1.4"
+  }
 }
