@@ -12,7 +12,7 @@ contract Auditing {
     }
 
     // events
-    event AuditReported(address fundAddress, uint position); // maybe log value types (address, bytes32...)
+    event AuditReported(address fundAddress, uint index);
 
     // for this mapping, a getter is created 
     // where we can retrieve audits by its fundAddress and position
@@ -22,10 +22,10 @@ contract Auditing {
     /// the hashed data in `dataHash` and a `signature`.
     function audit(address fundAddress, bytes32 dataHash, bytes32 signature) public {
         // requires?
-        // TODO
         Audit memory newAudit = Audit(msg.sender, dataHash, signature, now);
         fundAudits[fundAddress].push(newAudit);
 
+        // TODO
         // signature contains vrs
         // check: ecrecover(datahash, v, r, s) == msg.sender
 
@@ -33,13 +33,10 @@ contract Auditing {
         emit AuditReported(fundAddress, index);
     }
 
-    // function verifyAudit(fundaddress, datahash, signature, auditor)
-    // return bool if audit is on the blockchain (present in fundAudits)
-
     /// Get the last audit stored for a specific `fundAddress`.
     function getLastAudit(address fundAddress) 
-        public view 
-        returns (address auditor, bytes32 dataHash, bytes32 signature, uint timestamp) {
+            public view 
+            returns (address auditor, bytes32 dataHash, bytes32 signature, uint timestamp) {
         Audit memory lastAudit = fundAudits[fundAddress][fundAudits[fundAddress].length - 1];
         auditor = lastAudit.auditor;
         dataHash = lastAudit.dataHash;
@@ -49,9 +46,23 @@ contract Auditing {
 
     /// Get the amount of audits for a specific `fundAddress`
     function getAuditCount(address fundAddress)
-        public view
-        returns (uint count) {
+            public view
+            returns (uint count) {
         count = fundAudits[fundAddress].length;
+    }
+
+    /// Returns true if the audit is on the blockchain (present in fundAudits)
+    function verifyAudit(address fundAddress, bytes32 dataHash, bytes32 signature, address auditor)
+            public view
+            returns (bool found) {
+        Audit[] memory audits = fundAudits[fundAddress];
+        for (uint i = 0; i < audits.length; i++) {
+            Audit memory tempAudit = audits[i];
+            if (tempAudit.auditor == auditor && tempAudit.dataHash == dataHash && tempAudit.signature == signature) {
+                return true;
+            }
+        }
+        return false; // audit not found
     }
 
 }
