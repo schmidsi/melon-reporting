@@ -9,6 +9,8 @@ pragma solidity ^0.4.0;
 ```
 `^` means "only works with compilers 0.4.x"
 
+We will use at least version *0.4.20* for our contracts.
+
 
 ## Import
 
@@ -409,6 +411,17 @@ The key data is not actually stored in a mapping, only its `keccak256` hash.
 Mappings do not have a length.
 Mappings are only allowed for **state variables** (or storage reference types in internal functions).
 
+The only way to retreive a value from a mapping is by its key. Mappings are not enumerable.
+
+Example:
+```
+// declaration
+mapping(address => Voter) public voters;
+
+// change a value in a mapping
+chairperson = msg.sender;
+voters[chairperson].weight = 1;
+```
 
 ## LValue Operators
 ```
@@ -513,6 +526,8 @@ if (now >= daysAfter * 1 days) {...};
 * `now` (`uint`): current block timestamp (alias for block.timestamp)
 * `tx.gasprice` (`uint`): gas price of the transaction
 * `tx.origin` (`address`): sender of the transaction (full call chain)
+
+**NOTE:** `now` is just the timestamp from the block!
 
 ### Error handling
 ```
