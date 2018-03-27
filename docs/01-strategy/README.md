@@ -216,3 +216,12 @@ This week we had the official kick-off meeting with all stakeholders. See minute
 
 * Simon updated the project plan according to the feedback and discussed the KIID template provided by PwC with Mona
 * Benjamin further read into Solidity, especially data structures like strings and byte64.
+
+### Calendar Week 12
+
+A lot of progress is already visible in the different areas:
+
+* Benjamin created a very rough [working first draft of the auditing contract](https://github.com/melonproject/reporting-thesis/blob/f3da136beab45b6683dda5ec4001f5415c877870/packages/contracts/Auditing.sol)
+* Simon [visualized the logical data structure and started to derive different report requirements according to these structures](https://melonproject.github.io/reporting-thesis/02-research/).
+
+Furthermore, we had our first coach meeting.
