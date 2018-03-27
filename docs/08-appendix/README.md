@@ -3,12 +3,14 @@
 ## Coachmeeting 2018-03-27
 
 Present:
+
 * Simon Emanuel Schmid
 * Benjamin Zumbrunn
 * Sarah Hauser (FHNW)
 * Markus Knecht (FHNW)
 
 ### Agenda
+
 * Present updated project plan (3 iterations)
 * Discuss current state:
   * State of solidity
@@ -16,12 +18,15 @@ Present:
 * Fix date for thesis defense
 
 ### Bachelor thesis defence
+
 Accoring to Ms. Hauser, our defence can be held in the first week of the presentations.
 
 ### Project plan
+
 There are some mistakes on the project plan:
-- prototype date is wrong -> 19.4.
-- first iteration -> should be second iteration
+
+* prototype date is wrong -> 19.4.
+* first iteration -> should be second iteration
 
 For 19.4.: attach to milestone: fix project plan with more details
 
@@ -30,12 +35,14 @@ For 17.4.: send coaches a draft of the documentation (list of contents is fixed)
 After the first draft of the product, the first draft of documentation will be reviewed by coaches (5.7.).
 
 For 5.7.: everything about the final product must be decided
-- requirements fixed
-- all documents available
-- all data available
-- all prototypes ready for extension
+
+* requirements fixed
+* all documents available
+* all data available
+* all prototypes ready for extension
 
 ### State of research
+
 Simon went through the research chapter with the coaches and discussed what he
 is working on right now.
 
@@ -45,25 +52,25 @@ Hauser: do not solve the problem of "different markets"
 Define exact terms for the "technical" world and the "customer" world that will
 be used througout the project.
 
-For the risk profile: 
-suggestion: if we cannot calculate the "monte carlo" risk, we should show the 
-
+For the risk profile:
+suggestion: if we cannot calculate the "monte carlo" risk, we should show the
 
 ### State of solidity
+
 Benjamin showed the draft of the auditing contract prototype and discussed the result with the coaches.
 
 Notes from Mr. Knecht:
+
 * bytes32 signature to bytes32 rs components doesn't make sense (information loss)
 * Assembly code is critical: maybe deliver rsv of the signature directly
 * Check if delivering a signature is really important. (The 'sender' of the audit
-already delivers a signature with his address)
+  already delivers a signature with his address)
 * Define prototype specification with use cases.
-
-
 
 ## Kick-off meeting 2018-03-07
 
 Present:
+
 * Simon Emanuel Schmid
 * Benjamin Zumbrunn
 * Mona El Isa (Melonport)
@@ -75,14 +82,14 @@ Present:
 
 * Ms. Hauser is away for the whole month of may
 * Always send protocols from meetings to both coaches
-* Always send Decisions about the project (with melonport) to both coaches
+* Always send decisions about the project (with melonport) to both coaches
 
 ### Thesis release
 
 * A poster and an interactive demo is required
 * Two printed versions of the thesis must be provided for the FHNW
 * Send in a draft of the thesis as soon as possible for review
-* Plan three Iterations of work/evaluate
+* Plan three iterations of work/evaluate
 * Define milestones and give more detail on planned work
 
 ### Project
