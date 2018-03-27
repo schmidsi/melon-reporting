@@ -8,7 +8,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "gitbook": "gitbook"
+    "gitbook": "gitbook",
+    "deploy:docs": "./scripts/deploy-docs.sh"
   },
   "repository": {
     "type": "git",
