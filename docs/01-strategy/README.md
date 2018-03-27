@@ -180,7 +180,7 @@ Finally, all feedback is collected and the final product can emerge from the fir
 
 * 27.3.2018 - 3pm - In Brugg with coaches: 5.2B31
 * 17.4.2018 - 3pm - In Brugg with coaches: 5.2B31
-* 3.5.2018 - 2pm - In Zug with all stakeholders
+* 3.5.2018 - 2pm - In Zug with all stakeholders except Sarah Hauser
 * 22.5.2018 - 4pm - In Brugg with Markus Knecht: 5.2B31
 * 12.6.2018 - 3pm - In Brugg with all coaches: 5.2B31
 * 5.7.2018 - 2pm - In Zug with all stakeholders

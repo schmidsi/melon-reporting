@@ -13,8 +13,8 @@ Present:
 
 * Present updated project plan (3 iterations)
 * Discuss current state:
-  * State of solidity
   * State of research
+  * State of solidity
 * Fix date for thesis defense
 
 ### Bachelor thesis defence
