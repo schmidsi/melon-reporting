@@ -81,15 +81,13 @@ class App extends Component {
   }
 
   audit = (event) => {
-    //auditingcontract.methods.audit(testFund, this.state.datahash, this.state.signature) 
     // data and signature hex has to have 64 characters
     var dataHash = web3.utils.padRight(this.state.datahash, 64);
     var signature = web3.utils.padRight(this.state.signature, 64);
+
     auditingcontract.methods.audit(testFund, dataHash, signature)
-      .send({ from: auditorAccount })
-      .then(function (result) {
-        // do something?
-      });
+      .send({ from: auditorAccount });
+
     event.preventDefault();
   }
 
