@@ -16,6 +16,7 @@
 
 ---
 
-* [Appendix](Appendix.md)
-* [Solidity](Solidity.md)
+* [Appendix](08-appendix/README.md)
+* [References](08-appendix/References.md)
+* [Solidity](08-appendix/Solidity.md)
 * [Glossary](GLOSSARY.md)
