@@ -35,21 +35,22 @@ This is a technical thesis and therefore we do not deeply research into the lega
 
 ## Planning
 
-![](../assets/Timeline - Projektplan-v2.svg)
+![](../assets/Timeline - Projektplan v3.svg)
 
 ### Strategy
 
 In a first step the foundation of the project is laid. Vision, hypothesis and boundaries are defined and agreed upon with the stakeholders and a rough planning is created. Furthermore repositories are created, docs initialized, etc.
 
-**Deadline**: 30.3.2018
+**Deadline**: 13.4.2018
 
 **Expected results**:
 
 * Project vision
 * Hypothesis
 * Project boundaries
-* Rough planning
+* Detail planning
 * Basic setup of environment
+* Documentation outline
 
 ### Research
 
@@ -123,26 +124,29 @@ Collect feedback of the release candidate, finish documentation and submission o
 
 ## Milestones
 
-### 19.3.2018 - Prototype & goals specified
+### 17.4.2018 - Prototype & goals specified
 
-* _Via email_
+* Coach meeting in Brugg
 * Specified what's in the prototype and what not
 * General project goals specified with Melonport
+* Project plan with more detailed & project oriented planning
+* Documentation outline fixed
 
 ### 3.5.2018 - Prototype presentation (Meeting in Zug)
 
 * Presentation of the finished prototype in Zug
 * All stakeholders invited
 
-### 8.6.2018 - Final specification
-
-* _Via email_
-* The specification for the final product is finished and agreed upon
-
 ### 5.7.2018 - Presentation of results second iteration (Meeting in Zug)
 
 * Presentation of the results of second iteration in Zug
 * All stakeholders invited
+* First draft of documentation submitted to coaches
+* Finalize specification about final product
+  * Requirements fixed
+  * All documents available
+  * All data available
+  * All prototypes ready for extension
 
 ### 6.8.2018 - Presentation of release candidate (Meeting in Zug)
 

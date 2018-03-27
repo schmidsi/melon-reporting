@@ -19,7 +19,7 @@ Present:
 
 ### Bachelor thesis defence
 
-Accoring to Ms. Hauser, our defence can be held in the first week of the presentations.
+Accoring to Ms. Hauser, our defence can be held in the first week of the presentations: September 3rd to 7th.
 
 ### Project plan
 
@@ -53,7 +53,7 @@ Define exact terms for the "technical" world and the "customer" world that will
 be used througout the project.
 
 For the risk profile:
-suggestion: if we cannot calculate the "monte carlo" risk, we should show the
+Suggestion: if we cannot calculate the "monte carlo" risk, we should show that it is possible with the data that we have.
 
 ### State of solidity
 
