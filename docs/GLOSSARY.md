@@ -51,6 +51,14 @@ https://www.finma.ch
 
 https://www.finma.ch/en/authorisation/institutions-and-products-subject-to-the-collective-investment-schemes-act/
 
+## ISIN
+
+International Securities Identification Numbers.
+
+> ISINs uniquely identify a security -- its structure is defined in ISO 6166. Securities for which ISINs are issued include bonds, commercial paper, equities and warrants. The ISIN code is a 12-character alpha-numerical code. Think of it as a serial number that does not contain information characterizing financial instruments but rather serves to uniformly identify a security for trading and settlement purposes.
+
+https://www.isin.org/
+
 ## ISO 4217
 
 Currency codes, usually 3 characters whereas the first two are indicating the country and the 3rd the currency name. Example: CHF, USD, ...

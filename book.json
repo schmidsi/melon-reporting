@@ -1,4 +1,4 @@
 {
   "root": "./docs",
-  "plugins": ["katex"]
+  "plugins": ["katex", "bibtex-citations-and-references"]
 }
