@@ -74,14 +74,14 @@ contract Auditing {
 
         bytes memory sig = substring(_signature, 2, 132);
 
-        if (v < 27) {
-            v += 27;
-        }
-
         assembly {
             r := mload(add(sig, 32))
             s := mload(add(sig, 64))
             v := byte(0, mload(add(sig, 96)))
+        }
+
+        if (v < 27) {
+            v += 27;
         }
 
         address recoveredAddress = ecrecover(_dataHash, v, r, s);
