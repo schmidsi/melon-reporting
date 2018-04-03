@@ -3,6 +3,41 @@
     "constant": true,
     "inputs": [
       {
+        "name": "_dataHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "_r",
+        "type": "bytes32"
+      },
+      {
+        "name": "_s",
+        "type": "bytes32"
+      },
+      {
+        "name": "_v",
+        "type": "uint8"
+      },
+      {
+        "name": "_sender",
+        "type": "address"
+      }
+    ],
+    "name": "checkSignature",
+    "outputs": [
+      {
+        "name": "signatureVerified",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_fundAddress",
         "type": "address"
       },
@@ -11,23 +46,22 @@
         "type": "bytes32"
       },
       {
-        "name": "_signature",
+        "name": "_r",
         "type": "bytes32"
       },
       {
-        "name": "_auditor",
-        "type": "address"
-      }
-    ],
-    "name": "verifyAudit",
-    "outputs": [
+        "name": "_s",
+        "type": "bytes32"
+      },
       {
-        "name": "found",
-        "type": "bool"
+        "name": "_v",
+        "type": "uint8"
       }
     ],
+    "name": "audit",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -68,8 +102,16 @@
         "type": "bytes32"
       },
       {
-        "name": "signature",
+        "name": "r",
         "type": "bytes32"
+      },
+      {
+        "name": "s",
+        "type": "bytes32"
+      },
+      {
+        "name": "v",
+        "type": "uint8"
       },
       {
         "name": "timestamp",
@@ -81,7 +123,7 @@
     "type": "function"
   },
   {
-    "constant": false,
+    "constant": true,
     "inputs": [
       {
         "name": "_fundAddress",
@@ -92,14 +134,31 @@
         "type": "bytes32"
       },
       {
-        "name": "_signature",
+        "name": "_r",
         "type": "bytes32"
+      },
+      {
+        "name": "_s",
+        "type": "bytes32"
+      },
+      {
+        "name": "_v",
+        "type": "uint8"
+      },
+      {
+        "name": "_auditor",
+        "type": "address"
       }
     ],
-    "name": "audit",
-    "outputs": [],
+    "name": "verifyAudit",
+    "outputs": [
+      {
+        "name": "found",
+        "type": "bool"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -125,8 +184,16 @@
         "type": "bytes32"
       },
       {
-        "name": "signature",
+        "name": "r",
         "type": "bytes32"
+      },
+      {
+        "name": "s",
+        "type": "bytes32"
+      },
+      {
+        "name": "v",
+        "type": "uint8"
       },
       {
         "name": "timestamp",
@@ -135,33 +202,6 @@
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_str",
-        "type": "bytes32"
-      },
-      {
-        "name": "_startIndex",
-        "type": "uint256"
-      },
-      {
-        "name": "_endIndex",
-        "type": "uint256"
-      }
-    ],
-    "name": "substring",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "pure",
     "type": "function"
   },
   {
