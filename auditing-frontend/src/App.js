@@ -3,7 +3,6 @@ import './App.css';
 import Web3 from 'web3';
 
 let abi = require('./auditing.json');
-let sigUtil = require('eth-sig-util');
 
 let web3;
 let auditingcontract;
@@ -29,13 +28,15 @@ class App extends Component {
     // override the injected web3 from parity so we can use web3 1.0.0 functions like utils...
     // NOTE: do not do this in production!
     window.web3 = web3;
-    window.auditingcontract = auditingcontract;
-    window.sig = sigUtil;
 
     this.state = {
       auditCount: 0,
       datahash: "0x0",
-      signature: "0x0"
+      verifydatahash: "0x0",
+      r: "0x0",
+      s: "0x0",
+      v: 0,
+      auditor: "0x0"
     };
 
     // print the json interface to console for convenience
@@ -62,24 +63,18 @@ class App extends Component {
     this.setState({ datahash: event.target.value });
   }
 
+  handleVerifyDatahashChange = (event) => { this.setState({ verifydatahash: event.target.value }); }
+  handleRChange = (event) => { this.setState({ r: event.target.value }); }
+  handleSChange = (event) => { this.setState({ s: event.target.value }); }
+  handleVChange = (event) => { this.setState({ v: event.target.value }); }
+  handleAuditorChange = (event) => { this.setState({ auditor: event.target.value }); }
+
   getAuditCount = () => {
     auditingcontract.methods.getAuditCount(testFund)
       .call()
       .then(function (result) {
         document.getElementById('auditCount').innerText = result;
       });
-  }
-
-  checkSignature = () => {
-    var dataHash = "0xfafa000000000000000000000000000000000000000000000000000000000000";
-    var r = "0x78dc8a6cc6906e97837a2e37be98c5c80c1e4037be7615c45935b83e13d17309";
-    var s = "0x408031b69f44467ac4bc6297b0a7d00c0c0f5bcffbede62720695c7a95ddfc29";
-    var v = 28;
-    auditingcontract.methods.checkSignature(dataHash, r, s, v, testAccount)
-    .call()
-    .then(function (result) {
-      console.log(result);
-    });
   }
 
   getLastAudit = () => {
@@ -123,6 +118,21 @@ class App extends Component {
 
   }
 
+  verifyAudit = (event) => {
+    event.preventDefault();
+
+    var dataHash = this.state.verifydatahash;
+    var r = this.state.r;
+    var s = this.state.s;
+    var v = this.state.v;
+    var auditor = this.state.auditor;
+    auditingcontract.methods.verifyAudit(testFund, dataHash, r, s, v, auditor)
+    .call()
+    .then(function (result) {
+      document.getElementById('verified').innerText = "verified: " + result;
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -159,12 +169,45 @@ class App extends Component {
           <button type="button" onClick={this.audit}>
             audit
           </button>
+        </form>
+
+        <br />
+
+        <form>
+          <label>
+            Datahash:
+            <input type="text" value={this.state.verifydatahash} onChange={this.handleVerifyDatahashChange} />
+          </label>
           <br />
+          <label>
+            r:
+            <input type="text" value={this.state.r} onChange={this.handleRChange} />
+          </label>
           <br />
-          <button type="button" onClick={this.checkSignature}>
-            checkSignature
+          <label>
+            s:
+            <input type="text" value={this.state.s} onChange={this.handleSChange} />
+          </label>
+          <br />
+          <label>
+            v:
+            <input type="text" value={this.state.v} onChange={this.handleVChange} />
+          </label>
+          <br />
+          <label>
+            auditor:
+            <input type="text" value={this.state.auditor} onChange={this.handleAuditorChange} />
+          </label>
+          <br />
+          <button type="button" onClick={this.verifyAudit}>
+            verifyAudit
           </button>
         </form>
+
+        <br />
+
+        <div id='verified'>
+        </div>
 
         <br />
 
