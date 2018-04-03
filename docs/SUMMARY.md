@@ -8,6 +8,8 @@
 
 * [Strategy](01-strategy/README.md)
 * [Research](02-research/README.md)
+  * [Available Data](02-research/01-available-data.md)
+  * [SFAMA FINMA KIID Template](02-research/02-sfama-kiid.md)
 * [Prototype](03-prototype/README.md)
 * [Evaluate](04-evaluate/README.md)
 * [Design](05-design/README.md)
