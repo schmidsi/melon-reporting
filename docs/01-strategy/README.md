@@ -12,6 +12,18 @@ Creating functionality on top of the Melon protocol that automates reporting/aud
 
 It is possible to extract and visualize all relevant data from the Melon protocol on the Ethereum blockchain in a way that could be legally acceptable by regulators. Furthermore, this data can be audited and digitally signed and a track record of these audits can be placed on the blockchain again.
 
+## Project Goals
+
+### Interchangeable Fund Data Format
+
+### Auditing Smart Contract Interface Specification
+
+### Auditing Smart Contract Interface Reference Implementation
+
+### Interchangeable Fund Data Extraction and Consolidation Service
+
+### Fund Report Web Interface With Auditing Functionality
+
 ## Boundaries
 
 ### Legal
@@ -36,6 +48,24 @@ We try to adapt to the latest Melon smart contracts but fall back to the last kn
 |                                            |                                                                                                               |            |
 
 (\*) Probability of occurrence (1-3) \* severity (1-3) = risk
+
+## Stakeholders
+
+### Melonport (Customer)
+
+### University
+
+### Coaches
+
+### Project team
+
+### Fund managers
+
+### Regulators
+
+### Auditors
+
+### Investors
 
 ## Planning
 
@@ -229,3 +259,10 @@ A lot of progress is already visible in the different areas:
 * Simon [visualized the logical data structure and started to derive different report requirements according to these structures](https://melonproject.github.io/reporting-thesis/02-research/).
 
 Furthermore, we had our first coach meeting.
+
+### Calendar Week 15
+
+* Benjamin started with the auditing interface proposal and it's implementation. Furthermore, he created a rudimentary web interface to this auditing contract.
+* Simon refined the documentation outline of the report, created the prototype specification proposal and started to walk through the FINMA KIID document. Furthermore he met with Jenna Zenk and John Orthwein to sync risk management with reporting.
+
+The research takes longer than expected, therefore we jumped forward for the prototype and will implement directly a standard report mockup draft without proper written research foundation. Simon already knows in his head how such a standard report needs to look like. More validating research can also be done later. It is important to have something to show now rather than thorough research.

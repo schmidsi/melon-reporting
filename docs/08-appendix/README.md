@@ -1,5 +1,23 @@
 # Meetings
 
+## Coachmeeting 2018-04-13
+
+Present:
+
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Sarah Hauser (FHNW)
+* Markus Knecht (FHNW)
+
+### Agenda
+
+* Present and discuss documentation outline
+* Discuss and approve prototype specification
+* Discuss and approve project goals
+* Discuss more detailed project plan (Github)
+* Possible collaboration for the [Melon Hackathon](http://hackathon.melonport.com/)
+* Citations?
+
 ## Coachmeeting 2018-03-27
 
 Present:
