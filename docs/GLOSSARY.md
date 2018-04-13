@@ -38,6 +38,14 @@ http://www.efama.org/SitePages/Home.aspx
 
 Entity relationship model. A technical tool to model and visualize entities and their relations.
 
+## EMT
+
+European MiFID II Template
+
+## EPT
+
+European Working Group PRIIP Template
+
 ## ESMA
 
 European Securities and Market Authority
@@ -87,6 +95,10 @@ EU Markets in Financial Instruments Directive. MiFID I originally from 2004 it's
 
 * https://en.wikipedia.org/wiki/Markets_in_Financial_Instruments_Directive_2004
 
+## MOP
+
+Multiple Investment Options
+
 ## PRIIP
 
 Packaged Retail and Insurance-based Investment Products
@@ -131,3 +143,7 @@ Undertakings For The Collective Investment Of Transferable Securities
 
 https://www.investopedia.com/terms/u/ucits.asp
 https://en.wikipedia.org/wiki/Undertakings_for_Collective_Investment_in_Transferable_Securities_Directive_2009
+
+## VaR
+
+Value at Risk
