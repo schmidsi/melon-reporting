@@ -68,25 +68,25 @@ Reference implementation: ...
 
 #### add
 ```
-function add(bytes32 _dataHash, address _fundAddress) returns (bool)
+function add(address _fundAddress, bytes32 _dataHash) returns (bool)
 ```
 Requires that the `_dataHash` is unique per fund.
 If a document is audited, the information of the audit is added to a new version of the document, thus with each audit, the `_dataHash` changes naturally.
-In the reference implementation, we require that only approved auditors can use this method.
+In the reference implementation, we require that only approved auditors of a specific fund can use this method. The approved auditors are supplied on contract creation via the constructor.
 
 #### verify
 ```
-function verify(bytes32 _dataHash, address _fundAddress, address _auditor) returns (bool)
+function verify(address _fundAddress, address _auditor, bytes32 _dataHash) returns (bool)
 ```
 
 #### getLastIndex
 ```
-function getLastIndex(address _fundAddress) constant returns (uint64 index)
+function getLastIndex(address _fundAddress) constant returns (uint256 index)
 ```
 
 #### getByIndex
 ```
-function getByIndex(address _fundAddress, uint64 _index) constant returns (bytes32 dataHash, address auditor, uint256 timestamp)
+function getByIndex(address _fundAddress, uint256 _index) constant returns (bytes32 dataHash, address auditor, uint256 timestamp)
 ```
 Requires that `_index` is smaller than the size of the audit array.
 
@@ -94,7 +94,7 @@ Requires that `_index` is smaller than the size of the audit array.
 ### Events
 #### Added
 ```
-event Added(address _fundAddress, uint64 _index)
+event Added(address _fundAddress, uint256 _index)
 ```
 Triggered when a new audit is stored successfully.
 
