@@ -56,7 +56,7 @@ Write a simple web interface to interact with the auditing smart contracts.
 
 Start with the web interface that can transform the interchangeable fund data into a standard report.
 
-## Bla
+## Implementation
 
 ### First draft of auditing contract
 

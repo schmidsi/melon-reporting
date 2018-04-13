@@ -30,7 +30,7 @@
 * [Prototype](03-prototype/README.md)
   * Goal
   * Specification
-  * Result
+  * Implementation
 * [Evaluate](04-evaluate/README.md)
   * Internal evaluation
   * Stakeholder feedback
