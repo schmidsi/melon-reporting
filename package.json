@@ -1,7 +1,6 @@
 {
   "name": "reporting-thesis",
-  "description":
-    "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
+  "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
   "version": "0.0.1",
   "main": "index.js",
   "directories": {
@@ -15,7 +14,12 @@
     "type": "git",
     "url": "git+https://github.com/melonproject/reporting-thesis.git"
   },
-  "keywords": ["melon", "reporting", "soldity", "visualisation"],
+  "keywords": [
+    "melon",
+    "reporting",
+    "soldity",
+    "visualisation"
+  ],
   "author": "",
   "license": "AGPL-3.0",
   "bugs": {
@@ -27,6 +31,7 @@
   },
   "homepage": "https://github.com/melonproject/reporting-thesis#readme",
   "dependencies": {
+    "gitbook-plugin-bibtex-citations-and-references": "^0.10.4",
     "gitbook-plugin-katex": "^1.1.4"
   }
 }
