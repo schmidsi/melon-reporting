@@ -1,5 +1,9 @@
 pragma solidity ^0.4.21;
 
+// TO DISCUSS:
+// - uint256 as index required because of mapping
+// - getByIndex is the same as using the getter of "fundAudits"
+
 /// @title Auditing smart contract for melon.
 contract Auditing {
 
