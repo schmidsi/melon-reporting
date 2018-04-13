@@ -22,6 +22,12 @@ Ordinance of the Swiss Financial Market Supervisory Authority on Collective Inve
 
 https://www.admin.ch/opc/en/classified-compilation/20140344/index.html
 
+## DAI
+
+> Dai is a cryptocurrency that is price stabilized against the value of the U.S. Dollar. Dai is created by the Dai Stablecoin System, a decentralized platform that runs on the Ethereum blockchain.
+
+https://makerdao.com/
+
 ## EFAMA
 
 European Fund and Asset Management Associaton
@@ -37,6 +43,12 @@ Entity relationship model. A technical tool to model and visualize entities and 
 European Securities and Market Authority
 
 https://www.esma.europa.eu
+
+## ETF
+
+Exchange-traded fund. Often used synonymous for a fund that automatically tracks an index.
+
+https://en.wikipedia.org/wiki/Exchange-traded_fund
 
 ## FCA
 
@@ -110,6 +122,8 @@ Specialized language to develop smart contracts
 | 7    | High risk     | ≥25.0%               |
 
 http://fundglossary.erste-am.com/srri/
+
+[CESR’s guidelines on the methodology for the calculation of the synthetic risk and reward indicator in the Key Investor Information Document](https://www.esma.europa.eu/sites/default/files/library/2015/11/10_673.pdf)
 
 ## UCITS
 
