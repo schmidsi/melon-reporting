@@ -3,35 +3,23 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_dataHash",
-        "type": "bytes32"
+        "name": "",
+        "type": "address"
       },
       {
-        "name": "_r",
-        "type": "bytes32"
-      },
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "approvedAuditors",
+    "outputs": [
       {
-        "name": "_s",
-        "type": "bytes32"
-      },
-      {
-        "name": "_v",
-        "type": "uint8"
-      },
-      {
-        "name": "_sender",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "checkSignature",
-    "outputs": [
-      {
-        "name": "signatureVerified",
-        "type": "bool"
-      }
-    ],
     "payable": false,
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -44,21 +32,9 @@
       {
         "name": "_dataHash",
         "type": "bytes32"
-      },
-      {
-        "name": "_r",
-        "type": "bytes32"
-      },
-      {
-        "name": "_s",
-        "type": "bytes32"
-      },
-      {
-        "name": "_v",
-        "type": "uint8"
       }
     ],
-    "name": "audit",
+    "name": "add",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -70,28 +46,13 @@
       {
         "name": "_fundAddress",
         "type": "address"
-      }
-    ],
-    "name": "getAuditCount",
-    "outputs": [
+      },
       {
-        "name": "count",
+        "name": "_index",
         "type": "uint256"
       }
     ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_fundAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getLastAudit",
+    "name": "getByIndex",
     "outputs": [
       {
         "name": "auditor",
@@ -100,18 +61,6 @@
       {
         "name": "dataHash",
         "type": "bytes32"
-      },
-      {
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "name": "s",
-        "type": "bytes32"
-      },
-      {
-        "name": "v",
-        "type": "uint8"
       },
       {
         "name": "timestamp",
@@ -128,32 +77,39 @@
       {
         "name": "_fundAddress",
         "type": "address"
-      },
+      }
+    ],
+    "name": "getLastIndex",
+    "outputs": [
       {
-        "name": "_dataHash",
-        "type": "bytes32"
-      },
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
       {
-        "name": "_r",
-        "type": "bytes32"
-      },
-      {
-        "name": "_s",
-        "type": "bytes32"
-      },
-      {
-        "name": "_v",
-        "type": "uint8"
+        "name": "_fundAddress",
+        "type": "address"
       },
       {
         "name": "_auditor",
         "type": "address"
+      },
+      {
+        "name": "_dataHash",
+        "type": "bytes32"
       }
     ],
-    "name": "verifyAudit",
+    "name": "verify",
     "outputs": [
       {
-        "name": "found",
+        "name": "auditIsVerified",
         "type": "bool"
       }
     ],
@@ -184,18 +140,6 @@
         "type": "bytes32"
       },
       {
-        "name": "r",
-        "type": "bytes32"
-      },
-      {
-        "name": "s",
-        "type": "bytes32"
-      },
-      {
-        "name": "v",
-        "type": "uint8"
-      },
-      {
         "name": "timestamp",
         "type": "uint256"
       }
@@ -218,7 +162,7 @@
         "type": "uint256"
       }
     ],
-    "name": "AuditReported",
+    "name": "Added",
     "type": "event"
   }
 ]

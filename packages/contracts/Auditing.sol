@@ -3,6 +3,7 @@ pragma solidity ^0.4.21;
 // TO DISCUSS:
 // - uint256 as index required because of mapping
 // - getByIndex is the same as using the getter of "fundAudits"
+// - add auditor to event?
 
 /// @title Auditing smart contract for melon.
 contract Auditing {
@@ -68,12 +69,12 @@ contract Auditing {
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
             public view
-            returns (bytes32 dataHash, address auditor, uint256 timestamp) {
+            returns (address auditor, bytes32 dataHash, uint256 timestamp) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
-        dataHash = audit.dataHash;
         auditor = audit.auditor;
+        dataHash = audit.dataHash;
         timestamp = audit.timestamp;
     }
 

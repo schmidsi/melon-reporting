@@ -11,7 +11,8 @@ const testFund = "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de";
 const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
 const testAccount = "0x00e7d938D62E09439bcB0311A54430C1322B3e5d";
 const auditingsigning = "0xbAdCBDd2B01E4E77d539f35D6CC27e0557986A66";
-const activecontract = auditingsigning;
+const auditcontract = "0xc7F6680F230589fd043D6c39043235Fa6e3B368c";
+const activecontract = auditcontract;
 
 class App extends Component {
 
@@ -30,21 +31,72 @@ class App extends Component {
     window.web3 = web3;
 
     this.state = {
-      auditCount: 0,
-      datahash: "0x0",
+      adddatahash: "0x0",
+      addauditor: "0x0",
       verifydatahash: "0x0",
-      r: "0x0",
-      s: "0x0",
-      v: 0,
-      auditor: "0x0"
+      verifyauditor: "0x0",
+      index: 0
     };
 
     // print the json interface to console for convenience
     console.log(auditingcontract.options.jsonInterface);
   }
 
+
+  handleAddAuditorChange = (event) => { this.setState({ addauditor: event.target.value }); }
+  handleAddDatahashChange = (event) => { this.setState({ adddatahash: event.target.value }); }
+  handleVerifyDatahashChange = (event) => { this.setState({ verifydatahash: event.target.value }); }
+  handleVerifyAuditorChange = (event) => { this.setState({ verifyauditor: event.target.value }); }
+  handleIndexChange = (event) => { this.setState({ index: event.target.value }); }
+
+  add = (event) => {
+    event.preventDefault();
+
+    var auditor = this.state.addauditor; // maybe padding...
+    // data hex has to have 64 characters
+    var dataHash = web3.utils.padRight(this.state.adddatahash, 64);
+
+    auditingcontract.methods.add(testFund, dataHash)
+      .send({ from: auditor })
+  }
+
+  verify = (event) => {
+    event.preventDefault();
+
+    var auditor = this.state.verifyauditor;
+    var dataHash = web3.utils.padRight(this.state.verifydatahash, 64);
+
+    auditingcontract.methods.verify(testFund, auditor, dataHash)
+    .call()
+    .then(function (result) {
+      document.getElementById('verified').innerText = "verified: " + result;
+    });
+  }
+
+  getLastIndex = () => {
+    auditingcontract.methods.getLastIndex(testFund)
+      .call()
+      .then(function (result) {
+        document.getElementById('lastIndex').innerText = result;
+      });
+  }
+
+  getByIndex = () => {
+    auditingcontract.methods.getByIndex(testFund, this.state.index)
+      .call()
+      .then(function (result) {
+        document.getElementById('getByIndexAuditor').innerText = "Auditor: " + result.auditor;
+        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + result.dataHash;
+        document.getElementById('getByIndexTimestamp').innerText = "Timestamp: " + new Date(result.timestamp * 1000);
+      }).catch(function (error) {
+        document.getElementById('getByIndexAuditor').innerText = "not found";
+        document.getElementById('getByIndexDataHash').innerText = "not found";
+        document.getElementById('getByIndexTimestamp').innerText = "not found";
+      });
+  }
+
   listAllEvents = () => {
-    auditingcontract.getPastEvents("AuditReported", {
+    auditingcontract.getPastEvents("Added", {
       // list events from all blocks since the beginning
       fromBlock: 0,
       toBlock: 'latest'
@@ -52,85 +104,11 @@ class App extends Component {
       .then(function (events) {
         var text = "";
         events.forEach(function (e) {
-          text += e.returnValues._index + " " + e.returnValues._fundAddress;
+          text += "index: " + e.returnValues._index + "; fundaddress: " + e.returnValues._fundAddress;
           text += "\n";
         });
         document.getElementById('allEvents').innerText = text;
       });
-  }
-
-  handleDatahashChange = (event) => {
-    this.setState({ datahash: event.target.value });
-  }
-
-  handleVerifyDatahashChange = (event) => { this.setState({ verifydatahash: event.target.value }); }
-  handleRChange = (event) => { this.setState({ r: event.target.value }); }
-  handleSChange = (event) => { this.setState({ s: event.target.value }); }
-  handleVChange = (event) => { this.setState({ v: event.target.value }); }
-  handleAuditorChange = (event) => { this.setState({ auditor: event.target.value }); }
-
-  getAuditCount = () => {
-    auditingcontract.methods.getAuditCount(testFund)
-      .call()
-      .then(function (result) {
-        document.getElementById('auditCount').innerText = result;
-      });
-  }
-
-  getLastAudit = () => {
-    auditingcontract.methods.getLastAudit(testFund)
-      .call()
-      .then(function (result) {
-        document.getElementById('lastAuditAuditor').innerText = "Auditor: " + result.auditor;
-        document.getElementById('lastAuditDatahash').innerText = "Datahash: " + result.dataHash;
-        document.getElementById('lastAuditR').innerText = "r: " + result.r;
-        document.getElementById('lastAuditS').innerText = "s: " + result.s;
-        document.getElementById('lastAuditV').innerText = "v: " + result.v;
-        document.getElementById('lastAuditTimestamp').innerText = "Timestamp: " + new Date(result.timestamp * 1000);
-      });
-  }
-
-  audit = (event) => {
-    event.preventDefault();
-
-    // data hex has to have 64 characters
-    var dataHash = web3.utils.padRight(this.state.datahash, 64);
-
-    // create a signature hex from the provided dataHash
-    var signature = web3.eth.sign(dataHash, testAccount)
-    .then((result) => {
-      var bytesSignature = web3.utils.hexToBytes(result);
-
-      // slice first 32 bytes from signature and convert them back to hex
-      var rbytes = bytesSignature.slice(0, 32);
-      var r = web3.utils.bytesToHex(rbytes);
-
-      // slice next 32 bytes from signature and convert them back to hex
-      var sbytes = bytesSignature.slice(32, 64);
-      var s = web3.utils.bytesToHex(sbytes);
-
-      // the last byte is v
-      var v = bytesSignature[64];
-
-      auditingcontract.methods.audit(testFund, dataHash, r, s, v)
-      .send({ from: testAccount })
-    });
-
-  }
-
-  verifyAudit = (event) => {
-    event.preventDefault();
-
-    var dataHash = this.state.verifydatahash;
-    var r = this.state.r;
-    var s = this.state.s;
-    var v = this.state.v;
-    var auditor = this.state.auditor;
-    auditingcontract.methods.verifyAudit(testFund, dataHash, r, s, v, auditor)
-    .call()
-    .then(function (result) {
-      document.getElementById('verified').innerText = "verified: " + result;
-    });
   }
 
   render() {
@@ -140,75 +118,61 @@ class App extends Component {
           <h1 className="App-title">Melon Auditing</h1>
         </header>
 
-        <button className="btn btn-default" onClick={this.getAuditCount}>
-          getAuditCount
-        </button>
-        <div id='auditCount'>
-        </div>
-
-        <br />
-
-        <button className="btn btn-default" onClick={this.getLastAudit}>
-          getLastAudit
-        </button>
-        <div id='lastAuditAuditor' />
-        <div id='lastAuditDatahash' />
-        <div id='lastAuditR' />
-        <div id='lastAuditS' />
-        <div id='lastAuditV' />
-        <div id='lastAuditTimestamp' />
-
-        <br />
-
         <form>
           <label>
-            Datahash:
-            <input type="text" value={this.state.datahash} onChange={this.handleDatahashChange} />
+            Auditor: 
+            <input type="text" value={this.state.addauditor} onChange={this.handleAddAuditorChange} />
           </label>
           <br />
-          <button type="button" onClick={this.audit}>
-            audit
+          <label>
+            Datahash: 
+            <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
+          </label>
+          <br />
+          <button type="button" onClick={this.add}>
+            add
           </button>
         </form>
-
         <br />
 
         <form>
           <label>
-            Datahash:
+            Auditor: 
+            <input type="text" value={this.state.verifyauditor} onChange={this.handleVerifyAuditorChange} />
+          </label>
+          <br />
+          <label>
+            Datahash: 
             <input type="text" value={this.state.verifydatahash} onChange={this.handleVerifyDatahashChange} />
           </label>
           <br />
-          <label>
-            r:
-            <input type="text" value={this.state.r} onChange={this.handleRChange} />
-          </label>
-          <br />
-          <label>
-            s:
-            <input type="text" value={this.state.s} onChange={this.handleSChange} />
-          </label>
-          <br />
-          <label>
-            v:
-            <input type="text" value={this.state.v} onChange={this.handleVChange} />
-          </label>
-          <br />
-          <label>
-            auditor:
-            <input type="text" value={this.state.auditor} onChange={this.handleAuditorChange} />
-          </label>
-          <br />
-          <button type="button" onClick={this.verifyAudit}>
-            verifyAudit
+          <button type="button" onClick={this.verify}>
+            verify
           </button>
         </form>
-
-        <br />
-
         <div id='verified'>
         </div>
+        <br />
 
+        <button className="btn btn-default" onClick={this.getLastIndex}>
+          getLastIndex
+        </button>
+        <div id='lastIndex'>
+        </div>
+        <br />
+
+        <form>
+          <label>
+            Index:
+            <input type="text" value={this.state.index} onChange={this.handleIndexChange} />
+          </label>
+        </form>
+        <button className="btn btn-default" onClick={this.getByIndex}>
+          getByIndex
+        </button>
+        <div id='getByIndexAuditor' />
+        <div id='getByIndexDataHash' />
+        <div id='getByIndexTimestamp' />
         <br />
 
         <button className="btn btn-default" onClick={this.listAllEvents}>
