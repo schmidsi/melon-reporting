@@ -1,106 +1,81 @@
 pragma solidity ^0.4.21;
 
+// TO DISCUSS:
+// - uint256 as index required because of mapping
+// - getByIndex is the same as using the getter of "fundAudits"
+// - add auditor to event?
+
 /// @title Auditing smart contract for melon.
 contract Auditing {
 
     struct Audit {
         address auditor;
         bytes32 dataHash;
-        bytes32 signature;
         // absolute unix timestamp (seconds since 1970-01-01)
         uint timestamp;
     }
 
     // events
-    event AuditReported(address _fundAddress, uint _index);
+    event Added(address _fundAddress, uint256 _index);
 
     // for this mapping, a getter is created 
     // where we can retrieve audits by its fundAddress and position
     mapping(address => Audit[]) public fundAudits;
 
-    /// Create a new audit on a fund specified with `fundAddress`,
-    /// the hashed data in `dataHash` and a `signature`.
-    function audit(address _fundAddress, bytes32 _dataHash, bytes32 _signature) 
-            public {
-        require(checkSignature(_dataHash, _signature, msg.sender));
+    // TODO auditor approval through ctor
+    mapping(address => address[]) public approvedAuditors;
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _signature, now);
+    /// Creates a new audit on a fund specified with `fundAddress`,
+    /// the hashed data in `dataHash` and a `signature`.
+    function add(address _fundAddress, bytes32 _dataHash) 
+            public {
+        // TODO check if the sender is an approved auditor with "require"
+        Audit memory newAudit = Audit(msg.sender, _dataHash, now);
         fundAudits[_fundAddress].push(newAudit);
 
         uint index = fundAudits[_fundAddress].length - 1;
-        emit AuditReported(_fundAddress, index);
+        emit Added(_fundAddress, index);
     }
 
-    /// Get the last audit stored for a specific `fundAddress`.
-    function getLastAudit(address _fundAddress) 
+    /// Verifies that the provided data is mapped to an existing audit
+    function verify(address _fundAddress, address _auditor, bytes32 _dataHash) 
             public view 
-            returns (address auditor, bytes32 dataHash, bytes32 signature, uint timestamp) {
-        Audit memory lastAudit = fundAudits[_fundAddress][fundAudits[_fundAddress].length - 1];
-        auditor = lastAudit.auditor;
-        dataHash = lastAudit.dataHash;
-        signature = lastAudit.signature;
-        timestamp = lastAudit.timestamp;
-    }
-
-    /// Get the amount of audits for a specific `fundAddress`
-    function getAuditCount(address _fundAddress)
-            public view
-            returns (uint count) {
-        count = fundAudits[_fundAddress].length;
-    }
-
-    /// Returns true if the audit is on the blockchain (present in fundAudits)
-    function verifyAudit(address _fundAddress, bytes32 _dataHash, bytes32 _signature, address _auditor)
-            public view
-            returns (bool found) {
+            returns (bool auditIsVerified) {
         Audit[] memory audits = fundAudits[_fundAddress];
         for (uint i = 0; i < audits.length; i++) {
-            Audit memory tempAudit = audits[i];
-            if (tempAudit.auditor == _auditor && tempAudit.dataHash == _dataHash && tempAudit.signature == _signature) {
+            Audit memory audit = audits[i];
+            if (audit.auditor == _auditor && audit.dataHash == _dataHash) {
+                // audit is verified
                 return true;
             }
         }
-        return false; // audit not found
+        // audit is not verified
+        return false;
     }
 
-    /// Check if the signature and datahash corresponds with the sender
-    function checkSignature(bytes32 _dataHash, bytes32 _signature, address _sender)
-            private
-            pure
-            returns (bool signatureVerified) {
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
-
-        bytes memory sig = substring(_signature, 2, 132);
-
-        assembly {
-            r := mload(add(sig, 32))
-            s := mload(add(sig, 64))
-            v := byte(0, mload(add(sig, 96)))
+    /// Returns the last index of a specific fund
+    function getLastIndex(address _fundAddress)
+            public view
+            returns (uint256 index) {
+        Audit[] memory audits = fundAudits[_fundAddress];
+        if (audits.length == 0) {
+            // return maxvalue when no audits for a fund are stored
+            return 2**256 - 1;
+        } else {
+            return audits.length - 1;
         }
-
-        if (v < 27) {
-            v += 27;
-        }
-
-        address recoveredAddress = ecrecover(_dataHash, v, r, s);
-        return _sender == recoveredAddress;
     }
 
-    /// Helper function for checkSignature()
-    function substring(bytes32 _str, uint _startIndex, uint _endIndex) 
-            public pure 
-            returns (bytes) {
-        require(_startIndex <= _endIndex);
-        require(_startIndex >= 0);
-        require(_endIndex <= _str.length);
+    /// Returns the requested audit data
+    function getByIndex(address _fundAddress, uint256 _index)
+            public view
+            returns (address auditor, bytes32 dataHash, uint256 timestamp) {
+        require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
-        bytes memory result = new bytes(_endIndex - _startIndex);
-        for (uint i = _startIndex; i < _endIndex; i++) {
-            result[i - _startIndex] = _str[i];
-        }
-        return bytes(result);
+        Audit memory audit = fundAudits[_fundAddress][_index];
+        auditor = audit.auditor;
+        dataHash = audit.dataHash;
+        timestamp = audit.timestamp;
     }
 
 }

@@ -3,77 +3,19 @@
     "constant": true,
     "inputs": [
       {
-        "name": "_fundAddress",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "_dataHash",
-        "type": "bytes32"
-      },
-      {
-        "name": "_signature",
-        "type": "bytes32"
-      },
-      {
-        "name": "_auditor",
-        "type": "address"
-      }
-    ],
-    "name": "verifyAudit",
-    "outputs": [
-      {
-        "name": "found",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_fundAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getAuditCount",
-    "outputs": [
-      {
-        "name": "count",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_fundAddress",
-        "type": "address"
-      }
-    ],
-    "name": "getLastAudit",
+    "name": "approvedAuditors",
     "outputs": [
       {
-        "name": "auditor",
+        "name": "",
         "type": "address"
-      },
-      {
-        "name": "dataHash",
-        "type": "bytes32"
-      },
-      {
-        "name": "signature",
-        "type": "bytes32"
-      },
-      {
-        "name": "timestamp",
-        "type": "uint256"
       }
     ],
     "payable": false,
@@ -90,16 +32,89 @@
       {
         "name": "_dataHash",
         "type": "bytes32"
-      },
-      {
-        "name": "_signature",
-        "type": "bytes32"
       }
     ],
-    "name": "audit",
+    "name": "add",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_fundAddress",
+        "type": "address"
+      },
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getByIndex",
+    "outputs": [
+      {
+        "name": "auditor",
+        "type": "address"
+      },
+      {
+        "name": "dataHash",
+        "type": "bytes32"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_fundAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getLastIndex",
+    "outputs": [
+      {
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_fundAddress",
+        "type": "address"
+      },
+      {
+        "name": "_auditor",
+        "type": "address"
+      },
+      {
+        "name": "_dataHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "verify",
+    "outputs": [
+      {
+        "name": "auditIsVerified",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -125,43 +140,12 @@
         "type": "bytes32"
       },
       {
-        "name": "signature",
-        "type": "bytes32"
-      },
-      {
         "name": "timestamp",
         "type": "uint256"
       }
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_str",
-        "type": "bytes32"
-      },
-      {
-        "name": "_startIndex",
-        "type": "uint256"
-      },
-      {
-        "name": "_endIndex",
-        "type": "uint256"
-      }
-    ],
-    "name": "substring",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -178,7 +162,7 @@
         "type": "uint256"
       }
     ],
-    "name": "AuditReported",
+    "name": "Added",
     "type": "event"
   }
 ]
