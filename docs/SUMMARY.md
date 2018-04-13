@@ -8,7 +8,7 @@
 
 * [Strategy](01-strategy/README.md)
   * Vision
-  * Project Goal
+  * Project Goals
   * Hypothesis
   * Boundaries
   * Risks
