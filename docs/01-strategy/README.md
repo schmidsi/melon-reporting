@@ -247,3 +247,8 @@ A lot of progress is already visible in the different areas:
 * Simon [visualized the logical data structure and started to derive different report requirements according to these structures](https://melonproject.github.io/reporting-thesis/02-research/).
 
 Furthermore, we had our first coach meeting.
+
+### Calendar Week 15
+
+* Benjamin started with the auditing interface proposal and it's implementation. Furthermore, he created a rudimentary web interface to this auditing contract.
+* Simon refined the documentation outline of the report, created the prototype specification proposal and started to walk through the FINMA KIID document. Furthermore he met with Jenna Zenk and John Orthwein to sync risk management with reporting.
