@@ -12,6 +12,7 @@
   * Hypothesis
   * Boundaries
   * Risks
+  * Stakeholders
   * Planning
   * Milestones
   * Iterations

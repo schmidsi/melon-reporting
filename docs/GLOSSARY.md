@@ -34,6 +34,10 @@ European Fund and Asset Management Associaton
 
 http://www.efama.org/SitePages/Home.aspx
 
+## ERC
+
+Ethereum Request for Comments. A system similar to [IETF's RFC](https://www.ietf.org/rfc.html) where developers can propose standards. The most known ERC is [ERC-20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) from Fabian Vogelsteller and Vitalik Buterin.
+
 ## ERM
 
 Entity relationship model. A technical tool to model and visualize entities and their relations.
@@ -114,6 +118,10 @@ Packaged Retail and Insurance-based Investment Products
 > A prospectus, in finance, is a disclosure document that describes a financial security for potential buyers.
 
 https://en.wikipedia.org/wiki/Prospectus_(finance)
+
+## Sketch
+
+Digital Mac OS X software for UI/UX Designerss
 
 ## Solidity
 

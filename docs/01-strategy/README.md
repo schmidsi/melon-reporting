@@ -37,6 +37,24 @@ We try to adapt to the latest Melon smart contracts but fall back to the last kn
 
 (\*) Probability of occurrence (1-3) \* severity (1-3) = risk
 
+## Stakeholders
+
+### Melonport (Customer)
+
+### University
+
+### Coaches
+
+### Project team
+
+### Fund managers
+
+### Regulators
+
+### Auditors
+
+### Investors
+
 ## Planning
 
 ![](../assets/Timeline - Projektplan v3.svg)
