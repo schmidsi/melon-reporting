@@ -1,4 +1,10 @@
 {
   "root": "./docs",
-  "plugins": ["katex", "bibtex-citations-and-references"]
+  "plugins": ["katex", "bibtex-indexed-cite"],
+  "pluginsConfig": {
+    "bibtex-indexed-cite": {
+      "path": "/08-appendix/"
+    }
+  }
+
 }
