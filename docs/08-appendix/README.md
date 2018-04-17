@@ -1,6 +1,7 @@
 # Meetings
 
-## Coachmeeting 2018-04-13
+
+## Coachmeeting 2018-04-17
 
 Present:
 
@@ -17,6 +18,60 @@ Present:
 * Discuss more detailed project plan (Github)
 * Possible collaboration for the [Melon Hackathon](http://hackathon.melonport.com/)
 * Citations?
+
+### Documentation outline
+The content of the report is good, but the structure is not as intended.
+Write as if the project is finished, e.g. do not include something like a step by step report.
+Place planning, iterations, milestones, variants, prototype etc. on the end of the document.
+
+* Research -> State of the art. Or choose a different term, Ms. Hauser will supply one
+* Delete conclusion & approach
+* New chapter Analysis: summary of what we learned from the "research", 
+* Evaluate chapter: in appendix
+* Design + Production -> new Chapter Solution
+
+We propose a new outline via mail.
+
+### Protoype specification
+The MIP is a good idea, but we should not focus on creating the process to define such MIPs (do not waste time...).
+Document the concept of *Contract Standard Proposal* in the chapter *state of the art*.
+Standard Report Mockup Draft is a good idea.
+Interchangable Fund Data Format.
+
+Think about what we sign --> only the raw data (Melon Report)? An audit about the data?
+
+Melon report: The JSON representing the factsheet must be constructed to also be extensible for KIID, PRIIPS etc.
+It would be really nice to have a JSON that is also extensible for the "new world".
+
+Knecht: We should not care about security considerations about signing (e.g. do I sign the data I have just seen?), but care about signing on protocol level.
+
+Knecht: it is important that we work with ONE specific version of the protocol, e.g. the state 
+of the competition in February(?).
+
+Important: Define list of use cases, actors (regulators etc.).
+
+### Project goals
+Before specifying project goals (deliverables), define what a user can do with our project.
+New milestone for 3.5.2018: Use cases are defined and agreed on.
+
+Define the goals from the *user perspective*, **not** from the technical perspective.
+
+Show the current project goals in the meeting with Melonport as *ideas*.
+Knecht: Specify the *what*, not the *how*.
+
+### Detailed project plan (GitHub)
+Do not include the milestones in the "Kanban" board.
+
+### Melon Hackathon
+Simon will write Mr. Knecht about the hackathon.
+
+### Citations
+Use the IEEE format (with numbers), maybe there is a plugin.
+Ms. Hauser sent a mail with a link.
+Maybe use LaTeX when citation does not work at all.
+
+### Expert
+The expert for the project will be Konrad Durrer (CSS). He organizes a midterm presentation in May.
 
 ## Coachmeeting 2018-03-27
 
