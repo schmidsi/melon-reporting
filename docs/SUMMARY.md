@@ -25,7 +25,7 @@
   * MiFID II and PRIIP
   * Melon Risk Engineering
   * uPort
-  * Solidity
+  * [Solidity](02-research/07-solidity-research.md)
   * Conclusion
 * [Prototype](03-prototype/README.md)
   * Goal
