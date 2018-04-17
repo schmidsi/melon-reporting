@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/melonproject/reporting-thesis#readme",
   "dependencies": {
-    "gitbook-plugin-bibtex-citations-and-references": "^0.10.4",
+    "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
     "gitbook-plugin-katex": "^1.1.4"
   }
 }
