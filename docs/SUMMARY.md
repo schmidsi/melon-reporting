@@ -4,64 +4,83 @@
 * [Abstract](00-intro/Abstract.md)
 * [Introduction](00-intro/README.md)
 
+  * Problem Statement
+    * Vision
+    * Hypothesis
+    * Boundaries
+  * Method
+  * Document Organisation
+
 ---
 
-* [Strategy](01-strategy/README.md)
-  * Vision
-  * Project Goals
-  * Hypothesis
-  * Boundaries
-  * Risks
-  * Stakeholders
+* Background
+
+  * Current State of Fund Reporting
+
+* Analysis
+
+  * Use Cases
+  * [On-Chain Data](02-research/01-available-data.md)
+  * Off-Chain Data
+
+* Solution
+
+  * System Overview
+  * Software Architecture
+  * Screen/Paper Design
+  * Interchangeable Fund Data Format
+  * Melon Auditing Contract Standard
+
+* Conclusion
+
+  * Findings
+  * Future work
+  * Reflection
+
+---
+
+## Appendix
+
+* Technical Quickstart
+
+* Project Management
+
   * Planning
   * Milestones
-  * Iterations
   * Journal
-* [Research](02-research/README.md)
-  * [Approach](02-research/README.md)
-  * [Available Data](02-research/01-available-data.md)
+  * Risks
+  * Stakeholders
+  * Decisions
+
+* Iterations
+
+  * Prototype
+    * Goals
+    * Implementation
+    * Evaluation
+      * Internal
+      * Stakeholder Feedback
+      * Explorative User Testings
+    * Conclusion
+  * First draft
+    * Goals
+    * Implementation
+    * Validative User Testing
+  * Final product
+    * Changes to first draft
+
+* Research
+
   * [Key Investor Information Document](02-research/02-sfama-kiid.md)
   * Timely reports
   * MiFID II and PRIIP
   * Melon Risk Engineering
   * uPort
   * [Solidity](02-research/07-solidity-research.md)
-  * Conclusion
-* [Prototype](03-prototype/README.md)
-  * Goal
-  * Specification
-  * Implementation
-* [Evaluate](04-evaluate/README.md)
-  * Internal evaluation
-  * Stakeholder feedback
-  * User testings
-  * Interviews with potential users
-  * Conclusion
-* [Design](05-design/README.md)
-  * System Overview
-  * Software Architecture
-  * Interchangeable Fund Data Format
-  * Melon Auditing Contract Standard
-  * Screen/Paper Design
-  * Learnings from first draft
-* [Production](06-production/README.md)
-  * Overview
-  * Quickstart
-  * First draft
-  * Final product
-  * Evolution from first draft
-* [Review](07-review/Review.md)
-  * User testings
-  * Successes
-  * Problems
-  * Learnings
-  * Next steps
+  * [Solidity Cheatsheet](08-appendix/Solidity.md)
 
----
-
-## Appendix
-
-* [Meeting notes](08-appendix/README.md)
+* [Minutes](08-appendix/README.md)
 * [References](08-appendix/References.md)
-* [Solidity Cheatsheet](08-appendix/Solidity.md)
 * [Glossary](GLOSSARY.md)
+* Original Project Submission
+* Statement of Honesty
