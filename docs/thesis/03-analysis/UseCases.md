@@ -5,14 +5,14 @@
 
 ## Use case description
 
-### Users
+### Actors
 #### Auditor
 #### Manager
 #### Investor
 #### Regulator
 
 ### View report
-All users (Auditor, Manager, Investor, Regulator) can view reports about a melon fund. The user defines a timespan to determine what data is in the scope. 
+All actors (Auditor, Manager, Investor, Regulator) can view reports about a melon fund. The actor defines a timespan to determine what data is in the scope. 
 
 A report consists of the following attributes:
 

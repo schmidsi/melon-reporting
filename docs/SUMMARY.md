@@ -13,8 +13,6 @@
   * [Method](thesis/01-introduction/Method.md)
   * [Document Organisation](thesis/01-introduction/DocumentOrganization.md)
 
----
-
 * [Background](thesis/02-background/README.md)
 
   * [Current State of Fund Reporting](thesis/02-background/CurrentStateofFundReporting.md)
@@ -73,7 +71,7 @@
 
 * [Research](appendix/D-research/README.md)
 
-  * [Available Data (TEMP)](appendix/D-research/Availabledata.md)
+  * [Data Classification](appendix/D-research/DataClassification.md)
   * [Key Investor Information Document](appendix/D-research/KIID.md)
   * [Timely reports](appendix/D-research/Timelyreports.md)
   * [MiFID II and PRIIP](appendix/D-research/MiFIDPRIIP.md)
