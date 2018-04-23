@@ -4,14 +4,18 @@
 * [Abstract](00-intro/Abstract.md)
 * [Introduction](00-intro/README.md)
 
-  * Background
-  * Vision
-  * Project Goals
-  * Hypothesis
-  * Boundaries
-  * Document organisation
+  * Problem Statement
+    * Vision
+    * Hypothesis
+    * Boundaries
+  * Method
+  * Document Organisation
 
 ---
+
+* Background
+
+  * Current State of Fund Reporting
 
 * Analysis
 
@@ -29,16 +33,15 @@
 
 * Conclusion
 
-  * Achievements
-  * Problems
-  * Learnings
-  * Next Steps
+  * Findings
+  * Future work
+  * Reflection
 
 ---
 
 ## Appendix
 
-* Quickstart
+* Technical Quickstart
 
 * Project Management
 
@@ -76,12 +79,8 @@
   * [Solidity](02-research/07-solidity-research.md)
   * [Solidity Cheatsheet](08-appendix/Solidity.md)
 
-* [Meeting notes](08-appendix/README.md)
+* [Minutes](08-appendix/README.md)
 * [References](08-appendix/References.md)
 * [Glossary](GLOSSARY.md)
 * Original Project Submission
-
-Open questions:
-
-* "Use Cases" in analysis or solution?
-* Risks, Boundaries, Stakeholders in Project Management
+* Statement of Honesty
