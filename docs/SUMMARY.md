@@ -1,86 +1,87 @@
 # Summary
 
+## Thesis
+
 * [Cover](README.md)
-* [Abstract](00-intro/Abstract.md)
-* [Introduction](00-intro/README.md)
+* [Abstract](thesis/00-abstract/README.md)
+* [Introduction](thesis/01-introduction/README.md)
 
-  * Problem Statement
-    * Vision
-    * Hypothesis
-    * Boundaries
-  * Method
-  * Document Organisation
+  * [Problem Statement](thesis/01-introduction/problemstatement/README.md)
+    * [Vision](thesis/01-introduction/problemstatement/Vision.md)
+    * [Hypothesis](thesis/01-introduction/problemstatement/Hypothesis.md)
+    * [Boundaries](thesis/01-introduction/problemstatement/Boundaries.md)
+  * [Method](thesis/01-introduction/Method.md)
+  * [Document Organisation](thesis/01-introduction/DocumentOrganization.md)
 
----
+* [Background](thesis/02-background/README.md)
 
-* Background
+  * [Current State of Fund Reporting](thesis/02-background/CurrentStateofFundReporting.md)
 
-  * Current State of Fund Reporting
+* [Analysis](thesis/03-analysis/README.md)
 
-* Analysis
+  * [Use Cases](thesis/03-analysis/UseCases.md)
+  * [On-Chain Data](thesis/03-analysis/OnChainData.md)
+  * [Off-Chain Data](thesis/03-analysis/OffChainData.md)
 
-  * Use Cases
-  * [On-Chain Data](02-research/01-available-data.md)
-  * Off-Chain Data
+* [Solution](thesis/04-solution/README.md)
 
-* Solution
+  * [System Overview](thesis/04-solution/SystemOverview.md)
+  * [Software Architecture](thesis/04-solution/SoftwareArchitecture.md)
+  * [Screen/Paper Design](thesis/04-solution/ScreenPaperDesign.md)
+  * [Interchangeable Fund Data Format](thesis/04-solution/InterchangeableFundDataFormat.md)
+  * [Melon Auditing Contract Standard](thesis/04-solution/MelonAuditingContractStandard.md)
 
-  * System Overview
-  * Software Architecture
-  * Screen/Paper Design
-  * Interchangeable Fund Data Format
-  * Melon Auditing Contract Standard
+* [Conclusion](thesis/05-conclusion/README.md)
 
-* Conclusion
-
-  * Findings
-  * Future work
-  * Reflection
+  * [Findings](thesis/05-conclusion/Findings.md)
+  * [Future work](thesis/05-conclusion/FutureWork.md)
+  * [Reflection](thesis/05-conclusion/Reflection.md)
 
 ---
 
 ## Appendix
 
-* Technical Quickstart
+* [Technical Quickstart](appendix/A-technicalquickstart/README.md)
 
-* Project Management
+* [Project Management](appendix/B-projectmanagement/README.md)
 
-  * Planning
-  * Milestones
-  * Journal
-  * Risks
-  * Stakeholders
-  * Decisions
+  * [Planning](appendix/B-projectmanagement/Planning.md)
+  * [Milestones](appendix/B-projectmanagement/Milestones.md)
+  * [Journal](appendix/B-projectmanagement/Journal.md)
+  * [Risks](appendix/B-projectmanagement/Risks.md)
+  * [Stakeholders](appendix/B-projectmanagement/Stakeholders.md)
+  * [Decisions](appendix/B-projectmanagement/Decisions.md)
 
-* Iterations
+* [Iterations](appendix/C-iterations/README.md)
 
-  * Prototype
-    * Goals
-    * Implementation
-    * Evaluation
-      * Internal
-      * Stakeholder Feedback
-      * Explorative User Testings
-    * Conclusion
-  * First draft
-    * Goals
-    * Implementation
-    * Validative User Testing
-  * Final product
-    * Changes to first draft
+  * [Prototype](appendix/C-iterations/prototype/README.md)
+    * [Goals](appendix/C-iterations/prototype/Goals.md)
+    * [Implementation](appendix/C-iterations/prototype/Implementation.md)
+    * [Evaluation](appendix/C-iterations/prototype/evaluation/README.md)
+      * [Internal](appendix/C-iterations/prototype/evaluation/Internal.md)
+      * [Stakeholder Feedback](appendix/C-iterations/prototype/evaluation/StakeholderFeedback.md)
+      * [Explorative User Testings](appendix/C-iterations/prototype/evaluation/ExplorativeUserTestings.md)
+    * [Conclusion](appendix/C-iterations/prototype/Conclusion.md)
+  * [First draft](appendix/C-iterations/firstdraft/README.md)
+    * [Goals](appendix/C-iterations/firstdraft/Goals.md)
+    * [Implementation](appendix/C-iterations/firstdraft/Implementation.md)
+    * [Validative User Testing](appendix/C-iterations/firstdraft/ValidativeUserTesting.md)
+  * [Final product](appendix/C-iterations/finalproduct/README.md)
+    * [Changes to first draft](appendix/C-iterations/finalproduct/Changestofirstdraft.md)
 
-* Research
+* [Research](appendix/D-research/README.md)
 
-  * [Key Investor Information Document](02-research/02-sfama-kiid.md)
-  * Timely reports
-  * MiFID II and PRIIP
-  * Melon Risk Engineering
-  * uPort
-  * [Solidity](02-research/07-solidity-research.md)
-  * [Solidity Cheatsheet](08-appendix/Solidity.md)
+  * [Data Classification](appendix/D-research/DataClassification.md)
+  * [Key Investor Information Document](appendix/D-research/KIID.md)
+  * [Timely reports](appendix/D-research/Timelyreports.md)
+  * [MiFID II and PRIIP](appendix/D-research/MiFIDPRIIP.md)
+  * [Melon Risk Engineering](appendix/D-research/MelonRiskEngineering.md)
+  * [uPort](appendix/D-research/uPort.md)
+  * [Solidity](appendix/D-research/Solidity.md)
+  * [Solidity Cheatsheet](appendix/D-research/SolidityCheatSheet.md)
 
-* [Minutes](08-appendix/README.md)
-* [References](08-appendix/References.md)
+* [Minutes](appendix/E-minutes/README.md)
+* [References](appendix/F-references/README.md)
 * [Glossary](GLOSSARY.md)
-* Original Project Submission
-* Statement of Honesty
+* [Original Project Submission](appendix/H-originalprojectsubmission/README.md)
+* [Statement of Honesty](appendix/I-statementofhonesty/README.md)
