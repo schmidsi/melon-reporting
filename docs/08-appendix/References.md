@@ -1,5 +1,0 @@
-# References
-
-{% references %}
-
-{% endreferences %}
