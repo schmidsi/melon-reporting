@@ -2,7 +2,7 @@
 
 The following ERM is a representation of the minimalistic data available on the blockchain of a fund to build charts and reports. All data can be derived from this model. It is still a challenge to obtain historical data (price feed history) since we need to search the blockchain for events. But this is subject to another chapter. For research purposes it is sufficient to know that this data is available.
 
-![](../assets/Melon-DB-ERM.svg)
+![](/assets/Melon-DB-ERM.svg)
 
 ## Explanation
 
@@ -61,5 +61,5 @@ The following ERM is a representation of the minimalistic data available on the 
 * **Live**: Data that can change frequently. _Examples_: Prices, orderbook, AUM, ...
 * **Archive**: List data that stays once written. Archive data can be consolidated for display purposes but needs to be preserved. _Examples_: Trade history, participation history, ...
 * **Historic**: List data that stays once written but it's importance/density lessens with age: _Examples_: Price history; It is important to know the exact price for every minute for the last 24h but older prices can be store in less density, e.g every hour. The older the lesser the density.
-  ![](../assets/data-loosing.png)
+  ![](/assets/data-loosing.png)
   _Red lines: saved data, black lines: available data_

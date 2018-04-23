@@ -1,7 +1,7 @@
 # Use Cases
 
 ## Use case diagram
-
+![](/assets/UseCaseDiagram.svg)
 
 ## Use case description
 

@@ -1,6 +1,6 @@
 # Planning
 
-![](../assets/Timeline - Projektplan v3.svg)
+![](/assets/Timeline - Projektplan v3.svg)
 
 ## Strategy
 
