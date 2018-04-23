@@ -36,3 +36,9 @@ The following ERM is a representation of the minimalistic data available on the 
   $$
   sp = \frac{aum}{s}
   $$
+
+## Data
+
+| Data                | Data Type          | Source               | Availability          | Consistency
+| ------------------- | ------------------ | -------------------- | --------------------- | ------------
+| Fund name           | Short text         | On-chain call        | Simple                | Static

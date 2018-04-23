@@ -20,6 +20,7 @@
 * [Analysis](thesis/03-analysis/README.md)
 
   * [Use Cases](thesis/03-analysis/UseCases.md)
+  * [Data Classification](thesis/03-analysis/DataClassification.md)
   * [On-Chain Data](thesis/03-analysis/OnChainData.md)
   * [Off-Chain Data](thesis/03-analysis/OffChainData.md)
 
@@ -71,7 +72,6 @@
 
 * [Research](appendix/D-research/README.md)
 
-  * [Data Classification](appendix/D-research/DataClassification.md)
   * [Key Investor Information Document](appendix/D-research/KIID.md)
   * [Timely reports](appendix/D-research/Timelyreports.md)
   * [MiFID II and PRIIP](appendix/D-research/MiFIDPRIIP.md)
