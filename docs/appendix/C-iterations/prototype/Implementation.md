@@ -12,4 +12,6 @@ After receiving feedback from Markus Knecht about this approach, we discussed th
 
 ## Auditing contract
 
+To receive feedback from the Melonport staff about our prototype implementation of the auditing contract, we set up a MIP (Melon Improvement Proposal)
+
 ## Test frontend for the auditing contract
