@@ -6,7 +6,7 @@ The following ERM is a representation of the minimalistic data available on the 
 
 ## Explanation
 
-* The fund is in the center. Once setup a fund cannot change its name/address/owner
+* The fund is in the center. Once set up, a fund cannot change its name/address/owner
 * Every fund has one quote asset in which its value is denominated. Usually MLN.
 * Total number of shares ($$ s $$) can be retrieved with the following formula:
 
