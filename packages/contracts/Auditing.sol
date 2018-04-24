@@ -14,22 +14,29 @@ contract Auditing {
         uint256 timespanEnd; // the end timestamp of the report
     }
 
-    // events
-    event Added(address _fundAddress, uint256 _index);
-
     // for this mapping, a getter is created 
     // where we can retrieve audits by its fundAddress and position
     mapping(address => Audit[]) public fundAudits;
 
-    // TODO auditor approval through ctor
-    mapping(address => address[]) public approvedAuditors;
+    // a list of all auditors that can use the `add()` function
+    address[] public approvedAuditors;
+
+    // events
+    event Added(address _fundAddress, uint256 _index);
+
+    /// Constructor
+    constructor(address[] _approvedAuditors) public payable {
+        approvedAuditors = _approvedAuditors;
+    }
 
     /// Creates a new audit on a fund specified with `_fundAddress`,
     /// the hashed data in `_dataHash` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
     function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd) 
             public {
-        // TODO check if the sender is an approved auditor with "require"
+        // check if the sender is an approved auditor with "require"
+        require(isApprovedAuditor(msg.sender));
+
         Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd);
         fundAudits[_fundAddress].push(newAudit);
 
@@ -77,6 +84,20 @@ contract Auditing {
         dataHash = audit.dataHash;
         timespanStart = audit.timespanStart;
         timespanEnd = audit.timespanEnd;
+    }
+
+    function isApprovedAuditor(address _auditor) 
+            public view
+            returns (bool auditorIsApproved) {
+        for (uint256 i = 0; i < approvedAuditors.length; i++) {
+            address auditor = approvedAuditors[i];
+            if (auditor == _auditor) {
+                // auditor is approved
+                return true;
+            }
+        }
+        // auditor is not approved
+        return false;
     }
 
 }

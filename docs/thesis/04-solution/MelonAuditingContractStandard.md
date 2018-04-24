@@ -58,6 +58,8 @@ function getLastIndex(address _fundAddress) constant returns (uint256 index)
 ```
 **Get the last index of audits for a specific melon fund. This is needed to iterate through audits with `getByIndex()`.**
 
+When no audit is stored for a fund yet, the function returns the maximum value of the index, which is `2**256 - 1` for `uint256`.
+
 ### getByIndex
 
 ```
