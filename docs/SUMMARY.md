@@ -79,6 +79,7 @@
   * [uPort](appendix/D-research/uPort.md)
   * [Solidity](appendix/D-research/Solidity.md)
   * [Solidity Cheatsheet](appendix/D-research/SolidityCheatSheet.md)
+  * [Data Classification](appendix/D-research/DataClassification.md)
 
 * [Minutes](appendix/E-minutes/README.md)
 * [References](appendix/F-references/README.md)

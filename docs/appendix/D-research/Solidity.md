@@ -12,7 +12,7 @@
 [Web3.js](https://web3js.readthedocs.io/en/1.0/index.html) is a JavaScript API for interacting with local or remote ethereum nodes. It enables us to develop clients which communicate with our smart contracts on the blockchain.
 
 ## Learnings
-While learning *Solidity*, we created a cheatsheet to have a compact summary while developing our own smart contracts. The cheatsheet can be found in the appendix [Solidity cheatsheet](/08-appendix/Solidity.html).
+While learning *Solidity*, we created a cheatsheet to have a compact summary while developing our own smart contracts. The cheatsheet can be found in the appendix [Solidity cheatsheet](/appendix/D-research/SolidityCheatSheet.md).
 
 The *ABI* (Application Binary Interface) can be understood as the API to a deployed smart contract. *Web3.js* or a similar library uses this interface to interact with the Ethereum ecosystem.
 

@@ -41,4 +41,5 @@
 | Fund name           | Short text         | On-chain call        | Simple                | Static
 
 ## Reasoning
+The reasoning behind this classification is described in [Appendix D](/appendix/D-research/DataClassification.md).
 
