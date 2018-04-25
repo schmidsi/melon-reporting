@@ -11,7 +11,7 @@ Reference implementation: https://github.com/melonproject/reporting-thesis/blob/
 ```
 
 ## Abstract
-The following describes standard functions an auditing contract for the [Melon project](https://github.com/melonproject) can implement to be used for [Reporting and Auditing](https://github.com/melonproject/reporting-thesis).
+The following describes standard functions an auditing contract for the [Melon project](https://github.com/melonproject/smart-contracts) can implement to be used for [Reporting and Auditing](https://github.com/melonproject/reporting-thesis).
 
 ## Motivation
 This standard focuses on solving the issue of storing and retrieving data that is used by the *Reporting and Auditing* module of the Melon project.
