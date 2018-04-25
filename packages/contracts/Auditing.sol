@@ -1,8 +1,7 @@
 pragma solidity ^0.4.21;
 
 // TO DISCUSS:
-// - uint256 as index required because of mapping
-// - getByIndex is the same as using the getter of "fundAudits"
+// - is uint256 necessary for unix timestamps?
 
 /// @title Auditing smart contract for melon.
 contract Auditing {
@@ -60,17 +59,11 @@ contract Auditing {
         return false;
     }
 
-    /// Returns the last index of a specific fund
-    function getLastIndex(address _fundAddress)
+    /// Returns the length of the audit array of a specific fund
+    function getLength(address _fundAddress)
             public view
             returns (uint256 index) {
-        Audit[] memory audits = fundAudits[_fundAddress];
-        if (audits.length == 0) {
-            // return maxvalue when no audits for a fund are stored
-            return 2**256 - 1;
-        } else {
-            return audits.length - 1;
-        }
+        return fundAudits[_fundAddress].length;
     }
 
     /// Returns the requested audit data
@@ -98,6 +91,30 @@ contract Auditing {
         }
         // auditor is not approved
         return false;
+    }
+
+    /// Returns true if a fund is completely audited over a specific timespan.
+    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
+            public view
+            returns (bool complete) {
+        Audit[] memory audits = fundAudits[_fundAddress];
+
+        // pseudo-code for a possible implementation
+        // sort array for timespanStart
+        // for (i = 0; i < sortedArray.length; i++):
+        //   audit = sortedArray[i]
+        //   while audit.end < timespanStart:
+        //     continue // skip until in scope
+        //   nextIndex = i + 1
+        //   nextAudit = sortedArray[nextIndex]
+        //   while nextAudit.end <= audit.end:
+        //     nextAudit = sortedArray[++nextIndex]
+        //   if audit.end < nextAudit.start:
+        //     return false // gap
+        //   if nextAudit.start > timespanEnd:
+        //     break // end of scope is reached
+
+        return true;
     }
 
 }
