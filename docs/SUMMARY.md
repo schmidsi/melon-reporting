@@ -31,6 +31,7 @@
   * [Screen/Paper Design](thesis/04-solution/ScreenPaperDesign.md)
   * [Interchangeable Fund Data Format](thesis/04-solution/InterchangeableFundDataFormat.md)
   * [Melon Auditing Contract Standard](thesis/04-solution/MelonAuditingContractStandard.md)
+  * [Auditing Contract](thesis/04-solution/AuditingContract.md)
 
 * [Conclusion](thesis/05-conclusion/README.md)
 
