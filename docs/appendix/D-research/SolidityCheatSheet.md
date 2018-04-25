@@ -653,6 +653,14 @@ contract C {
 }
 ```
 
+**NOTE**:
+Creating constructors by their name is deprecated. This is the new, preferred way:
+```
+    constructor() public payable {
+        //
+    }
+```
+
 ## Assignment
 Tuple syntax is possible:
 ```

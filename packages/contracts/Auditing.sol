@@ -3,53 +3,60 @@ pragma solidity ^0.4.21;
 // TO DISCUSS:
 // - uint256 as index required because of mapping
 // - getByIndex is the same as using the getter of "fundAudits"
-// - add auditor to event?
 
 /// @title Auditing smart contract for melon.
 contract Auditing {
 
     struct Audit {
-        address auditor;
-        bytes32 dataHash;
-        // absolute unix timestamp (seconds since 1970-01-01)
-        uint timestamp;
+        address auditor; // who audited the report
+        bytes32 dataHash; // the dataHash of the report
+        uint256 timespanStart; // the start timestamp of the report
+        uint256 timespanEnd; // the end timestamp of the report
     }
-
-    // events
-    event Added(address _fundAddress, uint256 _index);
 
     // for this mapping, a getter is created 
     // where we can retrieve audits by its fundAddress and position
     mapping(address => Audit[]) public fundAudits;
 
-    // TODO auditor approval through ctor
-    mapping(address => address[]) public approvedAuditors;
+    // a list of all auditors that can use the `add()` function
+    address[] public approvedAuditors;
 
-    /// Creates a new audit on a fund specified with `fundAddress`,
-    /// the hashed data in `dataHash` and a `signature`.
-    function add(address _fundAddress, bytes32 _dataHash) 
+    // events
+    event Added(address _fundAddress, uint256 _index);
+
+    /// Constructor
+    constructor(address[] _approvedAuditors) public payable {
+        approvedAuditors = _approvedAuditors;
+    }
+
+    /// Creates a new audit on a fund specified with `_fundAddress`,
+    /// the hashed data in `_dataHash` and the timespan timestamps 
+    /// in `_timespanStart` and `_timespanEnd`.
+    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd) 
             public {
-        // TODO check if the sender is an approved auditor with "require"
-        Audit memory newAudit = Audit(msg.sender, _dataHash, now);
+        // check if the sender is an approved auditor with "require"
+        require(isApprovedAuditor(msg.sender));
+
+        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd);
         fundAudits[_fundAddress].push(newAudit);
 
-        uint index = fundAudits[_fundAddress].length - 1;
+        uint256 index = fundAudits[_fundAddress].length - 1;
         emit Added(_fundAddress, index);
     }
 
-    /// Verifies that the provided data is mapped to an existing audit
-    function verify(address _fundAddress, address _auditor, bytes32 _dataHash) 
+    /// Validates that the provided data is mapped to an existing audit
+    function exists(address _fundAddress, address _auditor, bytes32 _dataHash) 
             public view 
-            returns (bool auditIsVerified) {
+            returns (bool auditExists) {
         Audit[] memory audits = fundAudits[_fundAddress];
-        for (uint i = 0; i < audits.length; i++) {
+        for (uint256 i = 0; i < audits.length; i++) {
             Audit memory audit = audits[i];
             if (audit.auditor == _auditor && audit.dataHash == _dataHash) {
-                // audit is verified
+                // audit exists
                 return true;
             }
         }
-        // audit is not verified
+        // audit does not exist
         return false;
     }
 
@@ -69,13 +76,28 @@ contract Auditing {
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
             public view
-            returns (address auditor, bytes32 dataHash, uint256 timestamp) {
+            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
         auditor = audit.auditor;
         dataHash = audit.dataHash;
-        timestamp = audit.timestamp;
+        timespanStart = audit.timespanStart;
+        timespanEnd = audit.timespanEnd;
+    }
+
+    function isApprovedAuditor(address _auditor) 
+            public view
+            returns (bool auditorIsApproved) {
+        for (uint256 i = 0; i < approvedAuditors.length; i++) {
+            address auditor = approvedAuditors[i];
+            if (auditor == _auditor) {
+                // auditor is approved
+                return true;
+            }
+        }
+        // auditor is not approved
+        return false;
     }
 
 }

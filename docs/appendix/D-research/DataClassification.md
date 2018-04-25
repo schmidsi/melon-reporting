@@ -1,26 +1,42 @@
-# Data classification
+# Data Classification
 
-## Source
+## Reasoning
 
-* **On-chain call**: Data can be retrieved from the blockchain directly by calling a function. _Examples_: current price, fund name, recent trades, ...
-* **On-chain event**: Data can be retrieved from the blockchain by searching for events. This data cannot be used by smart contracts. I.e. a smart contract cannot check if a certain event happened. _Examples_: Price history
-* **Off-chain**: Data that is not retrievable from the blockchain.
-* **Free text**: General text. Usually lawyer jargon.
-* **Given**: Data that is given (and the same) by a template/recommendation
+### CAP theorem
+The Ethereum blockchain does not behave like a typical distributed data store in the classical sense. Nonetheless, we want to discuss the CAP theorem and its guarantees here.
 
-## Availability
+Source: [Wikipedia](https://en.wikipedia.org/wiki/CAP_theorem)
 
-* **Easy**: Data is directly available through a simple (API-) call. _Example_: Fund name, AUM, asset prices, orderbook ...
-* **Complicated**: Data is generally available but we need to build special tools to extract it. _Examples_: Historical prices
-* **N/A**: Data is not available (yet)
+#### Consistency
+> Every read receives the most recent write or an error	
 
-## Consistency
+Regarding On-Chain data for the reports, this is not relevant. We generate reports in regards to a timespan. This means that we do not have to depend on values being the "most recent".
 
-* **Static**: Once written this data does not change anymore. _Examples_: Fund name, ...
-* **Configuration**: Data that is configured out of a predefined set of possible options.
-* **Generated**: Data that is generated automatically. _Examples_: Address, indexes, ...
-* **Live**: Data that can change frequently. _Examples_: Prices, orderbook, AUM, ...
-* **Archive**: List data that stays once written. Archive data can be consolidated for display purposes but needs to be preserved. _Examples_: Trade history, participation history, ...
-* **Historic**: List data that stays once written but it's importance/density lessens with age: _Examples_: Price history; It is important to know the exact price for every minute for the last 24h but older prices can be store in less density, e.g every hour. The older the lesser the density.
-  ![](/assets/data-loosing.png)
-  _Red lines: saved data, black lines: available data_
+#### Availability
+> Every request receives a (non-error) response – without guarantee that it contains the most recent write
+
+Again - with On-Chain data, we work with data retrieved from a timespan. Availability is not an issue.
+
+#### Partition tolerance
+> The system continues to operate despite an arbitrary number of messages being dropped (or delayed) by the network between nodes
+
+As every node in the blockchain eventually works with the same ledger, partition tolerance is not an issue.
+
+
+### ACID
+
+#### Atomicity
+
+#### Consistency
+
+#### Isolation
+
+#### Durability
+
+### Eventual consistency
+[BASE (Basically Available, Soft state, Eventual consistency)](https://en.wikipedia.org/wiki/Eventual_consistency)
+
+The Ethereum blockchain does NOT follow *eventual consistency*, but *strong consistency*.
+Source: [Bitcoin Guarantees Strong, not Eventual, Consistency](http://hackingdistributed.com/2016/03/01/bitcoin-guarantees-strong-not-eventual-consistency/)
+
+### Our approach
