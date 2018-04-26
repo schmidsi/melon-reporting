@@ -17,11 +17,11 @@ To receive feedback from the Melonport staff about our prototype implementation 
 ## Test frontend for the auditing contract
 
 
-## Fund Report Data Schema
+## Melon Fund Report Data Schema
 
-We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Fund Report Data Schema_ because it describes its use better.
+We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Melon Fund Report Data Schema_ (MFRDS) because it describes its use better.
 
-This was a rough first draft of an *FRDS* instance:
+This was a rough first draft of an *MFRDS* instance:
 
 ```json
 {

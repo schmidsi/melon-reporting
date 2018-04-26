@@ -4,13 +4,30 @@
 We need a way to define the data from which a report can be produced for viewing and auditing.
 The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify types, involved data structures, constraints and describe the data directly.
 
-# Schema
+The Schema _Melon Fund Report_ which we define here is a JSON to define our data JSON files (acutal instances of Melon Fund Report data), basically a meta-JSON.
+
+# Schema "Fund Report"
+
 ```json
 {
-  "$schema": "http://json-schema.org/draft-06/schema#",
-  "title": "Product",
-  "description": "A product from Acme's catalog",
-  "type": "object"
+  // TODO constraint: no negative values, ever
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fund Report",
+  "description": "Relevant data from a melon fund to generate a report and hash for auditing.",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "fundName": {
+          "type": "string",
+        },
+        "fundName": {
+          "type": "string",
+        }
+      }
+    }
+  }
 }
 ```
 
@@ -53,9 +70,15 @@ The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify
       "portfolio": {
         "maxPositions": 100,
         "bestPriceTolerance": 5,
-        "maxTrades": 50, // or string "50 per month"?
-        "maxVolume": "10000.0000", // or int?
-        "volatilityThreshold": 25, // or double as string......
+        "maxTrades": {
+          "threshold": 50,
+          "timePeriod": "month" // define as enum in schema
+        },
+        "maxVolume": {
+          "threshold": "10000.0000", // number with token-specific decimal places
+          "timePeriod": "month" // enum: "day", "month", "year"
+        },
+        "volatilityThreshold": 0.25,
       },
       "tokens": {
         "whitelist": [
@@ -75,55 +98,80 @@ The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify
         "liquidityInDays": 10,
         "marketCapRange": {
           "min": 10000000,
-          "max": -1 // how to specify infinity? maybe marketCapRange has two strings...
+          "max": 10000000000 // for infinity: undefined
         },
-        "volatilityThershold": 35
+        "volatilityThreshold": 0.35
       },
-      "complianceModule": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
+      "participation": {
+        "name": "Bitcoin Suisse KYC", // optional
+        "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
+      }
     }
   },
   "holdings": [
     {
-      "symbol": "MLN",
-      "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57",
-      "quantity": "5.491" // signed int?
+      "token": {
+        "symbol": "MLN",
+        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+      },
+      "quantity": "5.491", // 18zero number
+      "priceHistory": [ // 18 or different decimal places numberstring
+        // daily interval
+        "1.000000", 
+        "1.506000", 
+        "1.406860"
+      ]
     },
     {
-      "symbol": "ETH",
+      "symbol": "ETH", // anpassen
       "address": "0xAA5D4CE8F95682e34d7A3c7d42df922998102485",
       "quantity": "0.253"
     },
     {
-      "symbol": "DAI",
+      "symbol": "DAI", // anpassen
       "address": "0xdd134E8F257d848261D8dDaA452B549E92f4A3Dc",
       "quantity": "106.349"
     }
   ],
   "trades": [
     {
-      "symbol": "MLN",
-      "buyAmount": "3.000",
-      "sellAmount": "2.800",
-      "exchangeId": "Radar Relay",
+      "buy": {
+        "token": {
+          "symbol": "MLN",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        },
+        "howMuch": "3.982323249" // 18zero number
+      },
+      "sell": {
+        "token": {
+          "symbol": "DAI",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57" // TODO change values
+        },
+        "howMuch": "3.982323249" // 18zero number
+      },
+      "exchange": {
+        "id": "Radar Relay",
+        "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
+      },
       "timestamp": 1524739030740,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
-    },
+    }, // TODO more examples
   ],
-  "participation": [ 
+  "participations": [ 
     {
-      "investorAddress": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
-      "symbol": "...", // what symbol here?
-      "amount": -23421,
-      "shares": -1232,
+      "investor": {
+        "name": "Major Pain",
+        "address": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE"
+      },
+      "token": {
+        "symbol": "DAI",
+        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+      },
+      "type": "invest", // enum: invest, redeem
+      "amount": "23478.8230000",
+      "shares": "2387.923990",
       "timestamp": 1524737164199
     },
-    {
-      "investorAddress": "0x248bbE18d37C221eC397265742B02B89c7A4BB1a",
-      "symbol": "...", // what symbol here?
-      "amount": -23421,
-      "shares": -1232,
-      "timestamp": 1524739020140
-    }
   ],
   "audits": [
     {
@@ -148,7 +196,7 @@ The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify
 }
 ```
 
-## old...
+## old... --> now in appendix
 
 ```json
 {
