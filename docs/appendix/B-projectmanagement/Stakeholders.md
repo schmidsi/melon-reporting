@@ -7,11 +7,3 @@
 ## Coaches
 
 ## Project team
-
-## Fund managers
-
-## Regulators
-
-## Auditors
-
-## Investors

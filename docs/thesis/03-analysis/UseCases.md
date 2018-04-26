@@ -1,72 +1,100 @@
 # Use Cases
 
 ## Use case diagram
+
 ![](/assets/UseCaseDiagram.svg)
+
+## Actors
+
+### Investor
+
+* Timespan: Mainly inception to now
+* Comparable and complete fund reports
+* Is a fund regularly audited
+* Key information:
+  * Share price & history
+  * Assets under management
+  * Tokens & allocation
+  * Audit interval & coverage
+  * Auditors
+  * Manager
+  * Legal entity
+  * Fees
+
+### Manager
+
+* Timespans:
+  * Inception to now
+  * Monthly, quarterly, yearly, year to date (YTD)
+  * Custom
+* Compare own fund to others
+* Auditing status
+* Key information: All of investor plus:
+  * Participation allocation & history
+  * Detailed trades history and analysis
+
+### Auditor
+
+All of manager plus:
+
+* Inspect & validate data especially trade history
+* Sign & add a report
+
+### Regulator
+
+* Check if a fund is regularly audited
+* Perform spot checks of audits
+  * Is the signed data of an audit valid
 
 ## Use case description
 
-### Actors
-#### Auditor
-#### Manager
-#### Investor
-#### Regulator
+### Extract Data
 
-### View report
-All actors (Auditor, Manager, Investor, Regulator) can view reports about a melon fund. The actor defines a timespan to determine what data is in the scope. 
+* Extract report data on-chain & off-chain.
+* When data is extracted with the same arguments, the datahash will always be the same.
 
-A report consists of the following attributes:
+Input arguments are:
 
-**Basic Information**
-* Fund Name
-* Start timestamp of data
-* End timestamp of data
-* Ticker
-* NAV
-* AUM
-* Date of Inception
-* Management Fee
-* Performance Fee
-
-**Performance**
-* Since Inception
-* YTD
-* 1 year
-* 2 year
-* 3 year
-* Volatility (1 year)
-* Share ratio
-
-**Audits**
-* Signature
-* Name of auditor (from address)
-* Timespan of audit
-
-**Additional data**
-* Overview (fund description)
-* Historical performance
-* Monthly performance
-* Hash of dataset
-* Timeline of past audits (optional)
-
-### Generate report
-The report is generated "on the fly".
-
-Input arguments are: 
-* Fund (address, name?)
+* Fund (address)
 * Timespan (timestamp to timestamp)
 
-When a report is generated with the same arguments, the datahash of the report will always be the same.
+The system extracts following data:
 
-### Audit report
+* General: Fund name, share price, policies, etc.
+* Holdings: List of tokens with quantity, price (history), ...
+* Trades: List of trades in the defined timespan
+* Participation: List of invests/redeem in the defined timespan
+* Audits: List of audits in the defined timespan
+
+### View Report
+
+* All actors (Auditor, Manager, Investor, Regulator) can view reports.
+* Create a report out of the fund data and display it to the user.
+* This rendering is complete and comparable.
+  * Complete: All underlying report data is visually represented
+  * Comparable: For different funds with the same timespan the rendered reports look similar.
+
+_Bonus_: Make the report printable
+
+### Audit Report
+
 When an auditor has reviewed a report, he can create an audit on the blockchain.
 
 Input arguments are:
-* Fund address
-* Datahash of report
 
-### Comment timespan
+* Fund (address)
+* Datahash (of report data)
+* Timespan (timestamp to timestamp)
+
+### Comment Timespan
+
 A fund manager can add a comment to the fund over a specific timespan.
 
 ### Verify audit
+
 A regulator can verify an audit.
-This is basically the ability to make a spot check of audits.
+This is basically the ability to make a spot check of audits:
+
+* Recreate report according to fund address and timespan
+* Check if datahash matches
+* Validate data. Although if the auditor trusts its report generation algorithm and datahash matches, than the report is considered valid.
