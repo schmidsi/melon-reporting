@@ -15,3 +15,47 @@ After receiving feedback from Markus Knecht about this approach, we discussed th
 To receive feedback from the Melonport staff about our prototype implementation of the auditing contract, we set up a MIP (Melon Improvement Proposal)
 
 ## Test frontend for the auditing contract
+
+
+## Melon Fund Report Data Schema
+
+We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Melon Fund Report Data Schema_ (MFRDS) because it describes its use better.
+
+This was a rough first draft of an *MFRDS* instance:
+
+```json
+{
+  "name": "Example Fund",
+  "inception": "yyyy-mm-dd hh:mm:ss",
+  "description": "This fund is high risk",
+  "manager": "0xbad...a55",
+  "nav": 1000,
+  "quoteSymbol": "MLN",
+  "gav": 1100,
+  "timestamp": "yyyy-mm-dd hh:mm:ss",
+  "holdings": [
+    {
+      "symbol": "ETH",
+      "amount": 1000
+    }
+  ],
+  "trades": [
+    {
+      "buySymbol": "ETH",
+      "sellSymbol": "MLN",
+      "buyAmount": 100,
+      "sellAmount": 50,
+      "timestamp": "yyyy-mm-dd hh:mm:ss",
+      "market": "0xdead...beef"
+    }
+  ],
+  "audits": [
+    {
+      "timestamp": "yyyy-mm-dd hh:mm:ss",
+      "auditor": "0xdead...beef1",
+      "dataHash": "QmXZcdco6wZEA2paGeUnoshSB4HJiSTDxagqXerDGop6or",
+      "signature": "0x23rasdfasdlfjhasldkfhas"
+    }
+  ]
+}
+```

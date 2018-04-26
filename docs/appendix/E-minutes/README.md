@@ -1,5 +1,14 @@
 # Minutes
 
+## Meeting 2018-05-03
+
+### Questions
+* Volatility for reports: from inception to timespanEnd or from timespanStart to timespanEnd?
+* Risk Mgmt: is data immutable?
+* priceHistory: is daily interval good?
+* priceHistory: which value? mean or median or snapshot?
+
+
 ## Coachmeeting 2018-04-17
 
 Present:
@@ -136,7 +145,7 @@ Notes from Mr. Knecht:
 * bytes32 signature to bytes32 rs components doesn't make sense (information loss)
 * Assembly code is critical: maybe deliver rsv of the signature directly
 * Check if delivering a signature is really important. (The 'sender' of the audit
-  already delivers a signature with his address)
+  already delivers a signature with their address)
 * Define prototype specification with use cases.
 
 ## Kick-off meeting 2018-03-07
