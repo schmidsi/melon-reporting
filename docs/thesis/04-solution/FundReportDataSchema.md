@@ -1,4 +1,4 @@
-# Interchangeable Fund Data Format
+# Fund Report Data Schema
 
 ```json
 {

@@ -29,7 +29,7 @@
   * [System Overview](thesis/04-solution/SystemOverview.md)
   * [Software Architecture](thesis/04-solution/SoftwareArchitecture.md)
   * [Screen/Paper Design](thesis/04-solution/ScreenPaperDesign.md)
-  * [Interchangeable Fund Data Format](thesis/04-solution/InterchangeableFundDataFormat.md)
+  * [Fund Report Data Schema](thesis/04-solution/FundReportDataSchema.md)
   * [Melon Auditing Contract Standard](thesis/04-solution/MelonAuditingContractStandard.md)
   * [Auditing Contract](thesis/04-solution/AuditingContract.md)
 
