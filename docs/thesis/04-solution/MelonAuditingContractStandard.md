@@ -25,7 +25,7 @@ The auditing process goes like this:
   * _Invariant_: A call to `generateData` with the same arguments should always return the same data.
   * _Note_: To generate a report over the whole lifetime of a fund, set: `timespanStart = fund.inception` and `timespanEnd = now`
 
-* An auditor performs an audit on that data and if everything is good he signs the hash of this data on the blockchain.
+* An auditor performs an audit on that data and if everything is good he or she signs the hash of this data on the blockchain.
 * Who actually can perform audits on a fund is considered an implementation detail of contracts following this standard.
 
 ## Motivation
@@ -40,7 +40,7 @@ In order to follow the modularisation approach of the Melon smart-contract syste
 
 ## Contract details
 
-* The `_auditor` is represented by his/her address.
+* The `_auditor` is represented by their address.
 
 * The `_dataHash` is the hash of the [Interchangeable Fund Data](/thesis/04-solution/InterchangeableFundDataFormat.md) of a report.
 
