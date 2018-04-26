@@ -20,10 +20,10 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
       "type": "object",
       "properties": {
         "fundName": {
-          "type": "string",
+          "type": "string"
         },
         "fundName": {
-          "type": "string",
+          "type": "string"
         }
       }
     }
@@ -123,12 +123,12 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
       ]
     },
     {
-      "symbol": "ETH", // anpassen
+      "symbol": "ETH", // change
       "address": "0xAA5D4CE8F95682e34d7A3c7d42df922998102485",
       "quantity": "0.253"
     },
     {
-      "symbol": "DAI", // anpassen
+      "symbol": "DAI", // change
       "address": "0xdd134E8F257d848261D8dDaA452B549E92f4A3Dc",
       "quantity": "106.349"
     }
@@ -191,46 +191,6 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
       "dataHash": "1MNDVGk51Wyty9YqjaZb99PDAPj4R2wEgx",
       "timespanStart": 1524729086440,
       "timespanEnd": 1524739020999,
-    }
-  ]
-}
-```
-
-## old... --> now in appendix
-
-```json
-{
-  "name": "Example Fund",
-  "inception": "yyyy-mm-dd hh:mm:ss",
-  "description": "This fund is high risk",
-  "manager": "0xbad...a55",
-  "nav": 1000,
-  "quoteSymbol": "MLN",
-  "gav": 1100,
-  "timestamp": "yyyy-mm-dd hh:mm:ss",
-  "holdings": [
-    {
-      "symbol": "ETH",
-      "amount": 1000
-    }
-  ],
-  "trades": [
-    {
-      "buySymbol": "ETH",
-      "sellSymbol": "MLN",
-      "buyAmount": 100,
-      "sellAmount": 50,
-      "timestamp": "yyyy-mm-dd hh:mm:ss",
-      "exchange": "0xdead...beef",
-      "transaction": "0xdead...beef"
-    }
-  ],
-  "audits": [
-    {
-      "timestamp": "yyyy-mm-dd hh:mm:ss",
-      "auditor": "0xdead...beef1",
-      "dataHash": "QmXZcdco6wZEA2paGeUnoshSB4HJiSTDxagqXerDGop6or",
-      "signature": "0x23rasdfasdlfjhasldkfhas"
     }
   ]
 }
