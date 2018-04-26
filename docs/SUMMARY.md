@@ -87,3 +87,5 @@
 * [Glossary](GLOSSARY.md)
 * [Original Project Submission](appendix/H-originalprojectsubmission/README.md)
 * [Statement of Honesty](appendix/I-statementofhonesty/README.md)
+* [List of figures](appendix/J-listoffigures/README.md)
+* [List of tables](appendix/K-listoftables/README.md)
