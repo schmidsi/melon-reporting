@@ -27,7 +27,8 @@
   },
   "devDependencies": {
     "gitbook-cli": "^2.3.2",
-    "lerna": "^2.9.0"
+    "lerna": "^2.9.0",
+    "svgexport": "^0.3.2"
   },
   "homepage": "https://github.com/melonproject/reporting-thesis#readme",
   "dependencies": {

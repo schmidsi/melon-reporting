@@ -75,6 +75,10 @@ https://www.finma.ch
 
 https://www.finma.ch/en/authorisation/institutions-and-products-subject-to-the-collective-investment-schemes-act/
 
+## Inception
+
+In asset management inception is the date of the beginning of a fund.
+
 ## ISIN
 
 International Securities Identification Numbers.
@@ -102,6 +106,10 @@ EU Markets in Financial Instruments Directive. MiFID I originally from 2004 it's
 ## MOP
 
 Multiple Investment Options
+
+## Participation
+
+Participation is the act of investing or redeeming shares of a fund.
 
 ## PRIIP
 
