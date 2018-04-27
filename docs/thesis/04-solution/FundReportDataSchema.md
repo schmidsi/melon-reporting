@@ -4,17 +4,98 @@
 We need a way to define the data from which a report can be produced for viewing and auditing.
 The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify types, involved data structures, constraints and describe the data directly.
 
-The Schema _Melon Fund Report_ which we define here is a JSON to define our data JSON files (acutal instances of Melon Fund Report data), basically a meta-JSON.
+The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instances of Fund Report data), basically a meta-JSON.
 
 # Schema "Fund Report"
 
 ```json
+// TODO:
+// add descriptions where useful
+// $id when schema place is fixed --> link to schema on github
 {
-  // TODO constraint: no negative values, ever
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Fund Report",
-  "description": "Relevant data from a melon fund to generate a report and hash for auditing.",
+  "$version": "0.1",
+  "description": "Fund data to generate a report from and create a hash for auditing.",
   "type": "object",
+  "definitions": {
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ethereumAddress": {
+      "type": "string",
+      "pattern": "^0x(\\d|[A-F]|[a-f]){40}$"
+    },
+    "erc20TokenSymbol": {
+      "type": "string",
+      "pattern": "^([A-Z]){1,9}$"
+    },
+    "bigNumber": {
+      "type": "string",
+      "pattern": "^\\d*.\\d*$"
+    },
+    "timePeriod": {
+      "type": "string",
+      "enum": [
+        "day",
+        "month",
+        "year"
+      ]
+    },
+    "token": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "$ref": "#/definitions/erc20TokenSymbol"
+        },
+        "address": {
+          "$ref": "#/definitions/ethereumAddress"
+        }
+      },
+      "required": [
+        "symbol",
+        "address"
+      ]
+    },
+    "exchange": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/ethereumAddress"
+        }
+      },
+      "required": [
+        "id",
+        "address"
+      ]
+    },
+    "orderSide": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/token"
+        },
+        "howMuch": {
+          "$ref": "#/definitions/bigNumber"
+        }
+      },
+      "required": [
+        "token",
+        "howMuch"
+      ]
+    },
+    "participationType": {
+      "type": "string",
+      "enum": [
+        "invest",
+        "redeem"
+      ]
+    }
+  },
   "properties": {
     "meta": {
       "type": "object",
@@ -22,16 +103,306 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
         "fundName": {
           "type": "string"
         },
-        "fundName": {
+        "timespanStart": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "timespanEnd": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "fundAddress": {
+          "$ref": "#/definitions/ethereumAddress"
+        },
+        "inception": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "quoteToken": {
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "$ref": "#/definitions/erc20TokenSymbol"
+            },
+            "address": {
+              "$ref": "#/definitions/ethereumAddress"
+            }
+          },
+          "required": [
+            "symbol",
+            "address"
+          ]
+        },
+        "manager": {
+          "$ref": "#/definitions/ethereumAddress"
+        },
+        "exchanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/exchange"
+          }
+        },
+        "legalEntity": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strategy": {
           "type": "string"
+        },
+        "policy": {
+          "type": "object",
+          "properties": {
+            "portfolio": {
+              "type": "object",
+              "properties": {
+                "maxPositions": {
+                  "$ref": "#/definitions/nonNegativeInteger"
+                },
+                "bestPriceTolerance": {
+                  "$ref": "#/definitions/bigNumber"
+                },
+                "maxTrades": {
+                  "type": "object",
+                  "properties": {
+                    "threshold": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    },
+                    "timePeriod": {
+                      "$ref": "#/definitions/timePeriod"
+                    }
+                  },
+                  "required": [
+                    "threshold",
+                    "timePeriod"
+                  ]
+                },
+                "maxVolume": {
+                  "type": "object",
+                  "properties": {
+                    "threshold": {
+                      "$ref": "#/definitions/bigNumber"
+                    },
+                    "timePeriod": {
+                      "$ref": "#/definitions/timePeriod"
+                    }
+                  },
+                  "required": [
+                    "threshold",
+                    "timePeriod"
+                  ]
+                },
+                "volatilityThreshold": {
+                  "$ref": "#/definitions/bigNumber"
+                }
+              },
+              "required": [
+                "maxPositions",
+                "bestPriceTolerance",
+                "maxTrades",
+                "maxVolume",
+                "volatilityThreshold"
+              ]
+            },
+            "tokens": {
+              "type": "object",
+              "properties": {
+                "whitelist": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/token"
+                  }
+                },
+                "liquidityInDays": {
+                  "$ref": "#/definitions/nonNegativeInteger"
+                },
+                "marketCapRange": {
+                  "type": "object",
+                  "properties": {
+                    "min": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    },
+                    "max": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    }
+                  },
+                  "required": [
+                    "min"
+                  ]
+                },
+                "volatilityThreshold": {
+                  "$ref": "#/definitions/bigNumber"
+                }
+              },
+              "required": [
+                "whitelist",
+                "liquidityInDays",
+                "marketCapRange",
+                "volatilityThreshold"
+              ]
+            },
+            "participation": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "$ref": "#/definitions/ethereumAddress"
+                }
+              },
+              "required": [
+                "name",
+                "address"
+              ]
+            }
+          },
+          "required": [
+            "portfolio",
+            "tokens",
+            "participation"
+          ]
         }
+      },
+      "required": [
+        "fundName",
+        "timespanStart",
+        "timespanEnd",
+        "fundAddress",
+        "inception",
+        "quoteToken",
+        "manager",
+        "exchanges",
+        "policy"
+      ]
+    },
+    "holdings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "$ref": "#/definitions/token"
+          },
+          "quantity": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "priceHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/bigNumber"
+            }
+          }
+        },
+        "required": [
+          "token",
+          "quantity",
+          "priceHistory"
+        ]
+      }
+    },
+    "trades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "buy": {
+            "$ref": "#/definitions/orderSide"
+          },
+          "sell": {
+            "$ref": "#/definitions/orderSide"
+          },
+          "exchange": {
+            "$ref": "#/definitions/exchange"
+          },
+          "timestamp": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          },
+          "transaction": {
+            "$ref": "#/definitions/ethereumAddress"
+          }
+        },
+        "required": [
+          "buy",
+          "sell",
+          "exchange",
+          "timestamp",
+          "transaction"
+        ]
+      }
+    },
+    "participations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "investor": {
+            "$ref": "#/definitions/ethereumAddress"
+          },
+          "token": {
+            "$ref": "#/definitions/token"
+          },
+          "type": {
+            "$ref": "#/definitions/participationType"
+          },
+          "amount": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "shares": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "timestamp": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          }
+        },
+        "required": [
+          "investor",
+          "token",
+          "type",
+          "amount",
+          "shares",
+          "timestamp"
+        ]
+      }
+    },
+    "audits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "auditor": {
+            "$ref": "#/definitions/ethereumAddress"
+          },
+          "dataHash": {
+            "type": "string"
+          },
+          "timespanStart": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          },
+          "timespanEnd": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          }
+        },
+        "required": [
+          "auditor",
+          "dataHash",
+          "timespanStart",
+          "timespanEnd"
+        ]
       }
     }
-  }
+  },
+  "required": [
+    "meta",
+    "holdings",
+    "trades",
+    "participations",
+    "audits"
+  ]
 }
 ```
 
 # Example Data
+TO DISCUSS: 
+* maybe use schema built-in date-time type for readability?
 
 ```json
 {
@@ -43,12 +414,9 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
     "inception": 1524710528740,
     "quoteToken": {
       "symbol": "DAI",
-      "address": "0xdd134E8F257d848261D8dDaA452B549E92f4A3Dc"
+      "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
     },
-    "manager": {
-      "name": "Jeanne Golden", // optional
-      "address": "0x54bb6bcbE88e3EcD2788380a686064984de78531"
-    },
+    "manager": "0x54bb6bcbE88e3EcD2788380a686064984de78531",
     "exchanges": [
       {
         "id": "Radar Relay",
@@ -63,22 +431,22 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
       "Melon Crypto Capital AG",
       "Herrengasse 18",
       "FL-9490 Vaduz",
-      "Liechtenstein",
+      "Liechtenstein"
     ],
     "strategy": "Melon Crypto Capital focuses on the most promising ...",
     "policy": {
       "portfolio": {
         "maxPositions": 100,
-        "bestPriceTolerance": 5,
+        "bestPriceTolerance": "0.05",
         "maxTrades": {
           "threshold": 50,
-          "timePeriod": "month" // define as enum in schema
+          "timePeriod": "month"
         },
         "maxVolume": {
-          "threshold": "10000.0000", // number with token-specific decimal places
-          "timePeriod": "month" // enum: "day", "month", "year"
+          "threshold": "10000.0000",
+          "timePeriod": "month"
         },
-        "volatilityThreshold": 0.25,
+        "volatilityThreshold": "0.25"
       },
       "tokens": {
         "whitelist": [
@@ -92,18 +460,18 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
           },
           {
             "symbol": "DAI",
-            "address": "0xdd134E8F257d848261D8dDaA452B549E92f4A3Dc"
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
           }
         ],
         "liquidityInDays": 10,
         "marketCapRange": {
           "min": 10000000,
-          "max": 10000000000 // for infinity: undefined
+          "max": 10000000000
         },
-        "volatilityThreshold": 0.35
+        "volatilityThreshold": "0.35"
       },
       "participation": {
-        "name": "Bitcoin Suisse KYC", // optional
+        "name": "Bitcoin Suisse KYC",
         "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
       }
     }
@@ -114,23 +482,36 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
         "symbol": "MLN",
         "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
       },
-      "quantity": "5.491", // 18zero number
-      "priceHistory": [ // 18 or different decimal places numberstring
-        // daily interval
-        "1.000000", 
-        "1.506000", 
+      "quantity": "5.4910000000000",
+      "priceHistory": [
+        "1.000000",
+        "1.506000",
         "1.406860"
       ]
     },
     {
-      "symbol": "ETH", // change
-      "address": "0xAA5D4CE8F95682e34d7A3c7d42df922998102485",
-      "quantity": "0.253"
+      "token": {
+        "symbol": "ETH",
+        "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+      },
+      "quantity": "0.2530000000000",
+      "priceHistory": [
+        "2.100123",
+        "2.306630",
+        "2.206153"
+      ]
     },
     {
-      "symbol": "DAI", // change
-      "address": "0xdd134E8F257d848261D8dDaA452B549E92f4A3Dc",
-      "quantity": "106.349"
+      "token": {
+        "symbol": "DAI",
+        "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+      },
+      "quantity": "106.3490000000000",
+      "priceHistory": [
+        "1.51198",
+        "1.69279",
+        "1.76345"
+      ]
     }
   ],
   "trades": [
@@ -140,14 +521,14 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
           "symbol": "MLN",
           "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
         },
-        "howMuch": "3.982323249" // 18zero number
+        "howMuch": "3.982323249"
       },
       "sell": {
         "token": {
           "symbol": "DAI",
-          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57" // TODO change values
+          "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
         },
-        "howMuch": "3.982323249" // 18zero number
+        "howMuch": "3.982323249"
       },
       "exchange": {
         "id": "Radar Relay",
@@ -155,42 +536,66 @@ The Schema _Melon Fund Report_ which we define here is a JSON to define our data
       },
       "timestamp": 1524739030740,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
-    }, // TODO more examples
-  ],
-  "participations": [ 
+    },
     {
-      "investor": {
-        "name": "Major Pain",
-        "address": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE"
+      "buy": {
+        "token": {
+          "symbol": "ETH",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        },
+        "howMuch": "3.982323249"
       },
+      "sell": {
+        "token": {
+          "symbol": "DAI",
+          "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+        },
+        "howMuch": "2.2939423"
+      },
+      "exchange": {
+        "id": "Radar Relay",
+        "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
+      },
+      "timestamp": 1524739030740,
+      "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
+    }
+  ],
+  "participations": [
+    {
+      "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
       "token": {
         "symbol": "DAI",
-        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
       },
-      "type": "invest", // enum: invest, redeem
+      "type": "invest",
       "amount": "23478.8230000",
       "shares": "2387.923990",
       "timestamp": 1524737164199
     },
+    {
+      "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
+      "token": {
+        "symbol": "ETH",
+        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+      },
+      "type": "redeem",
+      "amount": "531.208420",
+      "shares": "2028.123080",
+      "timestamp": 1524737174690
+    }
   ],
   "audits": [
     {
-      "auditor": {
-        "name": "Finn Lando", // optional
-        "address": "0x9b8C165672b41725817a606c18C117C5a171D96b"
-      },
+      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
       "dataHash": "1Nf2mjaHRhZK3qf9LrSveKimqVx3vUau5q",
       "timespanStart": 1524729021140,
-      "timespanEnd": 1524739020045,
+      "timespanEnd": 1524739020045
     },
     {
-      "auditor": {
-        "name": "Rey Skywalker",
-        "address": "0x9b8C165672b41725817a606c18C117C5a171D96b"
-      },
+      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
       "dataHash": "1MNDVGk51Wyty9YqjaZb99PDAPj4R2wEgx",
       "timespanStart": 1524729086440,
-      "timespanEnd": 1524739020999,
+      "timespanEnd": 1524739020999
     }
   ]
 }
