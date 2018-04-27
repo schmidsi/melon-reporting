@@ -21,6 +21,52 @@ To receive feedback from the Melonport staff about our prototype implementation 
 
 We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Melon Fund Report Data Schema_ (MFRDS) because it describes its use better.
 
+### Ethereum Address
+Ethereum addresses have the following attributes:
+* starting with 0x
+* followed by 40 hex characters
+
+This considered, we defined this regular expression to validate Ethereum addresses: 
+```regex
+^0x(\\d|[A-F]|[a-f]){40}$
+```
+
+*Note*: The uppercase chars are checksums described in [EIP-55](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md)
+
+### ERC20 token symbols
+For ERC20 token symbol standards, we found this discussion: [Link](https://ethereum.stackexchange.com/questions/25619/is-there-length-limits-on-token-symbols)
+
+So there are currently only symbols on the chain with the following attributes:
+* type: string
+* length: 1 to 9
+* all uppercase letters
+
+This considered, we defined this regular expression to validate ERC20 token symbols: 
+```regex
+^([A-Z]){1,9}$
+```
+
+### Legal Entity and Strategy
+Legal Entity and Strategy are optional, because this data is not (yet) saved on the blockchain.
+It will be part of the "future work" chapter.
+
+### Big Numbers
+In Ethereum, big numbers are often used. For melon, we see this in places like "token quantity".
+
+These numbers will have the following attributes:
+* type: string
+* numbers followed by a dot (.) followed by numbers
+
+This considered, we defined this regular expression to validate big numbers: 
+```regex
+^\d*.\d*$
+```
+
+### Market Cap Range
+The "max" value of `marketCapRange` is not required. When none is supplied, the property is undefined, which means "max" is (positive) infinity.
+
+### Fund Report Data Example
+
 This was a rough first draft of an *MFRDS* instance:
 
 ```json
@@ -58,4 +104,9 @@ This was a rough first draft of an *MFRDS* instance:
     }
   ]
 }
+```
+
+This is the example data after the prototype schema definition, following the rules of the schema v0.1:
+```json
+// copy paste example here
 ```

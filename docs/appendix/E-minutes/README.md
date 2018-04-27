@@ -7,7 +7,7 @@
 * Risk Mgmt: is data immutable?
 * priceHistory: is daily interval good?
 * priceHistory: which value? mean or median or snapshot?
-
+* Is there a possibility to look up names for addresses (uPort)? if yes, are they "hashable"?
 
 ## Coachmeeting 2018-04-17
 
