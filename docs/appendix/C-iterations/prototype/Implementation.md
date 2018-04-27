@@ -31,6 +31,8 @@ This considered, we defined this regular expression to validate Ethereum address
 ^0x(\\d|[A-F]|[a-f]){40}$
 ```
 
+*Note*: The uppercase chars are checksums described in [EIP-55](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md)
+
 ### ERC20 token symbols
 For ERC20 token symbol standards, we found this discussion: [Link](https://ethereum.stackexchange.com/questions/25619/is-there-length-limits-on-token-symbols)
 
