@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
+import Editor from './Editor';
+
+// validator
+import { validateReport } from './FundReportValidator.js'
+const data = require('./FundReportExampleData.json');
 
 let abi = require('./auditing.json');
-
 let web3;
 let auditingcontract;
 
+// parity addresses
 const testFund = "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de";
 const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
 const testAccount = "0x00e7d938D62E09439bcB0311A54430C1322B3e5d";
@@ -23,6 +28,8 @@ class App extends Component {
     } else {
       web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
     }
+
+    validateReport(data);
 
     auditingcontract = new web3.eth.Contract(abi, activecontract);
 
@@ -181,6 +188,9 @@ class App extends Component {
         <div id='allEvents'>
         </div>
 
+        <br />
+
+        <Editor />
       </div>
     );
   }
