@@ -12,6 +12,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
 // TODO:
 // add descriptions where useful
 // $id when schema place is fixed --> link to schema on github
+// some bigNumbers might just be normal javascript numbers
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Fund Report",
