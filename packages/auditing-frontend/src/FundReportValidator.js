@@ -7,6 +7,5 @@ var validate = ajv.compile(schema);
 
 export function validateReport(data) {
   var valid = validate(data);
-  if (valid) console.log('Valid!');
-  else console.log('Invalid: ' + ajv.errorsText(validate.errors));
+  return {valid: valid, errors: ajv.errorsText(validate.errors)};
 }

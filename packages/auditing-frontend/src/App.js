@@ -3,10 +3,6 @@ import './App.css';
 import Web3 from 'web3';
 import Editor from './Editor';
 
-// validator
-import { validateReport } from './FundReportValidator.js'
-const data = require('./FundReportExampleData.json');
-
 let abi = require('./auditing.json');
 let web3;
 let auditingcontract;
@@ -29,8 +25,6 @@ class App extends Component {
       web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
     }
 
-    validateReport(data);
-
     auditingcontract = new web3.eth.Contract(abi, activecontract);
 
     // override the injected web3 from parity so we can use web3 1.0.0 functions like utils...
@@ -42,11 +36,12 @@ class App extends Component {
       addauditor: "0x0",
       verifydatahash: "0x0",
       verifyauditor: "0x0",
-      index: 0
+      index: 0,
+      hash: "0x0",
+      errors: "No errors",
+      valid: true,
     };
 
-    // print the json interface to console for convenience
-    console.log(auditingcontract.options.jsonInterface);
   }
 
 
@@ -55,6 +50,9 @@ class App extends Component {
   handleVerifyDatahashChange = (event) => { this.setState({ verifydatahash: event.target.value }); }
   handleVerifyAuditorChange = (event) => { this.setState({ verifyauditor: event.target.value }); }
   handleIndexChange = (event) => { this.setState({ index: event.target.value }); }
+
+  handleValidChange = (res) => { this.setState({ valid: res.valid, errors: res.errors }); }
+  handleHashChange = (hash) => { this.setState({ hash: hash }); }
 
   add = (event) => {
     event.preventDefault();
@@ -190,7 +188,18 @@ class App extends Component {
 
         <br />
 
-        <Editor />
+        <Editor 
+          handleValidChange={this.handleValidChange} 
+          handleHashChange={this.handleHashChange}/>
+        <br />
+        <div id='valid'>
+          {this.state.valid ? "valid" : "not valid"}
+          <br/>
+          {this.state.errors}
+        </div>
+        <div id='hash'>
+          Hash: {this.state.hash}
+        </div>
       </div>
     );
   }
