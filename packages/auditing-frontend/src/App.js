@@ -38,8 +38,8 @@ class App extends Component {
       verifyauditor: "0x0",
       index: 0,
       hash: "0x0",
-      errors: "No errors",
-      valid: true,
+      errors: "",
+      valid: false,
     };
 
   }
@@ -120,8 +120,10 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Melon Auditing</h1>
+          <h1 className="App-title">Melon Fund Reporting</h1>
         </header>
+
+        <h2>Audit</h2>
 
         <form>
           <label>
@@ -188,6 +190,7 @@ class App extends Component {
 
         <br />
 
+        <h2>Report</h2>
         <Editor 
           handleValidChange={this.handleValidChange} 
           handleHashChange={this.handleHashChange}/>
@@ -200,6 +203,9 @@ class App extends Component {
         <div id='hash'>
           Hash: {this.state.hash}
         </div>
+
+        <br/>
+
       </div>
     );
   }
