@@ -1,0 +1,386 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fund Report",
+  "$version": "0.1",
+  "description": "Fund data to generate a report from and create a hash for auditing.",
+  "type": "object",
+  "definitions": {
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ethereumAddress": {
+      "type": "string",
+      "pattern": "^0x(\\d|[A-F]|[a-f]){40}$"
+    },
+    "erc20TokenSymbol": {
+      "type": "string",
+      "pattern": "^([A-Z]){1,9}$"
+    },
+    "bigNumber": {
+      "type": "string",
+      "pattern": "^\\d*.\\d*$"
+    },
+    "timePeriod": {
+      "type": "string",
+      "enum": [
+        "day",
+        "month",
+        "year"
+      ]
+    },
+    "token": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "$ref": "#/definitions/erc20TokenSymbol"
+        },
+        "address": {
+          "$ref": "#/definitions/ethereumAddress"
+        }
+      },
+      "required": [
+        "symbol",
+        "address"
+      ]
+    },
+    "exchange": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "address": {
+          "$ref": "#/definitions/ethereumAddress"
+        }
+      },
+      "required": [
+        "id",
+        "address"
+      ]
+    },
+    "orderSide": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/definitions/token"
+        },
+        "howMuch": {
+          "$ref": "#/definitions/bigNumber"
+        }
+      },
+      "required": [
+        "token",
+        "howMuch"
+      ]
+    },
+    "participationType": {
+      "type": "string",
+      "enum": [
+        "invest",
+        "redeem"
+      ]
+    }
+  },
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "fundName": {
+          "type": "string"
+        },
+        "timespanStart": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "timespanEnd": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "fundAddress": {
+          "$ref": "#/definitions/ethereumAddress"
+        },
+        "inception": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "quoteToken": {
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "$ref": "#/definitions/erc20TokenSymbol"
+            },
+            "address": {
+              "$ref": "#/definitions/ethereumAddress"
+            }
+          },
+          "required": [
+            "symbol",
+            "address"
+          ]
+        },
+        "manager": {
+          "$ref": "#/definitions/ethereumAddress"
+        },
+        "exchanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/exchange"
+          }
+        },
+        "legalEntity": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strategy": {
+          "type": "string"
+        },
+        "policy": {
+          "type": "object",
+          "properties": {
+            "portfolio": {
+              "type": "object",
+              "properties": {
+                "maxPositions": {
+                  "$ref": "#/definitions/nonNegativeInteger"
+                },
+                "bestPriceTolerance": {
+                  "$ref": "#/definitions/bigNumber"
+                },
+                "maxTrades": {
+                  "type": "object",
+                  "properties": {
+                    "threshold": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    },
+                    "timePeriod": {
+                      "$ref": "#/definitions/timePeriod"
+                    }
+                  },
+                  "required": [
+                    "threshold",
+                    "timePeriod"
+                  ]
+                },
+                "maxVolume": {
+                  "type": "object",
+                  "properties": {
+                    "threshold": {
+                      "$ref": "#/definitions/bigNumber"
+                    },
+                    "timePeriod": {
+                      "$ref": "#/definitions/timePeriod"
+                    }
+                  },
+                  "required": [
+                    "threshold",
+                    "timePeriod"
+                  ]
+                },
+                "volatilityThreshold": {
+                  "$ref": "#/definitions/bigNumber"
+                }
+              },
+              "required": [
+                "maxPositions",
+                "bestPriceTolerance",
+                "maxTrades",
+                "maxVolume",
+                "volatilityThreshold"
+              ]
+            },
+            "tokens": {
+              "type": "object",
+              "properties": {
+                "whitelist": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/token"
+                  }
+                },
+                "liquidityInDays": {
+                  "$ref": "#/definitions/nonNegativeInteger"
+                },
+                "marketCapRange": {
+                  "type": "object",
+                  "properties": {
+                    "min": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    },
+                    "max": {
+                      "$ref": "#/definitions/nonNegativeInteger"
+                    }
+                  },
+                  "required": [
+                    "min"
+                  ]
+                },
+                "volatilityThreshold": {
+                  "$ref": "#/definitions/bigNumber"
+                }
+              },
+              "required": [
+                "whitelist",
+                "liquidityInDays",
+                "marketCapRange",
+                "volatilityThreshold"
+              ]
+            },
+            "participation": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "$ref": "#/definitions/ethereumAddress"
+                }
+              },
+              "required": [
+                "name",
+                "address"
+              ]
+            }
+          },
+          "required": [
+            "portfolio",
+            "tokens",
+            "participation"
+          ]
+        }
+      },
+      "required": [
+        "fundName",
+        "timespanStart",
+        "timespanEnd",
+        "fundAddress",
+        "inception",
+        "quoteToken",
+        "manager",
+        "exchanges",
+        "policy"
+      ]
+    },
+    "holdings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "$ref": "#/definitions/token"
+          },
+          "quantity": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "priceHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/bigNumber"
+            }
+          }
+        },
+        "required": [
+          "token",
+          "quantity",
+          "priceHistory"
+        ]
+      }
+    },
+    "trades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "buy": {
+            "$ref": "#/definitions/orderSide"
+          },
+          "sell": {
+            "$ref": "#/definitions/orderSide"
+          },
+          "exchange": {
+            "$ref": "#/definitions/exchange"
+          },
+          "timestamp": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          },
+          "transaction": {
+            "$ref": "#/definitions/ethereumAddress"
+          }
+        },
+        "required": [
+          "buy",
+          "sell",
+          "exchange",
+          "timestamp",
+          "transaction"
+        ]
+      }
+    },
+    "participations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "investor": {
+            "$ref": "#/definitions/ethereumAddress"
+          },
+          "token": {
+            "$ref": "#/definitions/token"
+          },
+          "type": {
+            "$ref": "#/definitions/participationType"
+          },
+          "amount": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "shares": {
+            "$ref": "#/definitions/bigNumber"
+          },
+          "timestamp": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          }
+        },
+        "required": [
+          "investor",
+          "token",
+          "type",
+          "amount",
+          "shares",
+          "timestamp"
+        ]
+      }
+    },
+    "audits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "auditor": {
+            "$ref": "#/definitions/ethereumAddress"
+          },
+          "dataHash": {
+            "type": "string"
+          },
+          "timespanStart": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          },
+          "timespanEnd": {
+            "$ref": "#/definitions/nonNegativeInteger"
+          }
+        },
+        "required": [
+          "auditor",
+          "dataHash",
+          "timespanStart",
+          "timespanEnd"
+        ]
+      }
+    }
+  },
+  "required": [
+    "meta",
+    "holdings",
+    "trades",
+    "participations",
+    "audits"
+  ]
+}

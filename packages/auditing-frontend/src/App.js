@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
-import Editor from './Editor';
+import Editor from './report/Editor';
 
-let abi = require('./auditing.json');
+let abi = require('./audit/auditing.json');
 let web3;
 let auditingcontract;
 
@@ -123,6 +123,23 @@ class App extends Component {
           <h1 className="App-title">Melon Fund Reporting</h1>
         </header>
 
+        <h2>Report</h2>
+
+        <Editor 
+          handleValidChange={this.handleValidChange} 
+          handleHashChange={this.handleHashChange}/>
+        <br />
+        <div id='valid'>
+          {this.state.valid ? "valid" : "not valid"}
+          <br/>
+          {this.state.errors}
+        </div>
+        <div id='hash'>
+          Hash: {this.state.hash}
+        </div>
+
+        <br/>
+
         <h2>Audit</h2>
 
         <form>
@@ -189,22 +206,6 @@ class App extends Component {
         </div>
 
         <br />
-
-        <h2>Report</h2>
-        <Editor 
-          handleValidChange={this.handleValidChange} 
-          handleHashChange={this.handleHashChange}/>
-        <br />
-        <div id='valid'>
-          {this.state.valid ? "valid" : "not valid"}
-          <br/>
-          {this.state.errors}
-        </div>
-        <div id='hash'>
-          Hash: {this.state.hash}
-        </div>
-
-        <br/>
 
       </div>
     );
