@@ -1,8 +1,8 @@
 pragma solidity ^0.4.21;
 
 // TO DISCUSS:
-// - is uint256 necessary for unix timestamps?
 // - split dataHash in 1 and 2?
+// - require timespanEnd < now?
 
 /// @title Auditing smart contract for melon.
 contract Auditing {
