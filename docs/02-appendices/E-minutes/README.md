@@ -9,6 +9,7 @@
 * priceHistory: which value? mean or median or snapshot?
 * Off-chain data / legal data we need to consider
 * Is there a possibility to look up names for addresses (uPort)? if yes, are they "hashable"?
+* Datahash could be a direct ipfs hash? (ipfsjs)
 
 ### Agenda
 * Goals
@@ -19,14 +20,95 @@
 * Discussion
 * Questions
 
-### Goals
 ### Use Cases
+jo: Comment timespan is usually there, but not legally binding (just provides context)
+
+Enhance report with costs around funds (gas prices)
+
 ### Data Schema
+
+priceHistory: in the old world its a snapshot
+maybe use "volume weighed average price"? might be too complicated to calculate...
+
 ### MIP
+What if an auditor refuses an audit?
+
+New: status for add() function
+* unqualified opinion (good)
+* qualified opinion (bad)
+* disclaimer opinion ()
+* adverse opinion ()
+
 ### Mockup
+Strategy might be optional for fund managers, but is highly encouraged!
+
+#### Meta
+
+Possible new attributes
+* Style
+* Substrategies
+* Substyles
+--> List of strategies / styles to pick from
+
+John provides us with the most recent strategies and styles from the hedge fund .
+We might have to invent new strategy/style standards for crypto.
+
+Discussion about whitelist: we now assume that it is fixed.
+Might be future work ("changing whitelists"):
+
+* Sharpe ratio: absolute measure (positions) -> we leave it in.
+* Alpha is not a trivial calculation.
+* Volatilty: minimum 12 months, if the timespan is < 12 months, it says N/A (Mona provides example for <12 years)
+* Redeem fee might come in the future
+
+Benchmark is not in the fund report data yet.
+Benchmarks have to be bound to strategy
+* Weighted average of the share price of all fund weighed by AUM.
+* Proposal from John: not benchmark, but **reference fund**
+
+#### Holdings
+Token correlation matrix is good
+* correlation between -1 and 
+* top right values are all 1
+* max drawdown
+* downside deviation
+* top 3 gainers / losers
+* price change
+
+#### Trades
+* for every trade: show gas price
+* filters (for the website)
+* transaction hash of trade
+* Profit (for profitability), is an absolute number
+* New Chapter/Page: Positions
+* Open/Close: Mona gives a few examples
+
+#### Participation
+
+Knecht looks up if names can be looked up with ENS
+
+* show addresses with green tick
+* ... (kind of off-topic) can the manager "kick" red flags?
+
+#### Audits
+* ENS names for auditors (it's about reputation for them)
+
 ### Discussion
+* one real stakeholder for each actor (Mona: maybe regulator from Liechtenstein?)
+* include Bank Frick for feedback
+
+* Use cases: show which value from the report is useful for which actor
+
 ### Questions
 
+Possible Off-chain data / legal data:
+* Jurisdiction
+
+Don't waste time on name lookup.
+
+Sha256 should fit into bytes32, just save the hex representation.
+
+Knecht: think about extensibility of the product (so future work is easily implementable).
 
 ## Coachmeeting 2018-04-17
 

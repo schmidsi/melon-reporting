@@ -31,7 +31,6 @@ class App extends Component {
 
     this.state = {
       adddatahash: "0a",
-      addauditor: "0x0",
       timespanStart: "0",
       timespanEnd: "0",
       existsdatahash: "0a",
@@ -45,7 +44,6 @@ class App extends Component {
   }
 
 
-  handleAddAuditorChange = (event) => { this.setState({ addauditor: event.target.value }); }
   handleAddDatahashChange = (event) => { this.setState({ adddatahash: event.target.value }); }
   handleExistsDatahashChange = (event) => { this.setState({ existsdatahash: event.target.value }); }
   handleExistsAuditorChange = (event) => { this.setState({ existsauditor: event.target.value }); }
@@ -59,7 +57,7 @@ class App extends Component {
   add = (event) => {
     event.preventDefault();
 
-    var auditor = this.state.addauditor; // maybe padding...
+    var auditor = auditorAccount;
     // data hex has to have 64 characters
     var dataHash = this.state.adddatahash;
     var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
@@ -158,17 +156,12 @@ class App extends Component {
         <h2>Audit</h2>
 
         <p>
-          TestFund: <i>{testFund}</i>
+          Fund: <i>{testFund}</i>
           <br />
-          TestAuditor: <i>{auditorAccount}</i>
+          Auditor: <i>{auditorAccount}</i>
         </p>
 
         <form>
-          <label>
-            Auditor:
-            <input type="text" value={this.state.addauditor} onChange={this.handleAddAuditorChange} />
-          </label>
-          <br />
           <label>
             Datahash:
             <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
