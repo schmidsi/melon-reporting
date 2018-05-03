@@ -10,9 +10,6 @@ let auditingcontract;
 // parity addresses
 const testFund = "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de";
 const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
-const testAccount = "0x00e7d938D62E09439bcB0311A54430C1322B3e5d";
-const auditingsigning = "0xbAdCBDd2B01E4E77d539f35D6CC27e0557986A66";
-const auditcontract = "0xc7F6680F230589fd043D6c39043235Fa6e3B368c";
 const splitauditingcontract = "0x2bE47366cD59c5F744ECE9Ae166D915c31C617be";
 const activecontract = splitauditingcontract;
 
@@ -64,7 +61,6 @@ class App extends Component {
 
     var auditor = this.state.addauditor; // maybe padding...
     // data hex has to have 64 characters
-    //var dataHash = web3.utils.padRight(this.state.adddatahash, 64);
     var dataHash = this.state.adddatahash;
     var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
     var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
@@ -80,17 +76,16 @@ class App extends Component {
     event.preventDefault();
 
     var auditor = this.state.existsauditor;
-    //var dataHash = web3.utils.padRight(this.state.existsdatahash, 64);
 
     var dataHash = this.state.existsdatahash;
     var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
     var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
 
     auditingcontract.methods.exists(testFund, auditor, dataHash1, dataHash2)
-    .call()
-    .then(function (result) {
-      document.getElementById('exists').innerText = "exists: " + result;
-    });
+      .call()
+      .then(function (result) {
+        document.getElementById('exists').innerText = "exists: " + result;
+      });
   }
 
   getLength = () => {
@@ -145,47 +140,47 @@ class App extends Component {
 
         <h2>Report</h2>
 
-        <Editor 
-          handleValidChange={this.handleValidChange} 
-          handleHashChange={this.handleHashChange}/>
+        <Editor
+          handleValidChange={this.handleValidChange}
+          handleHashChange={this.handleHashChange} />
         <br />
         <div id='valid'>
           {this.state.valid ? "valid" : "not valid"}
-          <br/>
+          <br />
           {this.state.errors}
         </div>
         <div id='hash'>
           Hash: {this.state.hash}
         </div>
 
-        <br/>
+        <br />
 
         <h2>Audit</h2>
 
         <p>
           TestFund: <i>{testFund}</i>
-          <br/>
+          <br />
           TestAuditor: <i>{auditorAccount}</i>
         </p>
 
         <form>
           <label>
-            Auditor: 
+            Auditor:
             <input type="text" value={this.state.addauditor} onChange={this.handleAddAuditorChange} />
           </label>
           <br />
           <label>
-            Datahash: 
+            Datahash:
             <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
           </label>
           <br />
           <label>
-            TimespanStart: 
+            TimespanStart:
             <input type="text" value={this.state.timespanStart} onChange={this.handleTimespanStartChange} />
           </label>
           <br />
           <label>
-            TimespanEnd: 
+            TimespanEnd:
             <input type="text" value={this.state.timespanEnd} onChange={this.handleTimespanEndChange} />
           </label>
           <br />
@@ -197,12 +192,12 @@ class App extends Component {
 
         <form>
           <label>
-            Auditor: 
+            Auditor:
             <input type="text" value={this.state.existsauditor} onChange={this.handleExistsAuditorChange} />
           </label>
           <br />
           <label>
-            Datahash: 
+            Datahash:
             <input type="text" value={this.state.existsdatahash} onChange={this.handleExistsDatahashChange} />
           </label>
           <br />
