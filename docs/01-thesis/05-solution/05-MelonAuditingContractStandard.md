@@ -2,8 +2,8 @@
 
 ```
 MIP: 1
-Title: Melon Auditing
-Author: Benjamin Zumbrunn, benzumbrunn@gmail.com
+Title: Auditing
+Authors: Benjamin Zumbrunn, benzumbrunn@gmail.com; Simon Emanuel Schmid, simon@schmid.io
 Status: Draft
 Type: MIP
 Created: 2018-04-24
@@ -42,8 +42,8 @@ In order to follow the modularisation approach of the Melon smart-contract syste
 
 * The `_auditor` is represented by their address.
 
-* The `_dataHash` is the hash of the [Interchangeable Fund Data](/thesis/04-solution/InterchangeableFundDataFormat.md) of a report.
-
+* The `_dataHash` is the hash of the [Fund Report Data](https://melon-reporting.now.sh/thesis/04-solution/FundReportDataSchema.html) of a report. 
+ 
 * `_timespanStart` and `_timespanEnd` are required to generate the report that was audited.
 
 ## Transactions
@@ -104,3 +104,5 @@ event Added(address _fundAddress, uint256 _index)
 [Auditing.sol](https://github.com/melonproject/reporting-thesis/blob/master/packages/contracts/Auditing.sol)
 
 In the reference implementation, we require that only approved auditors can use the method `add()`. The approved auditors are supplied on contract creation via the constructor.
+
+**NOTE**: The reference implementation is still in development.

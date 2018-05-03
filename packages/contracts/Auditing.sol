@@ -1,16 +1,17 @@
 pragma solidity ^0.4.21;
 
 // TO DISCUSS:
-// - is uint256 necessary for unix timestamps?
+// - use MD5 or other hashfunction in frontend? (128 bit) --> fits into bytes32
+// - require timespanEnd < now?
 
 /// @title Auditing smart contract for melon.
 contract Auditing {
 
     struct Audit {
         address auditor; // who audited the report
-        bytes32 dataHash; // the dataHash of the report
-        uint256 timespanStart; // the start timestamp of the report
-        uint256 timespanEnd; // the end timestamp of the report
+        bytes32 dataHash; // the first part of the report dataHash
+        uint timespanStart; // the start timestamp of the report
+        uint timespanEnd; // the end timestamp of the report
     }
 
     // for this mapping, a getter is created 
@@ -21,7 +22,7 @@ contract Auditing {
     address[] public approvedAuditors;
 
     // events
-    event Added(address _fundAddress, uint256 _index);
+    event Added(address _fundAddress, uint _index);
 
     /// Constructor
     constructor(address[] _approvedAuditors) public payable {
@@ -31,7 +32,7 @@ contract Auditing {
     /// Creates a new audit on a fund specified with `_fundAddress`,
     /// the hashed data in `_dataHash` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
-    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd) 
+    function add(address _fundAddress, bytes32 _dataHash, uint _timespanStart, uint _timespanEnd) 
             public {
         // check if the sender is an approved auditor with "require"
         require(isApprovedAuditor(msg.sender));
@@ -39,7 +40,7 @@ contract Auditing {
         Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd);
         fundAudits[_fundAddress].push(newAudit);
 
-        uint256 index = fundAudits[_fundAddress].length - 1;
+        uint index = fundAudits[_fundAddress].length - 1;
         emit Added(_fundAddress, index);
     }
 
@@ -48,7 +49,7 @@ contract Auditing {
             public view 
             returns (bool auditExists) {
         Audit[] memory audits = fundAudits[_fundAddress];
-        for (uint256 i = 0; i < audits.length; i++) {
+        for (uint i = 0; i < audits.length; i++) {
             Audit memory audit = audits[i];
             if (audit.auditor == _auditor && audit.dataHash == _dataHash) {
                 // audit exists
@@ -62,14 +63,14 @@ contract Auditing {
     /// Returns the length of the audit array of a specific fund
     function getLength(address _fundAddress)
             public view
-            returns (uint256 index) {
+            returns (uint index) {
         return fundAudits[_fundAddress].length;
     }
 
     /// Returns the requested audit data
-    function getByIndex(address _fundAddress, uint256 _index)
+    function getByIndex(address _fundAddress, uint _index)
             public view
-            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd) {
+            returns (address auditor, bytes32 dataHash, uint timespanStart, uint timespanEnd) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
@@ -82,7 +83,7 @@ contract Auditing {
     function isApprovedAuditor(address _auditor) 
             public view
             returns (bool auditorIsApproved) {
-        for (uint256 i = 0; i < approvedAuditors.length; i++) {
+        for (uint i = 0; i < approvedAuditors.length; i++) {
             address auditor = approvedAuditors[i];
             if (auditor == _auditor) {
                 // auditor is approved
@@ -94,7 +95,7 @@ contract Auditing {
     }
 
     /// Returns true if a fund is completely audited over a specific timespan.
-    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
+    function isComplete(address _fundAddress, uint _timespanStart, uint _timespanEnd)
             public view
             returns (bool complete) {
         Audit[] memory audits = fundAudits[_fundAddress];

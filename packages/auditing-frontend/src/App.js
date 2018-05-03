@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
+import Editor from './report/Editor';
 
-let abi = require('./auditing.json');
-
+let abi = require('./audit/auditing.json');
 let web3;
 let auditingcontract;
 
+// parity addresses
 const testFund = "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de";
 const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
-const testAccount = "0x00e7d938D62E09439bcB0311A54430C1322B3e5d";
-const auditingsigning = "0xbAdCBDd2B01E4E77d539f35D6CC27e0557986A66";
-const auditcontract = "0xc7F6680F230589fd043D6c39043235Fa6e3B368c";
-const activecontract = auditcontract;
+const splitauditingcontract = "0x2bE47366cD59c5F744ECE9Ae166D915c31C617be";
+const activecontract = splitauditingcontract;
 
 class App extends Component {
 
@@ -31,53 +30,69 @@ class App extends Component {
     window.web3 = web3;
 
     this.state = {
-      adddatahash: "0x0",
+      adddatahash: "0a",
       addauditor: "0x0",
-      verifydatahash: "0x0",
-      verifyauditor: "0x0",
-      index: 0
+      timespanStart: "0",
+      timespanEnd: "0",
+      existsdatahash: "0a",
+      existsauditor: "0x0",
+      index: 0,
+      hash: "0a",
+      errors: "",
+      valid: false,
     };
 
-    // print the json interface to console for convenience
-    console.log(auditingcontract.options.jsonInterface);
   }
 
 
   handleAddAuditorChange = (event) => { this.setState({ addauditor: event.target.value }); }
   handleAddDatahashChange = (event) => { this.setState({ adddatahash: event.target.value }); }
-  handleVerifyDatahashChange = (event) => { this.setState({ verifydatahash: event.target.value }); }
-  handleVerifyAuditorChange = (event) => { this.setState({ verifyauditor: event.target.value }); }
+  handleExistsDatahashChange = (event) => { this.setState({ existsdatahash: event.target.value }); }
+  handleExistsAuditorChange = (event) => { this.setState({ existsauditor: event.target.value }); }
   handleIndexChange = (event) => { this.setState({ index: event.target.value }); }
+  handleTimespanStartChange = (event) => { this.setState({ timespanStart: event.target.value }); }
+  handleTimespanEndChange = (event) => { this.setState({ timespanEnd: event.target.value }); }
+
+  handleValidChange = (res) => { this.setState({ valid: res.valid, errors: res.errors }); }
+  handleHashChange = (hash) => { this.setState({ hash: hash }); }
 
   add = (event) => {
     event.preventDefault();
 
     var auditor = this.state.addauditor; // maybe padding...
     // data hex has to have 64 characters
-    var dataHash = web3.utils.padRight(this.state.adddatahash, 64);
+    var dataHash = this.state.adddatahash;
+    var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
+    var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
 
-    auditingcontract.methods.add(testFund, dataHash)
+    var timespanStart = this.state.timespanStart;
+    var timespanEnd = this.state.timespanEnd;
+
+    auditingcontract.methods.add(testFund, dataHash1, dataHash2, timespanStart, timespanEnd)
       .send({ from: auditor })
   }
 
-  verify = (event) => {
+  exists = (event) => {
     event.preventDefault();
 
-    var auditor = this.state.verifyauditor;
-    var dataHash = web3.utils.padRight(this.state.verifydatahash, 64);
+    var auditor = this.state.existsauditor;
 
-    auditingcontract.methods.verify(testFund, auditor, dataHash)
-    .call()
-    .then(function (result) {
-      document.getElementById('verified').innerText = "verified: " + result;
-    });
-  }
+    var dataHash = this.state.existsdatahash;
+    var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
+    var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
 
-  getLastIndex = () => {
-    auditingcontract.methods.getLastIndex(testFund)
+    auditingcontract.methods.exists(testFund, auditor, dataHash1, dataHash2)
       .call()
       .then(function (result) {
-        document.getElementById('lastIndex').innerText = result;
+        document.getElementById('exists').innerText = "exists: " + result;
+      });
+  }
+
+  getLength = () => {
+    auditingcontract.methods.getLength(testFund)
+      .call()
+      .then(function (result) {
+        document.getElementById('length').innerText = result;
       });
   }
 
@@ -85,13 +100,18 @@ class App extends Component {
     auditingcontract.methods.getByIndex(testFund, this.state.index)
       .call()
       .then(function (result) {
+        var dataHash1 = web3.utils.toAscii(result.dataHash1);
+        var dataHash2 = web3.utils.toAscii(result.dataHash2);
+        var dataHash = dataHash1 + dataHash2;
         document.getElementById('getByIndexAuditor').innerText = "Auditor: " + result.auditor;
-        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + result.dataHash;
-        document.getElementById('getByIndexTimestamp').innerText = "Timestamp: " + new Date(result.timestamp * 1000);
+        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + dataHash;
+        document.getElementById('getByIndexTimespanStart').innerText = "TimespanStart: " + new Date(result.timespanStart * 1000);
+        document.getElementById('getByIndexTimespanEnd').innerText = "TimespanEnd: " + new Date(result.timespanEnd * 1000);
       }).catch(function (error) {
         document.getElementById('getByIndexAuditor').innerText = "not found";
         document.getElementById('getByIndexDataHash').innerText = "not found";
-        document.getElementById('getByIndexTimestamp').innerText = "not found";
+        document.getElementById('getByIndexTimespanStart').innerText = "not found";
+        document.getElementById('getByIndexTimespanEnd').innerText = "not found";
       });
   }
 
@@ -115,18 +135,53 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Melon Auditing</h1>
+          <h1 className="App-title">Melon Fund Reporting</h1>
         </header>
+
+        <h2>Report</h2>
+
+        <Editor
+          handleValidChange={this.handleValidChange}
+          handleHashChange={this.handleHashChange} />
+        <br />
+        <div id='valid'>
+          {this.state.valid ? "valid" : "not valid"}
+          <br />
+          {this.state.errors}
+        </div>
+        <div id='hash'>
+          Hash: {this.state.hash}
+        </div>
+
+        <br />
+
+        <h2>Audit</h2>
+
+        <p>
+          TestFund: <i>{testFund}</i>
+          <br />
+          TestAuditor: <i>{auditorAccount}</i>
+        </p>
 
         <form>
           <label>
-            Auditor: 
+            Auditor:
             <input type="text" value={this.state.addauditor} onChange={this.handleAddAuditorChange} />
           </label>
           <br />
           <label>
-            Datahash: 
+            Datahash:
             <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
+          </label>
+          <br />
+          <label>
+            TimespanStart:
+            <input type="text" value={this.state.timespanStart} onChange={this.handleTimespanStartChange} />
+          </label>
+          <br />
+          <label>
+            TimespanEnd:
+            <input type="text" value={this.state.timespanEnd} onChange={this.handleTimespanEndChange} />
           </label>
           <br />
           <button type="button" onClick={this.add}>
@@ -137,27 +192,27 @@ class App extends Component {
 
         <form>
           <label>
-            Auditor: 
-            <input type="text" value={this.state.verifyauditor} onChange={this.handleVerifyAuditorChange} />
+            Auditor:
+            <input type="text" value={this.state.existsauditor} onChange={this.handleExistsAuditorChange} />
           </label>
           <br />
           <label>
-            Datahash: 
-            <input type="text" value={this.state.verifydatahash} onChange={this.handleVerifyDatahashChange} />
+            Datahash:
+            <input type="text" value={this.state.existsdatahash} onChange={this.handleExistsDatahashChange} />
           </label>
           <br />
-          <button type="button" onClick={this.verify}>
-            verify
+          <button type="button" onClick={this.exists}>
+            exists
           </button>
         </form>
-        <div id='verified'>
+        <div id='exists'>
         </div>
         <br />
 
-        <button className="btn btn-default" onClick={this.getLastIndex}>
-          getLastIndex
+        <button className="btn btn-default" onClick={this.getLength}>
+          getLength
         </button>
-        <div id='lastIndex'>
+        <div id='length'>
         </div>
         <br />
 
@@ -172,7 +227,8 @@ class App extends Component {
         </button>
         <div id='getByIndexAuditor' />
         <div id='getByIndexDataHash' />
-        <div id='getByIndexTimestamp' />
+        <div id='getByIndexTimespanStart' />
+        <div id='getByIndexTimespanEnd' />
         <br />
 
         <button className="btn btn-default" onClick={this.listAllEvents}>
@@ -180,6 +236,8 @@ class App extends Component {
         </button>
         <div id='allEvents'>
         </div>
+
+        <br />
 
       </div>
     );

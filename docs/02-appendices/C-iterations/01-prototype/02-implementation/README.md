@@ -12,14 +12,14 @@ After receiving feedback from Markus Knecht about this approach, we discussed th
 
 ## Auditing contract
 
-To receive feedback from the Melonport staff about our prototype implementation of the auditing contract, we set up a MIP (Melon Improvement Proposal)
+To receive feedback from the Melonport staff about our prototype implementation of the auditing contract, we set up a [MIP (Melon Improvement Proposal)](https://github.com/melonproject/MIP/issues/1)
 
 ## Test frontend for the auditing contract
 
 
 ## Melon Fund Report Data Schema
 
-We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Melon Fund Report Data Schema_ (MFRDS) because it describes its use better.
+We replaced the first name of the report data schema from _Interchangeable Fund Data Format_ to _Melon Fund Report Data Schema_ (M) because it describes its use better.
 
 ### Ethereum Address
 Ethereum addresses have the following attributes:
@@ -67,7 +67,7 @@ The "max" value of `marketCapRange` is not required. When none is supplied, the 
 
 ### Fund Report Data Example
 
-This was a rough first draft of an *MFRDS* instance:
+This was a rough first draft of an *FRDS* instance:
 
 ```json
 {
