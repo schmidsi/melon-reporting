@@ -9,6 +9,7 @@
 * priceHistory: which value? mean or median or snapshot?
 * Off-chain data / legal data we need to consider
 * Is there a possibility to look up names for addresses (uPort)? if yes, are they "hashable"?
+* Datahash could be a direct ipfs hash? (ipfsjs)
 
 ### Agenda
 * Goals
