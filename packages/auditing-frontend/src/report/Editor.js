@@ -42,8 +42,9 @@ class Editor extends Component {
             });
 
             var res = validateReport(jsonObject);
+            // TODO...
             this.handleValidChange(res);
-            if (res.valid === true) {
+            if (res.errors.length === 0) {
                 var hash = hashReport(flatNewCode);
                 this.handleHashChange(hash);
             }
