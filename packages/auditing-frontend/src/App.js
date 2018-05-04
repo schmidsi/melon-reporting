@@ -84,7 +84,6 @@ class App extends Component {
   }
 
   handleValidChange = (res) => {
-    console.log(res);
     this.setState({
       valid: res.errors.length === 0,
       errors: res.errors.toString()
@@ -153,10 +152,10 @@ class App extends Component {
 
   listAllEvents = () => {
     auditingcontract.getPastEvents("Added", {
-        // list events from all blocks since the beginning
-        fromBlock: 0,
-        toBlock: 'latest'
-      })
+      // list events from all blocks since the beginning
+      fromBlock: 0,
+      toBlock: 'latest'
+    })
       .then(function (events) {
         var text = "";
         events.forEach(function (e) {
@@ -168,214 +167,111 @@ class App extends Component {
   }
 
   render() {
-    return ( <
-      div className = "App" >
-      <
-      header className = "App-header" >
-      <
-      h1 className = "App-title" > Melon Fund Reporting < /h1> <
-      /header>
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1 className="App-title">Melon Fund Reporting</h1>
+        </header>
 
-      <
-      h2 > Report < /h2>
+        <h2>Report</h2>
 
-      <
-      Editor handleValidChange = {
-        this.handleValidChange
-      }
-      handleHashChange = {
-        this.handleHashChange
-      }
-      /> <
-      br / >
-      <
-      div id = 'valid' > {
-        this.state.valid ? "valid" : "not valid"
-      } <
-      br / > {
-        this.state.errors
-      } <
-      /div> <
-      div id = 'hash' >
-      Hash: {
-        this.state.hash
-      } <
-      /div>
+        <Editor
+          handleValidChange={this.handleValidChange}
+          handleHashChange={this.handleHashChange} />
+        <br />
+        <div id='valid'>
+          {this.state.valid ? "valid" : "not valid"}
+          <br />
+          {this.state.errors}
+        </div>
+        <div id='hash'>
+          Hash: {this.state.hash}
+        </div>
 
-      <
-      br / >
+        <br />
 
-      <
-      h2 > Audit < /h2>
+        <h2>Audit</h2>
 
-      <
-      p >
-      Fund: < i > {
-        testFund
-      } < /i> <
-      br / >
-      Auditor: < i > {
-        this.state.auditorAccount
-      } < /i> <
-      /p>
+        <p>
+          Fund: <i>{testFund}</i>
+          <br />
+          Auditor: <i>{this.state.auditorAccount}</i>
+        </p>
 
-      <
-      form >
-      <
-      label >
-      Datahash:
-      <
-      input type = "text"
-      value = {
-        this.state.adddatahash
-      }
-      onChange = {
-        this.handleAddDatahashChange
-      }
-      /> <
-      /label> <
-      br / >
-      <
-      label >
-      TimespanStart:
-      <
-      input type = "text"
-      value = {
-        this.state.timespanStart
-      }
-      onChange = {
-        this.handleTimespanStartChange
-      }
-      /> <
-      /label> <
-      br / >
-      <
-      label >
-      TimespanEnd:
-      <
-      input type = "text"
-      value = {
-        this.state.timespanEnd
-      }
-      onChange = {
-        this.handleTimespanEndChange
-      }
-      /> <
-      /label> <
-      br / >
-      <
-      button type = "button"
-      onClick = {
-        this.add
-      } >
-      add <
-      /button> <
-      /form> <
-      br / >
+        <form>
+          <label>
+            Datahash:
+                <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
+          </label>
+          <br />
+          <label>
+            TimespanStart:
+                <input type="text" value={this.state.timespanStart} onChange={this.handleTimespanStartChange} />
+          </label>
+          <br />
+          <label>
+            TimespanEnd:
+                <input type="text" value={this.state.timespanEnd} onChange={this.handleTimespanEndChange} />
+          </label>
+          <br />
+          <button type="button" onClick={this.add}>
+            add
+              </button>
+        </form>
+        <br />
 
-      <
-      form >
-      <
-      label >
-      Auditor:
-      <
-      input type = "text"
-      value = {
-        this.state.existsauditor
-      }
-      onChange = {
-        this.handleExistsAuditorChange
-      }
-      /> <
-      /label> <
-      br / >
-      <
-      label >
-      Datahash:
-      <
-      input type = "text"
-      value = {
-        this.state.existsdatahash
-      }
-      onChange = {
-        this.handleExistsDatahashChange
-      }
-      /> <
-      /label> <
-      br / >
-      <
-      button type = "button"
-      onClick = {
-        this.exists
-      } >
-      exists <
-      /button> <
-      /form> <
-      div id = 'exists' >
-      <
-      /div> <
-      br / >
+        <form>
+          <label>
+            Auditor:
+                <input type="text" value={this.state.existsauditor} onChange={this.handleExistsAuditorChange} />
+          </label>
+          <br />
+          <label>
+            Datahash:
+                <input type="text" value={this.state.existsdatahash} onChange={this.handleExistsDatahashChange} />
+          </label>
+          <br />
+          <button type="button" onClick={this.exists}>
+            exists
+              </button>
+        </form>
+        <div id='exists'>
+        </div>
+        <br />
 
-      <
-      button className = "btn btn-default"
-      onClick = {
-        this.getLength
-      } >
-      getLength <
-      /button> <
-      div id = 'length' >
-      <
-      /div> <
-      br / >
+        <button className="btn btn-default" onClick={this.getLength}>
+          getLength
+            </button>
+        <div id='length'>
+        </div>
+        <br />
 
-      <
-      form >
-      <
-      label >
-      Index:
-      <
-      input type = "text"
-      value = {
-        this.state.index
-      }
-      onChange = {
-        this.handleIndexChange
-      }
-      /> <
-      /label> <
-      /form> <
-      button className = "btn btn-default"
-      onClick = {
-        this.getByIndex
-      } >
-      getByIndex <
-      /button> <
-      div id = 'getByIndexAuditor' / >
-      <
-      div id = 'getByIndexDataHash' / >
-      <
-      div id = 'getByIndexTimespanStart' / >
-      <
-      div id = 'getByIndexTimespanEnd' / >
-      <
-      br / >
+        <form>
+          <label>
+            Index:
+                <input type="text" value={this.state.index} onChange={this.handleIndexChange} />
+          </label>
+        </form>
+        <button className="btn btn-default" onClick={this.getByIndex}>
+          getByIndex
+            </button>
+        <div id='getByIndexAuditor' />
+        <div id='getByIndexDataHash' />
+        <div id='getByIndexTimespanStart' />
+        <div id='getByIndexTimespanEnd' />
+        <br />
 
-      <
-      button className = "btn btn-default"
-      onClick = {
-        this.listAllEvents
-      } >
-      listAllEvents <
-      /button> <
-      div id = 'allEvents' >
-      <
-      /div>
+        <button className="btn btn-default" onClick={this.listAllEvents}>
+          listAllEvents
+            </button>
+        <div id='allEvents'>
+        </div>
 
-      <
-      br / >
+        <br />
 
-      <
-      /div>
+      </div>
+
+
     );
   }
 }
