@@ -1,27 +1,4 @@
 [{
-  "constant": false,
-  "inputs": [{
-    "name": "_fundAddress",
-    "type": "address"
-  }, {
-    "name": "_dataHash1",
-    "type": "bytes32"
-  }, {
-    "name": "_dataHash2",
-    "type": "bytes32"
-  }, {
-    "name": "_timespanStart",
-    "type": "uint256"
-  }, {
-    "name": "_timespanEnd",
-    "type": "uint256"
-  }],
-  "name": "add",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
   "constant": true,
   "inputs": [{
     "name": "_auditor",
@@ -49,10 +26,7 @@
     "name": "auditor",
     "type": "address"
   }, {
-    "name": "dataHash1",
-    "type": "bytes32"
-  }, {
-    "name": "dataHash2",
+    "name": "dataHash",
     "type": "bytes32"
   }, {
     "name": "timespanStart",
@@ -60,6 +34,26 @@
   }, {
     "name": "timespanEnd",
     "type": "uint256"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [{
+    "name": "_fundAddress",
+    "type": "address"
+  }, {
+    "name": "_auditor",
+    "type": "address"
+  }, {
+    "name": "_dataHash",
+    "type": "bytes32"
+  }],
+  "name": "exists",
+  "outputs": [{
+    "name": "auditExists",
+    "type": "bool"
   }],
   "payable": false,
   "stateMutability": "view",
@@ -85,27 +79,24 @@
   "stateMutability": "view",
   "type": "function"
 }, {
-  "constant": true,
+  "constant": false,
   "inputs": [{
     "name": "_fundAddress",
     "type": "address"
   }, {
-    "name": "_auditor",
-    "type": "address"
-  }, {
-    "name": "_dataHash1",
+    "name": "_dataHash",
     "type": "bytes32"
   }, {
-    "name": "_dataHash2",
-    "type": "bytes32"
+    "name": "_timespanStart",
+    "type": "uint256"
+  }, {
+    "name": "_timespanEnd",
+    "type": "uint256"
   }],
-  "name": "exists",
-  "outputs": [{
-    "name": "auditExists",
-    "type": "bool"
-  }],
+  "name": "add",
+  "outputs": [],
   "payable": false,
-  "stateMutability": "view",
+  "stateMutability": "nonpayable",
   "type": "function"
 }, {
   "constant": true,
@@ -121,10 +112,7 @@
     "name": "auditor",
     "type": "address"
   }, {
-    "name": "dataHash1",
-    "type": "bytes32"
-  }, {
-    "name": "dataHash2",
+    "name": "dataHash",
     "type": "bytes32"
   }, {
     "name": "timespanStart",

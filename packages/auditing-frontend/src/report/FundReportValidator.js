@@ -1,6 +1,6 @@
-const schema = require('./FundReportSchema.json');
+import schema from "./FundReportSchema.json";
 
-var Ajv = require('ajv');
+import Ajv from "ajv";
 var ajv = new Ajv({allErrors: true});
 
 var validate = ajv.compile(schema);

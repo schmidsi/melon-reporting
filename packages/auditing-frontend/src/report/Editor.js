@@ -8,12 +8,11 @@ import {
 import {
     hashReport
 } from './FundReportHasher.js'
-require('codemirror/lib/codemirror.css');
-require('codemirror/mode/javascript/javascript');
+import "codemirror/lib/codemirror.css";
+import "codemirror/mode/javascript/javascript";
+import CodeMirror from "react-codemirror";
 
-var CodeMirror = require('react-codemirror');
-
-var data = require('./FundReportExampleData.json');
+import data from "./FundReportExampleData.json";
 
 class Editor extends Component {
     constructor(props) {
