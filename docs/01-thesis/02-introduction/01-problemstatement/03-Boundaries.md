@@ -15,3 +15,7 @@ We try to adapt to the latest Melon smart contracts but fall back to the last kn
 ### On-chain data
 
 We only work actively with data that is available on-chain. Off-chain data could be merged into the reporting system and we document the interfaces to do so as future work.
+
+## Other
+
+We exclude margin-trading in general for this thesis.
