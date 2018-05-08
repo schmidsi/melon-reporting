@@ -139,7 +139,7 @@ class App extends Component {
       .then(function (result) {
         var dataHash = web3.utils.toAscii(result.dataHash);
         document.getElementById('getByIndexAuditor').innerText = "Auditor: " + result.auditor;
-        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + "0x" + dataHash;
+        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + "0x" + web3.utils.asciiToHex(dataHash);
         document.getElementById('getByIndexTimespanStart').innerText = "TimespanStart: " + new Date(result.timespanStart * 1000);
         document.getElementById('getByIndexTimespanEnd').innerText = "TimespanEnd: " + new Date(result.timespanEnd * 1000);
       }).catch(function (error) {
