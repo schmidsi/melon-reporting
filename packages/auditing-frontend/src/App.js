@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, {
+  Component
+} from 'react';
 import './App.css';
 import Web3 from 'web3';
 import Editor from './report/Editor';
@@ -9,27 +11,18 @@ let auditingcontract;
 
 // parity addresses
 const testFund = "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de";
-const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
-const splitauditingcontract = "0x2bE47366cD59c5F744ECE9Ae166D915c31C617be";
-const activecontract = splitauditingcontract;
+//const auditorAccount = "0x00e16caA9073Ef442404BCAcA083914D31CD1984";
+const testnetauditing = "0xdd5C6E83A9EC2664f176f8f2A801a0B29e600d94";
+const kovanauditing = "0x79b7e51821da23f6659163ebafe9a04d0e6b6bc3";
+const activecontract = kovanauditing;
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    if (typeof web3 !== 'undefined') {
-      web3 = new Web3(web3.currentProvider);
-    } else {
-      web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
-    }
-
-    auditingcontract = new web3.eth.Contract(abi, activecontract);
-
-    // override the injected web3 from parity so we can use web3 1.0.0 functions like utils...
-    // NOTE: do not do this in production!
-    window.web3 = web3;
 
     this.state = {
+      auditorAccount: "",
       adddatahash: "0a",
       timespanStart: "0",
       timespanEnd: "0",
@@ -41,33 +34,81 @@ class App extends Component {
       valid: false,
     };
 
+    web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider("ws://localhost:8545"));
+    //var web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider("ws://localhost:8546"));
+
+    auditingcontract = new web3.eth.Contract(abi, activecontract);
+
+    web3.eth.getAccounts().then(function (result) {
+      this.setState({
+        auditorAccount: result[0]
+      });
+    }.bind(this));
+
+    // override the injected web3 from parity so we can use web3 1.0.0 functions like utils...
+    // NOTE: do not do this in production!
+    window.web3 = web3;
+
   }
 
 
-  handleAddDatahashChange = (event) => { this.setState({ adddatahash: event.target.value }); }
-  handleExistsDatahashChange = (event) => { this.setState({ existsdatahash: event.target.value }); }
-  handleExistsAuditorChange = (event) => { this.setState({ existsauditor: event.target.value }); }
-  handleIndexChange = (event) => { this.setState({ index: event.target.value }); }
-  handleTimespanStartChange = (event) => { this.setState({ timespanStart: event.target.value }); }
-  handleTimespanEndChange = (event) => { this.setState({ timespanEnd: event.target.value }); }
+  handleAddDatahashChange = (event) => {
+    this.setState({
+      adddatahash: event.target.value
+    });
+  }
+  handleExistsDatahashChange = (event) => {
+    this.setState({
+      existsdatahash: event.target.value
+    });
+  }
+  handleExistsAuditorChange = (event) => {
+    this.setState({
+      existsauditor: event.target.value
+    });
+  }
+  handleIndexChange = (event) => {
+    this.setState({
+      index: event.target.value
+    });
+  }
+  handleTimespanStartChange = (event) => {
+    this.setState({
+      timespanStart: event.target.value
+    });
+  }
+  handleTimespanEndChange = (event) => {
+    this.setState({
+      timespanEnd: event.target.value
+    });
+  }
 
-  handleValidChange = (res) => { this.setState({ valid: res.valid, errors: res.errors }); }
-  handleHashChange = (hash) => { this.setState({ hash: hash }); }
+  handleValidChange = (res) => {
+    this.setState({
+      valid: res.errors.length === 0,
+      errors: res.errors.toString()
+    });
+  }
+  handleHashChange = (hash) => {
+    this.setState({
+      hash: hash
+    });
+  }
 
   add = (event) => {
     event.preventDefault();
 
-    var auditor = auditorAccount;
-    // data hex has to have 64 characters
+    var auditor = this.state.auditorAccount;
+    //var dataHash = web3.utils.asciiToHex(this.state.adddatahash);
     var dataHash = this.state.adddatahash;
-    var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
-    var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
 
     var timespanStart = this.state.timespanStart;
     var timespanEnd = this.state.timespanEnd;
 
-    auditingcontract.methods.add(testFund, dataHash1, dataHash2, timespanStart, timespanEnd)
-      .send({ from: auditor })
+    auditingcontract.methods.add(testFund, dataHash, timespanStart, timespanEnd)
+      .send({
+        from: auditor
+      })
   }
 
   exists = (event) => {
@@ -75,11 +116,9 @@ class App extends Component {
 
     var auditor = this.state.existsauditor;
 
-    var dataHash = this.state.existsdatahash;
-    var dataHash1 = web3.utils.fromAscii(dataHash.substring(0, 32));
-    var dataHash2 = web3.utils.fromAscii(dataHash.substring(32, 64));
+    var dataHash = web3.utils.asciiToHex(this.state.existsdatahash);
 
-    auditingcontract.methods.exists(testFund, auditor, dataHash1, dataHash2)
+    auditingcontract.methods.exists(testFund, auditor, dataHash)
       .call()
       .then(function (result) {
         document.getElementById('exists').innerText = "exists: " + result;
@@ -98,11 +137,9 @@ class App extends Component {
     auditingcontract.methods.getByIndex(testFund, this.state.index)
       .call()
       .then(function (result) {
-        var dataHash1 = web3.utils.toAscii(result.dataHash1);
-        var dataHash2 = web3.utils.toAscii(result.dataHash2);
-        var dataHash = dataHash1 + dataHash2;
+        var dataHash = web3.utils.toAscii(result.dataHash);
         document.getElementById('getByIndexAuditor').innerText = "Auditor: " + result.auditor;
-        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + dataHash;
+        document.getElementById('getByIndexDataHash').innerText = "Datahash: " + "0x" + dataHash;
         document.getElementById('getByIndexTimespanStart').innerText = "TimespanStart: " + new Date(result.timespanStart * 1000);
         document.getElementById('getByIndexTimespanEnd').innerText = "TimespanEnd: " + new Date(result.timespanEnd * 1000);
       }).catch(function (error) {
@@ -158,45 +195,45 @@ class App extends Component {
         <p>
           Fund: <i>{testFund}</i>
           <br />
-          Auditor: <i>{auditorAccount}</i>
+          Auditor: <i>{this.state.auditorAccount}</i>
         </p>
 
         <form>
           <label>
             Datahash:
-            <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
+                <input type="text" value={this.state.adddatahash} onChange={this.handleAddDatahashChange} />
           </label>
           <br />
           <label>
             TimespanStart:
-            <input type="text" value={this.state.timespanStart} onChange={this.handleTimespanStartChange} />
+                <input type="text" value={this.state.timespanStart} onChange={this.handleTimespanStartChange} />
           </label>
           <br />
           <label>
             TimespanEnd:
-            <input type="text" value={this.state.timespanEnd} onChange={this.handleTimespanEndChange} />
+                <input type="text" value={this.state.timespanEnd} onChange={this.handleTimespanEndChange} />
           </label>
           <br />
           <button type="button" onClick={this.add}>
             add
-          </button>
+              </button>
         </form>
         <br />
 
         <form>
           <label>
             Auditor:
-            <input type="text" value={this.state.existsauditor} onChange={this.handleExistsAuditorChange} />
+                <input type="text" value={this.state.existsauditor} onChange={this.handleExistsAuditorChange} />
           </label>
           <br />
           <label>
             Datahash:
-            <input type="text" value={this.state.existsdatahash} onChange={this.handleExistsDatahashChange} />
+                <input type="text" value={this.state.existsdatahash} onChange={this.handleExistsDatahashChange} />
           </label>
           <br />
           <button type="button" onClick={this.exists}>
             exists
-          </button>
+              </button>
         </form>
         <div id='exists'>
         </div>
@@ -204,7 +241,7 @@ class App extends Component {
 
         <button className="btn btn-default" onClick={this.getLength}>
           getLength
-        </button>
+            </button>
         <div id='length'>
         </div>
         <br />
@@ -212,12 +249,12 @@ class App extends Component {
         <form>
           <label>
             Index:
-            <input type="text" value={this.state.index} onChange={this.handleIndexChange} />
+                <input type="text" value={this.state.index} onChange={this.handleIndexChange} />
           </label>
         </form>
         <button className="btn btn-default" onClick={this.getByIndex}>
           getByIndex
-        </button>
+            </button>
         <div id='getByIndexAuditor' />
         <div id='getByIndexDataHash' />
         <div id='getByIndexTimespanStart' />
@@ -226,13 +263,15 @@ class App extends Component {
 
         <button className="btn btn-default" onClick={this.listAllEvents}>
           listAllEvents
-        </button>
+            </button>
         <div id='allEvents'>
         </div>
 
         <br />
 
       </div>
+
+
     );
   }
 }

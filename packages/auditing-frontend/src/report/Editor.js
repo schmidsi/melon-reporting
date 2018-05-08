@@ -8,12 +8,11 @@ import {
 import {
     hashReport
 } from './FundReportHasher.js'
-require('codemirror/lib/codemirror.css');
-require('codemirror/mode/javascript/javascript');
+import "codemirror/lib/codemirror.css";
+import "codemirror/mode/javascript/javascript";
+import CodeMirror from "react-codemirror";
 
-var CodeMirror = require('react-codemirror');
-
-var data = require('./FundReportExampleData.json');
+import data from "./FundReportExampleData.json";
 
 class Editor extends Component {
     constructor(props) {
@@ -43,8 +42,9 @@ class Editor extends Component {
             });
 
             var res = validateReport(jsonObject);
+            // TODO...
             this.handleValidChange(res);
-            if (res.valid === true) {
+            if (res.errors.length === 0) {
                 var hash = hashReport(flatNewCode);
                 this.handleHashChange(hash);
             }

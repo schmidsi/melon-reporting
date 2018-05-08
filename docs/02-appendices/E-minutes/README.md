@@ -2,6 +2,15 @@
 
 ## Meeting 2018-05-03
 
+Present:
+
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Mona El Isa (Melonport)
+* Reto Trinkler (Melonport)
+* John (Melonport)
+* Markus Knecht (FHNW)
+
 ### Questions
 * Volatility for reports: from inception to timespanEnd or from timespanStart to timespanEnd?
 * Risk Mgmt: is data immutable?
@@ -21,7 +30,7 @@
 * Questions
 
 ### Use Cases
-jo: Comment timespan is usually there, but not legally binding (just provides context)
+John: Comment timespan is usually there, but not legally binding (just provides context)
 
 Enhance report with costs around funds (gas prices)
 
@@ -36,8 +45,8 @@ What if an auditor refuses an audit?
 New: status for add() function
 * unqualified opinion (good)
 * qualified opinion (bad)
-* disclaimer opinion ()
-* adverse opinion ()
+* disclaimer opinion
+* adverse opinion
 
 ### Mockup
 Strategy might be optional for fund managers, but is highly encouraged!
@@ -50,7 +59,7 @@ Possible new attributes
 * Substyles
 --> List of strategies / styles to pick from
 
-John provides us with the most recent strategies and styles from the hedge fund .
+John provides us with the most recent strategies and styles from the hedge fund.
 We might have to invent new strategy/style standards for crypto.
 
 Discussion about whitelist: we now assume that it is fixed.
@@ -88,7 +97,7 @@ Token correlation matrix is good
 Knecht looks up if names can be looked up with ENS
 
 * show addresses with green tick
-* ... (kind of off-topic) can the manager "kick" red flags?
+* ... (kind of off-topic) can the manager "kick" red flag participants?
 
 #### Audits
 * ENS names for auditors (it's about reputation for them)
@@ -109,6 +118,7 @@ Don't waste time on name lookup.
 Sha256 should fit into bytes32, just save the hex representation.
 
 Knecht: think about extensibility of the product (so future work is easily implementable).
+
 
 ## Coachmeeting 2018-04-17
 

@@ -1,8 +1,8 @@
-var forge = require('node-forge')
+import { md as _md } from "node-forge";
 
 export function hashReport(report) {
   // maybe use MD5 which fits into single bytes32 solidity value
-  var md = forge.md.sha256.create();
+  var md = _md.sha256.create();
   md.update(report);
-  return md.digest().toHex();
+  return "0x" + md.digest().toHex();
 }
