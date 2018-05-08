@@ -6,6 +6,12 @@
 
 ## Actors
 
+Investor: John Orthwein
+Manager: Mona El Isa
+Auditor: PWC (name?)
+Regulator: Bank Frick (name?)
+
+
 ### Investor
 
 * Timespan: Mainly inception to now

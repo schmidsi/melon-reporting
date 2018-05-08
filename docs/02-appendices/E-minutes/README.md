@@ -59,7 +59,7 @@ Possible new attributes
 * Substyles
 --> List of strategies / styles to pick from
 
-John provides us with the most recent strategies and styles from the hedge fund .
+John provides us with the most recent strategies and styles from the hedge fund.
 We might have to invent new strategy/style standards for crypto.
 
 Discussion about whitelist: we now assume that it is fixed.
