@@ -9,9 +9,10 @@ contract Auditing {
 
     struct Audit {
         address auditor; // who audited the report
-        bytes32 dataHash; // the report dataHash
-        uint timespanStart; // the start timestamp of the report
-        uint timespanEnd; // the end timestamp of the report
+        bytes32 dataHash1; // the first part of the report dataHash
+        bytes32 dataHash2; // the second part of the report dataHash
+        uint256 timespanStart; // the start timestamp of the report
+        uint256 timespanEnd; // the end timestamp of the report
     }
 
     // for this mapping, a getter is created 
@@ -22,7 +23,7 @@ contract Auditing {
     address[] public approvedAuditors;
 
     // events
-    event Added(address _fundAddress, uint _index);
+    event Added(address _fundAddress, uint256 _index);
 
     /// Constructor
     function Auditing(address[] _approvedAuditors) public payable {
@@ -30,28 +31,28 @@ contract Auditing {
     }
 
     /// Creates a new audit on a fund specified with `_fundAddress`,
-    /// the hashed data in `_dataHash` and the timespan timestamps 
+    /// the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
-    function add(address _fundAddress, bytes32 _dataHash, uint _timespanStart, uint _timespanEnd) 
+    function add(address _fundAddress, bytes32 _dataHash1, bytes32 _dataHash2, uint256 _timespanStart, uint256 _timespanEnd) 
             public {
         // check if the sender is an approved auditor with "require"
         require(isApprovedAuditor(msg.sender));
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd);
+        Audit memory newAudit = Audit(msg.sender, _dataHash1, _dataHash2, _timespanStart, _timespanEnd);
         fundAudits[_fundAddress].push(newAudit);
 
-        uint index = fundAudits[_fundAddress].length - 1;
+        uint256 index = fundAudits[_fundAddress].length - 1;
         emit Added(_fundAddress, index);
     }
 
     /// Validates that the provided data is mapped to an existing audit
-    function exists(address _fundAddress, address _auditor, bytes32 _dataHash) 
+    function exists(address _fundAddress, address _auditor, bytes32 _dataHash1, bytes32 _dataHash2) 
             public view 
             returns (bool auditExists) {
         Audit[] memory audits = fundAudits[_fundAddress];
-        for (uint i = 0; i < audits.length; i++) {
+        for (uint256 i = 0; i < audits.length; i++) {
             Audit memory audit = audits[i];
-            if (audit.auditor == _auditor && audit.dataHash == _dataHash) {
+            if (audit.auditor == _auditor && audit.dataHash1 == _dataHash1 && audit.dataHash2 == _dataHash2) {
                 // audit exists
                 return true;
             }
@@ -63,19 +64,20 @@ contract Auditing {
     /// Returns the length of the audit array of a specific fund
     function getLength(address _fundAddress)
             public view
-            returns (uint index) {
+            returns (uint256 index) {
         return fundAudits[_fundAddress].length;
     }
 
     /// Returns the requested audit data
-    function getByIndex(address _fundAddress, uint _index)
+    function getByIndex(address _fundAddress, uint256 _index)
             public view
-            returns (address auditor, bytes32 dataHash, uint timespanStart, uint timespanEnd) {
+            returns (address auditor, bytes32 dataHash1, bytes32 dataHash2, uint256 timespanStart, uint256 timespanEnd) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
         auditor = audit.auditor;
-        dataHash = audit.dataHash;
+        dataHash1 = audit.dataHash1;
+        dataHash2 = audit.dataHash2;
         timespanStart = audit.timespanStart;
         timespanEnd = audit.timespanEnd;
     }
@@ -83,7 +85,7 @@ contract Auditing {
     function isApprovedAuditor(address _auditor) 
             public view
             returns (bool auditorIsApproved) {
-        for (uint i = 0; i < approvedAuditors.length; i++) {
+        for (uint256 i = 0; i < approvedAuditors.length; i++) {
             address auditor = approvedAuditors[i];
             if (auditor == _auditor) {
                 // auditor is approved
@@ -94,8 +96,9 @@ contract Auditing {
         return false;
     }
 
+    /*
     /// Returns true if a fund is completely audited over a specific timespan.
-    function isComplete(address _fundAddress, uint _timespanStart, uint _timespanEnd)
+    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
             public view
             returns (bool complete) {
         Audit[] memory audits = fundAudits[_fundAddress];
@@ -117,5 +120,6 @@ contract Auditing {
 
         return true;
     }
+    */
 
 }
