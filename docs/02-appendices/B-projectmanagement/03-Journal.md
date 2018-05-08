@@ -88,3 +88,33 @@ We already have the following questions:
 * priceHistory: is daily interval good?
 * priceHistory: which value? mean or median or snapshot?
 * Address to real name lookups on-chain?
+
+## Calendar Week 19
+
+Hello everybody
+
+### Minutes
+
+Last week we met in Zug for the presentation and a fruitful discussion of our prototype work. You find the minutes [online](https://melon-reporting.now.sh/02-appendices/E-minutes/) but also copy/pasted to this mail for your reading convenience.
+
+### Work
+
+* We updated the [project planning](https://github.com/melonproject/reporting-thesis/projects/1) according to the feedback from this meeting
+* We added [decisions](https://melon-reporting.now.sh/02-appendices/B-projectmanagement/06-Decisions.html) derived from this meeting. Also pasted to this mail. The main decision is that we will focus on on-chain data but document the interface how in the future off-chain data (e.g. from IPFS) could also be used.
+* Benjamin deployed the auditing prototype smart contracts to kovan and the simple front-end to now: https://auditing-frontend-hccgfdqbgw.now.sh/. Please make sure that you have MetaMask installed if accessing this link otherwise an ugly error will appear.
+
+### Small planning shift
+
+We realized that there is too little time and resources left until the end of the second iteration on 5th July. But we already have two counter measures:
+
+* We promised to also hand in a first draft of the report to the coaches by 5th July. We decided that the main focus for this iteration should be the product and not the report. So we'll focus on building the product and will work on the report later on: **The new deadline for the first draft of the report is: 11th July**, so that the coaches have enough time to read it until the coach meeting on 17th July.
+* Simon will try to synchronize the general Melon-planning with the thesis planning better in order to move some days from the final sprint in August to June.
+
+### Next steps
+
+* **All**: Find more users for explorative user testings / interviews. If you know someone who is interested in our work and could have good feedback, please send me the contacts.
+* Enhance mockup with all the feedback. The mockup will have much more features on it as we will actually implement. This is by intention: The mockup should also guide and inspire future work.
+* Start with the real product:
+  * Deterministic data extraction module with GraphQL endpoint
+  * Report rendering/visualization
+* **Next milestone: 12th June: Final specification** presented to the coaches in Brugg.
