@@ -12,6 +12,7 @@ Present:
 * Markus Knecht (FHNW)
 
 ### Questions
+
 * Volatility for reports: from inception to timespanEnd or from timespanStart to timespanEnd?
 * Risk Mgmt: is data immutable?
 * priceHistory: is daily interval good?
@@ -21,6 +22,7 @@ Present:
 * Datahash could be a direct ipfs hash? (ipfsjs)
 
 ### Agenda
+
 * Goals
 * Use Cases
 * Data Schema
@@ -29,7 +31,12 @@ Present:
 * Discussion
 * Questions
 
+### Goals
+
+Goals and use cases are agreed upon by the coaches and client (i.e. Melonport)
+
 ### Use Cases
+
 John: Comment timespan is usually there, but not legally binding (just provides context)
 
 Enhance report with costs around funds (gas prices)
@@ -40,24 +47,28 @@ priceHistory: in the old world its a snapshot
 maybe use "volume weighed average price"? might be too complicated to calculate...
 
 ### MIP
+
 What if an auditor refuses an audit?
 
 New: status for add() function
+
 * unqualified opinion (good)
 * qualified opinion (bad)
 * disclaimer opinion
 * adverse opinion
 
 ### Mockup
+
 Strategy might be optional for fund managers, but is highly encouraged!
 
 #### Meta
 
 Possible new attributes
+
 * Style
 * Substrategies
 * Substyles
---> List of strategies / styles to pick from
+  --> List of strategies / styles to pick from
 
 John provides us with the most recent strategies and styles from the hedge fund.
 We might have to invent new strategy/style standards for crypto.
@@ -72,12 +83,15 @@ Might be future work ("changing whitelists"):
 
 Benchmark is not in the fund report data yet.
 Benchmarks have to be bound to strategy
+
 * Weighted average of the share price of all fund weighed by AUM.
 * Proposal from John: not benchmark, but **reference fund**
 
 #### Holdings
+
 Token correlation matrix is good
-* correlation between -1 and 
+
+* correlation between -1 and
 * top right values are all 1
 * max drawdown
 * downside deviation
@@ -85,6 +99,7 @@ Token correlation matrix is good
 * price change
 
 #### Trades
+
 * for every trade: show gas price
 * filters (for the website)
 * transaction hash of trade
@@ -100,9 +115,11 @@ Knecht looks up if names can be looked up with ENS
 * ... (kind of off-topic) can the manager "kick" red flag participants?
 
 #### Audits
+
 * ENS names for auditors (it's about reputation for them)
 
 ### Discussion
+
 * one real stakeholder for each actor (Mona: maybe regulator from Liechtenstein?)
 * include Bank Frick for feedback
 
@@ -111,6 +128,7 @@ Knecht looks up if names can be looked up with ENS
 ### Questions
 
 Possible Off-chain data / legal data:
+
 * Jurisdiction
 
 Don't waste time on name lookup.
@@ -118,7 +136,6 @@ Don't waste time on name lookup.
 Sha256 should fit into bytes32, just save the hex representation.
 
 Knecht: think about extensibility of the product (so future work is easily implementable).
-
 
 ## Coachmeeting 2018-04-17
 
@@ -139,21 +156,23 @@ Present:
 * Citations?
 
 ### Documentation outline
+
 The content of the report is good, but the structure is not as intended.
 Write as if the project is finished, e.g. do not include something like a step by step report.
 Place planning, iterations, milestones, variants, prototype etc. on the end of the document.
 
 * Research -> State of the art. Or choose a different term, Ms. Hauser will supply one
 * Delete conclusion & approach
-* New chapter Analysis: summary of what we learned from the "research", 
+* New chapter Analysis: summary of what we learned from the "research",
 * Evaluate chapter: in appendix
 * Design + Production -> new Chapter Solution
 
 We propose a new outline via mail.
 
 ### Protoype specification
+
 The MIP is a good idea, but we should not focus on creating the process to define such MIPs (do not waste time...).
-Document the concept of *Contract Standard Proposal* in the chapter *state of the art*.
+Document the concept of _Contract Standard Proposal_ in the chapter _state of the art_.
 Standard Report Mockup Draft is a good idea.
 Interchangable Fund Data Format.
 
@@ -164,32 +183,37 @@ It would be really nice to have a JSON that is also extensible for the "new worl
 
 Knecht: We should not care about security considerations about signing (e.g. do I sign the data I have just seen?), but care about signing on protocol level.
 
-Knecht: it is important that we work with ONE specific version of the protocol, e.g. the state 
+Knecht: it is important that we work with ONE specific version of the protocol, e.g. the state
 of the competition in February(?).
 
 Important: Define list of use cases, actors (regulators etc.).
 
 ### Project goals
+
 Before specifying project goals (deliverables), define what a user can do with our project.
 New milestone for 3.5.2018: Use cases are defined and agreed on.
 
-Define the goals from the *user perspective*, **not** from the technical perspective.
+Define the goals from the _user perspective_, **not** from the technical perspective.
 
-Show the current project goals in the meeting with Melonport as *ideas*.
-Knecht: Specify the *what*, not the *how*.
+Show the current project goals in the meeting with Melonport as _ideas_.
+Knecht: Specify the _what_, not the _how_.
 
 ### Detailed project plan (GitHub)
+
 Do not include the milestones in the "Kanban" board.
 
 ### Melon Hackathon
+
 Simon will write Mr. Knecht about the hackathon.
 
 ### Citations
+
 Use the IEEE format (with numbers), maybe there is a plugin.
 Ms. Hauser sent a mail with a link.
 Maybe use LaTeX when citation does not work at all.
 
 ### Expert
+
 The expert for the project will be Konrad Durrer (CSS). He organizes a midterm presentation in May.
 
 ## Coachmeeting 2018-03-27

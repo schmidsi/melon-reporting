@@ -1,5 +1,7 @@
 # Use Cases
 
+_Note:_ The following use cases serve as the official project scope agreed upon by the coaches and the client during the prototype presentation meeting on 3rd Mai 2018 in Zug.
+
 ## Use case diagram
 
 ![](/assets/UseCaseDiagram.svg)
@@ -10,7 +12,6 @@ Investor: John Orthwein
 Manager: Mona El Isa
 Auditor: PWC (name?)
 Regulator: Bank Frick (name?)
-
 
 ### Investor
 
