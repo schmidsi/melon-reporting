@@ -6,9 +6,22 @@
   "directories": {
     "doc": "docs"
   },
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "gitbook": "gitbook",
-    "deploy:docs": "./scripts/deploy-docs.sh"
+    "deploy:docs": "./scripts/deploy-docs.sh",
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna run --parallel clean",
+    "lint": "lerna run --parallel lint",
+    "format": "lerna run --parallel format",
+    "test": "lerna run --parallel test",
+    "build": "lerna run --stream build",
+    "dev": "lerna run --stream dev"
   },
   "repository": {
     "type": "git",
