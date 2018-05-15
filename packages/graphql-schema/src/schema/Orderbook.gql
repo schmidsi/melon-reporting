@@ -1,0 +1,7 @@
+type Orderbook {
+  allOrders: [Order]
+  sellEntries: [OrderbookEntry]
+  buyEntries: [OrderbookEntry]
+  totalBuyVolume: Quantity
+  totalSellVolume: Quantity
+}

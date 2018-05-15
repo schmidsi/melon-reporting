@@ -1,0 +1,4 @@
+type HowMuchOfAsset {
+  symbol: Symbol!
+  howMuch: String!
+}
