@@ -1,0 +1,8 @@
+{
+  "spec_dir": "tests/integration",
+  "spec_files": ["*/**/*.js"],
+  "stopSpecOnExpectationFailure": false,
+  "helpers": ["setup.js"],
+  "random": false,
+  "DEFAULT_TIMEOUT_INTERVAL": 30000
+}

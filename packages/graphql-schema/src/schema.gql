@@ -1,0 +1,15 @@
+#import "./schema/Symbol.gql"
+#import "./schema/Order.gql"
+#import "./schema/ExchangeEnum.gql"
+#import "./schema/HowMuchOfAsset.gql"
+#import "./schema/Quantity.gql"
+#import "./schema/Orderbook.gql"
+#import "./schema/OrderbookEntry.gql"
+#import "./schema/Query.gql"
+#import "./schema/Price.gql"
+#import "./schema/Subscription.gql"
+
+schema {
+  query: Query
+  subscription: Subscription
+}
