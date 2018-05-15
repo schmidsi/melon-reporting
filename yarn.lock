@@ -6871,7 +6871,7 @@ npm@^2.1.12:
     wrappy "~1.0.2"
     write-file-atomic "~1.1.4"
 
-npm@^6.0.0, npm@^6.0.1:
+npm@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/npm/-/npm-6.0.1.tgz#13b8850d5521daf39924600ad87220fcb6636d81"
   dependencies:

@@ -1,7 +1,6 @@
 {
   "name": "reporting-thesis",
   "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
-  "version": "0.0.1",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -49,5 +48,9 @@
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
     "gitbook-plugin-katex": "^1.1.4",
     "npm": "^6.0.1"
-  }
+  },
+  "contributors": [
+    "Simon Emanuel Schmid <simon@schmid.io>",
+    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
+  ]
 }
