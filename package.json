@@ -27,13 +27,13 @@
   },
   "devDependencies": {
     "gitbook-cli": "^2.3.2",
-    "lerna": "^2.9.0",
+    "lerna": "^2.11.0",
     "svgexport": "^0.3.2"
   },
   "homepage": "https://github.com/melonproject/reporting-thesis#readme",
   "dependencies": {
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
     "gitbook-plugin-katex": "^1.1.4",
-    "npm": "^6.0.0"
+    "npm": "^6.0.1"
   }
 }
