@@ -1,7 +1,7 @@
 {
-  "name": "auditing-frontend",
-  "version": "0.1.0",
-  "private": false,
+  "name": "prototype",
+  "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "eth-sig-util": "^1.4.2",
     "jsonschema": "^1.2.4",
@@ -13,9 +13,9 @@
     "web3": "^1.0.0-beta.34"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prototype": "react-scripts start"
   }
 }
