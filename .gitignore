@@ -64,3 +64,6 @@ _book
 /out
 
 .vscode/
+
+# dependencies
+node_modules/
