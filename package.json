@@ -15,6 +15,7 @@
   "scripts": {
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
+    "prototype": "lerna run --stream prototype",
     "bootstrap": "lerna bootstrap",
     "clean": "lerna run --parallel clean",
     "lint": "lerna run --parallel lint",
