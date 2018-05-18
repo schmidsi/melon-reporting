@@ -1,9 +1,32 @@
 # Minutes
 
+## Meeting 2018-05-18
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Markus Knecht (FHNW)
+* Jörg Luthiger (FHNW)
+* Konrad Durrer
+
+### System architecture
+Arrows are wrong or not very descriptive --> Do this in proper UML
+
+### Questions
+* What is the database technology? --> look with Melonport
+* Describe WHY we used the technologies, most importantly for the consolidation service/database
+* Evaluate the 
+* In which interval does the consolidation service cache the data?
+* Provide a "button" to toggle the consolidation service or use "own" software
+* "Usability in the technology stack": how easy is it to use the product without the consolidation service?
+
+### Thesis defence
+Date: 3.9.2018
+Morning
+
 ## Meeting 2018-05-03
 
 Present:
-
 * Simon Emanuel Schmid
 * Benjamin Zumbrunn
 * Mona El Isa (Melonport)
