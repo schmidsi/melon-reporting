@@ -44,9 +44,8 @@ contract Auditing {
         require(isApprovedAuditor(msg.sender));
 
         Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, uint256(_opinion));
-        fundAudits[_fundAddress].push(newAudit);
+        uint256 index = insertAudit(_fundAddress, newAudit);
 
-        uint256 index = fundAudits[_fundAddress].length - 1;
         emit Added(_fundAddress, index);
     }
 
@@ -103,6 +102,48 @@ contract Auditing {
     }
 
     // TODO use insertion for new and out of place audit, then shift indexes
+    /// Inserts the audit in the audit array of a fund.
+    /// This inserts the array by the timespanEnd value of the new audit,
+    /// so the resulting array is always sorted by timespanEnd
+    /// => index 0 is audit with lowest timespanEnd.
+    function insertAudit(address _fundAddress, Audit _audit) 
+            private
+            returns (uint256 insertIndex) {
+
+        // old way for reference TODO delete comment
+        //fundAudits[_fundAddress].push(newAudit);
+        //uint256 index = fundAudits[_fundAddress].length - 1;
+
+        // search for first audit that has lower timespanEnd
+        // TODO there might be a better implementation without the edge case check
+        uint256 i = fundAudits[_fundAddress].length - 1; // array end index
+        for (i; i >= 0; i--) {
+            uint256 tempTimespanEnd = fundAudits[_fundAddress][i].timespanEnd;
+
+            if (tempTimespanEnd < _audit.timespanEnd) { // 
+                // lower timespanEnd found
+                break;
+            }
+        }
+
+        // validate edge case: audit might be inserted before audit at index 0
+        if (i == 0 && fundAudits[_fundAddress][i].timespanEnd < _audit.timespanEnd) {
+            insertIndex = 0;
+        }
+        else {
+            insertIndex = i + 1;
+        }
+
+        // reassign indexes of audits that shall be in front of the new audit
+        for (uint256 j = fundAudits[_fundAddress].length; j > insertIndex; j--) {
+            fundAudits[_fundAddress][j] = fundAudits[_fundAddress][j - 1];
+        }
+
+        // insert new audit
+        fundAudits[_fundAddress][insertIndex] = _audit;
+
+        return insertIndex;
+    }
 
     /*
     /// Returns true if a fund is completely audited over a specific timespan.
@@ -111,7 +152,7 @@ contract Auditing {
             returns (bool complete) {
         Audit[] memory audits = fundAudits[_fundAddress];
 
-        // TODO use array that is sorted by enddates
+        // use array that is sorted by enddates
         // TODO use algorithm that begins to check at the end of the array
 
         // pseudo-code for a possible implementation
