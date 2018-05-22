@@ -103,25 +103,24 @@ contract Auditing {
 
     // TODO use insertion for new and out of place audit, then shift indexes
     /// Inserts the audit in the audit array of a fund.
-    /// This inserts the array by the timespanEnd value of the new audit,
+    /// This inserts the audit by its timespanEnd value,
     /// so the resulting array is always sorted by timespanEnd
     /// => index 0 is audit with lowest timespanEnd.
     function insertAudit(address _fundAddress, Audit _audit) 
             private
             returns (uint256 insertIndex) {
-
-        // old way for reference TODO delete comment
-        //fundAudits[_fundAddress].push(newAudit);
-        //uint256 index = fundAudits[_fundAddress].length - 1;
-
         // search for first audit that has lower timespanEnd
         // TODO there might be a better implementation without the edge case check
         uint256 i = fundAudits[_fundAddress].length - 1; // array end index
         for (i; i >= 0; i--) {
             uint256 tempTimespanEnd = fundAudits[_fundAddress][i].timespanEnd;
+            if (tempTimespanEnd <= _audit.timespanEnd) { // 
+                // lower or equal timespanEnd found
+                // NOTE: We break on equal timespanEnds, because the new audit probably
+                // involves a longer time period. When the longer period is in front,
+                // the isComplete function is more performant (can skip larger timespans).
 
-            if (tempTimespanEnd < _audit.timespanEnd) { // 
-                // lower timespanEnd found
+                // TODO we might even check if the period is longer & insert by this!
                 break;
             }
         }
