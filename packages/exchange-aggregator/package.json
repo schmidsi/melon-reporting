@@ -1,0 +1,58 @@
+{
+  "name": "@melonproject/exchange-aggregator",
+  "version": "0.0.0",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "clean": "rimraf coverage dist",
+    "lint": "tslint -p tsconfig.json",
+    "format": "prettier --write \"{src,tests}/**/*.ts\"",
+    "test": "jest"
+  },
+  "author": "Melonport <team@melonport.com>",
+  "contributors": [
+    "Simon Emanuel Schmid <simon@schmid.io>",
+    "Sebastian Siemssen <fubhy@fubhy.com>",
+    "Jenna Zenk <jenna@melonport.com>"
+  ],
+  "dependencies": {
+    "@melonproject/smart-contracts": "0.8.0-alpha.17",
+    "axios": "^0.18.0",
+    "bignumber.js": "4.1.0",
+    "debug": "2.6.9",
+    "isomorphic-ws": "^4.0.1",
+    "ramda": "^0.25.0",
+    "rxjs": "^5.5.9",
+    "ws": "^5.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "7.0.0-beta.42",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.42",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0-beta.42",
+    "@babel/plugin-transform-runtime": "7.0.0-beta.42",
+    "@babel/preset-env": "7.0.0-beta.42",
+    "@babel/runtime": "7.0.0-beta.42",
+    "jest": "^22.4.3",
+    "jest-cli": "^22.4.3",
+    "prettier": "^1.11.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^22.4.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["<rootDir>/tests/config/jest.setup"],
+    "transform": {
+      "^.+\\.(jsx?|tsx?)$": "ts-jest"
+    },
+    "transformIgnorePatterns": ["node_modules/(?!@melonproject/)"],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleDirectories": ["node_modules/"],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    }
+  }
+}

@@ -1,9 +1,68 @@
 # Minutes
 
+## Meeting 2018-05-22
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Markus Knecht (FHNW)
+
+### Documentation
+Be careful what is important (appendix/content).
+
+### Expert meeting
+Write mail to expert: in which products might he be interested now?
+(Maybe he does not want to see anything at all for now.)
+
+### Bachelor defence
+Maybe hold presentation in english, but this has to be communicated / asked beforehand.
+
+Assessment sheet: Knecht sends it to us (with the bonus points for blockchain projects).
+
+### Method
+Say explicitly that the approach from Melonport (and in the Blockchain space generally) is something new (old world/new world) and wants to be a bit _disruptive_.
+
+--> Describe Melonport in some sentences.
+
+### Modular approach
+Try to build systems that are as modular as possible and describe this in the documentation.
+
+### Test presentation
+Organize a rehearsal presentation after the thesis contribution date (week 34?).
+
+### Tasks
+* Write mail for english presentation
+* Write mail to expert
+* Organize rehearsal presentation
+
+
+## Meeting 2018-05-18
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Markus Knecht (FHNW)
+* Jörg Luthiger (FHNW)
+* Konrad Durrer
+
+### System architecture
+Arrows are wrong or not very descriptive --> Do this in proper UML
+
+### Questions
+* What is the database technology? --> look with Melonport
+* Describe WHY we used the technologies, most importantly for the consolidation service/database
+* Evaluate the 
+* In which interval does the consolidation service cache the data?
+* Provide a "button" to toggle the consolidation service or use "own" software
+* "Usability in the technology stack": how easy is it to use the product without the consolidation service?
+
+### Thesis defence
+Date: 3.9.2018
+Morning
+
 ## Meeting 2018-05-03
 
 Present:
-
 * Simon Emanuel Schmid
 * Benjamin Zumbrunn
 * Mona El Isa (Melonport)

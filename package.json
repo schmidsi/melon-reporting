@@ -1,14 +1,27 @@
 {
   "name": "reporting-thesis",
   "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
-  "version": "0.0.1",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "gitbook": "gitbook",
-    "deploy:docs": "./scripts/deploy-docs.sh"
+    "deploy:docs": "./scripts/deploy-docs.sh",
+    "prototype": "lerna run --stream prototype",
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna run --parallel clean",
+    "lint": "lerna run --parallel lint",
+    "format": "lerna run --parallel format",
+    "test": "lerna run --parallel test",
+    "build": "lerna run --stream build",
+    "dev": "lerna run --stream dev"
   },
   "repository": {
     "type": "git",
@@ -27,13 +40,17 @@
   },
   "devDependencies": {
     "gitbook-cli": "^2.3.2",
-    "lerna": "^2.9.0",
+    "lerna": "^2.11.0",
     "svgexport": "^0.3.2"
   },
   "homepage": "https://github.com/melonproject/reporting-thesis#readme",
   "dependencies": {
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
     "gitbook-plugin-katex": "^1.1.4",
-    "npm": "^6.0.0"
-  }
+    "npm": "^6.0.1"
+  },
+  "contributors": [
+    "Simon Emanuel Schmid <simon@schmid.io>",
+    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
+  ]
 }
