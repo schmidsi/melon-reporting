@@ -151,7 +151,6 @@ contract Auditing is AuditingInterface {
     function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
             external view
             returns (bool complete) {
-
         // TODO
         //Audit[] memory audits = fundAudits[_fundAddress];
 
@@ -172,8 +171,7 @@ contract Auditing is AuditingInterface {
         //     return false // gap
         //   if nextAudit.start > timespanEnd:
         //     break // end of scope is reached
-
-        return true;
+        return _fundAddress == 0x0 && _timespanStart == _timespanEnd;
     }
 
 }

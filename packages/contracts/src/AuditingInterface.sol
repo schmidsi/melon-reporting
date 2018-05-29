@@ -4,7 +4,7 @@ pragma solidity ^0.4.21;
 /// @author Benjamin Zumbrunn <benzumbrunn@gmail.com>
 interface AuditingInterface {
 
-    // Public functions
+    /// External functions
     function add(
         address _fundAddress, 
         bytes32 _dataHash, 
