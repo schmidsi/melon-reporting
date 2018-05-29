@@ -4,6 +4,7 @@ pragma solidity ^0.4.21;
 // - require timespanEnd < now?
 
 /// @title Auditing smart contract for melon.
+
 contract Auditing {
 
     struct Audit {
@@ -11,10 +12,11 @@ contract Auditing {
         bytes32 dataHash; // the first part of the report dataHash
         uint256 timespanStart; // the start timestamp of the report
         uint256 timespanEnd; // the end timestamp of the report
-        uint256 opinion; // the audit class for this timespan
+        Opinion opinion; // the audit class for this timespan
     }
 
-    enum Opinion { UnqualifiedOpinion, 
+    enum Opinion { 
+        UnqualifiedOpinion, 
         QualifiedOpinion, 
         AdverseOpinion, 
         DisclaimerOfOpinion 
@@ -43,7 +45,7 @@ contract Auditing {
         // check if the sender is an approved auditor with "require"
         require(isApprovedAuditor(msg.sender));
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, uint256(_opinion));
+        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, _opinion);
         uint256 index = insertAudit(_fundAddress, newAudit);
 
         emit Added(_fundAddress, index);
@@ -126,7 +128,7 @@ contract Auditing {
         }
 
         // validate edge case: audit might be inserted before audit at index 0
-        if (i == 0 && fundAudits[_fundAddress][i].timespanEnd < _audit.timespanEnd) {
+        if (i == 0 && fundAudits[_fundAddress][i].timespanEnd > _audit.timespanEnd) {
             insertIndex = 0;
         }
         else {
