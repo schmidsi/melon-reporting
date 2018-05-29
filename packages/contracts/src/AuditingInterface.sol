@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 /// @title Interface for Auditing Contract
 /// @author Benjamin Zumbrunn <benzumbrunn@gmail.com>

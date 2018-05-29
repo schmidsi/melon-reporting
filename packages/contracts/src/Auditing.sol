@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./AuditingInterface.sol";
 
@@ -34,7 +34,7 @@ contract Auditing is AuditingInterface {
     event Added(address _fundAddress, uint256 _index);
 
     /// Constructor
-    function Auditing(address[] _approvedAuditors) public {
+    constructor(address[] _approvedAuditors) public {
         approvedAuditors = _approvedAuditors;
     }
 
@@ -88,6 +88,33 @@ contract Auditing is AuditingInterface {
         timespanStart = audit.timespanStart;
         timespanEnd = audit.timespanEnd;
         opinion = uint256(audit.opinion);
+    }
+
+    /// Returns true if a fund is completely audited over a specific timespan.
+    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
+            external view
+            returns (bool complete) {
+        // TODO
+        //Audit[] memory audits = fundAudits[_fundAddress];
+
+        // use array that is sorted by enddates
+        // TODO use algorithm that begins to check at the end of the array
+
+        // pseudo-code for a possible implementation
+        // sort array for timespanStart
+        // for (i = 0; i < sortedArray.length; i++):
+        //   audit = sortedArray[i]
+        //   while audit.end < timespanStart:
+        //     continue // skip until in scope
+        //   nextIndex = i + 1
+        //   nextAudit = sortedArray[nextIndex]
+        //   while nextAudit.end <= audit.end:
+        //     nextAudit = sortedArray[++nextIndex]
+        //   if audit.end < nextAudit.start:
+        //     return false // gap
+        //   if nextAudit.start > timespanEnd:
+        //     break // end of scope is reached
+        return _fundAddress == 0x0 && _timespanStart == _timespanEnd;
     }
 
     function isApprovedAuditor(address _auditor) 
@@ -145,33 +172,6 @@ contract Auditing is AuditingInterface {
         fundAudits[_fundAddress][insertIndex] = _audit;
 
         return insertIndex;
-    }
-
-    /// Returns true if a fund is completely audited over a specific timespan.
-    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
-            external view
-            returns (bool complete) {
-        // TODO
-        //Audit[] memory audits = fundAudits[_fundAddress];
-
-        // use array that is sorted by enddates
-        // TODO use algorithm that begins to check at the end of the array
-
-        // pseudo-code for a possible implementation
-        // sort array for timespanStart
-        // for (i = 0; i < sortedArray.length; i++):
-        //   audit = sortedArray[i]
-        //   while audit.end < timespanStart:
-        //     continue // skip until in scope
-        //   nextIndex = i + 1
-        //   nextAudit = sortedArray[nextIndex]
-        //   while nextAudit.end <= audit.end:
-        //     nextAudit = sortedArray[++nextIndex]
-        //   if audit.end < nextAudit.start:
-        //     return false // gap
-        //   if nextAudit.start > timespanEnd:
-        //     break // end of scope is reached
-        return _fundAddress == 0x0 && _timespanStart == _timespanEnd;
     }
 
 }
