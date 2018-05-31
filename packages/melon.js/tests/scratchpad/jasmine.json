@@ -1,7 +1,0 @@
-{
-  "spec_dir": "tests/scratchpad",
-  "spec_files": ["*/**/*.js"],
-  "stopSpecOnExpectationFailure": true,
-  "random": false,
-  "DEFAULT_TIMEOUT_INTERVAL": 30000
-}

@@ -1,5 +1,0 @@
-enum ExchangeEnum {
-  RADAR_RELAY
-  OASIS_DEX
-  ERC_DEX
-}
