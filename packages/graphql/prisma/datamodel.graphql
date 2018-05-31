@@ -1,13 +1,97 @@
-type User {
-  id: ID! @unique
-  name: String!
-  posts: [Post!]!
+enum ParticipationType {
+  INVEST
+  REDEEM
 }
 
-type Post {
+enum Opinion {
+  UnqualifiedOpinion
+  QualifiedOpinion
+  AdverseOpinion
+  DisclaimerOfOpinion
+}
+
+type Holding {
+  token: Token!
+  amount: String!
+}
+
+type Account {
   id: ID! @unique
-  title: String!
-  content: String!
-  published: Boolean! @default(value: "false")
-  author: User!
+  address: String!
+  name: String
+  comment: String
+  holdings: [Holding!]!
+}
+
+type Exchange {
+  id: ID! @unique
+  address: String!
+  name: String!
+}
+
+type Token {
+  id: ID! @unique
+  symbol: String! @unique
+  address: String! @unique
+  decimals: Int!
+}
+
+type Price {
+  timestamp: DateTime!
+  price: String!
+  baseToken: Token! @relation(name: "BaseToken")
+  quoteToken: Token! @relation(name: "QuoteToken")
+  transaction: String!
+}
+
+type Fund {
+  id: ID! @unique
+  name: String!
+  address: String! @unique
+  manager: Account!
+  quoteToken: Token!
+  inception: DateTime!
+  legalEntity: String
+  strategy: String
+  policy: Json
+  exchanges: [Exchange!]!
+  holdings: [Holding!]!
+  participations: [Participation!]!
+  trades: [Trade!]!
+  audits: [Audit!]!
+}
+
+type Participation {
+  id: ID! @unique
+  timestamp: DateTime!
+  owner: Account!
+  type: ParticipationType!
+  amount: String!
+  token: Token!
+  shares: String!
+  transaction: String!
+}
+
+type Trade {
+  id: ID! @unique
+  timestamp: DateTime!
+  fund: Fund!
+  owner: Account
+  exchange: Exchange!
+  buyToken: Token! @relation(name: "BuyToken")
+  buyAmount: String!
+  sellToken: Token! @relation(name: "SellToken")
+  sellAmount: String!
+  transaction: String!
+}
+
+type Audit {
+  id: ID! @unique
+  timestamp: DateTime!
+  timeSpanStart: DateTime!
+  timeSpanEnd: DateTime!
+  owner: Account!
+  dataHash: String!
+  opinion: Opinion!
+  transaction: String!
 }
