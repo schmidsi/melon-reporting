@@ -1,8 +1,0 @@
-type Subscription {
-  price(symbols: [Symbol]): [Price]
-  orderbook(
-    baseTokenSymbol: Symbol!
-    quoteTokenSymbol: Symbol!
-    exchanges: [ExchangeEnum]
-  ): Orderbook
-}

@@ -1,4 +1,0 @@
-type Price {
-  symbol: String!
-  price: Quantity
-}

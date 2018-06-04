@@ -1,4 +1,0 @@
-type OrderbookEntry {
-  volume: Quantity
-  order: Order
-}
