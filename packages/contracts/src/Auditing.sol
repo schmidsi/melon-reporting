@@ -94,14 +94,12 @@ contract Auditing is AuditingInterface {
     function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
             external view
             returns (bool complete) {
-        // TODO
-        //Audit[] memory audits = fundAudits[_fundAddress];
 
-        // use array that is sorted by enddates
-        // TODO use algorithm that begins to check at the end of the array
+        Audit[] memory audits = fundAudits[_fundAddress];
+        // we expect the array to be sorted by enddates,
+        // so we use an algorithm that begins to check at the end of the array
 
         // pseudo-code for a possible implementation
-        // sort array for timespanStart
         // for (i = 0; i < sortedArray.length; i++):
         //   audit = sortedArray[i]
         //   while audit.end < timespanStart:
@@ -114,7 +112,30 @@ contract Auditing is AuditingInterface {
         //     return false // gap
         //   if nextAudit.start > timespanEnd:
         //     break // end of scope is reached
-        return _fundAddress == 0x0 && _timespanStart == _timespanEnd;
+        for (uint256 i = 0; i < audits.length; i++) {
+            Audit memory tempAudit = audits[i];
+
+            while (tempAudit.timespanEnd < _timespanStart) {
+                continue; // skip until in scope
+            }
+
+            uint256 nextIndex = i + 1;
+            Audit memory nextAudit = audits[nextIndex];
+
+            while (nextAudit.timespanEnd <= tempAudit.timespanEnd) {
+                nextAudit = audits[++nextIndex];
+            }
+
+            if (tempAudit.timespanEnd < nextAudit.timespanStart) {
+                return false; // gap
+            }
+
+            if (nextAudit.timespanStart > _timespanEnd) {
+                break; // end of scope is reached, fund is audited up to timestamp
+            }
+        }
+
+        return true;
     }
 
     function isApprovedAuditor(address _auditor) 
