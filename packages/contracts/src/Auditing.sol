@@ -95,7 +95,14 @@ contract Auditing is AuditingInterface {
             external view
             returns (bool complete) {
 
+
         Audit[] memory audits = fundAudits[_fundAddress];
+
+        // easy case: there are no audits at all
+        if (audits.length == 0) {
+            return false;
+        }
+
         // we expect the array to be sorted by enddates,
         // so we use an algorithm that begins to check at the end of the array
 
@@ -160,6 +167,13 @@ contract Auditing is AuditingInterface {
     function insertAudit(address _fundAddress, Audit _audit) 
             private
             returns (uint256 insertIndex) {
+
+        // edge case: no audits yet
+        if (fundAudits[_fundAddress].length == 0) {
+            fundAudits[_fundAddress].push(_audit);
+            return 0;
+        }
+
         // search for first audit that has lower timespanEnd
         // TODO there might be a better implementation without the edge case check
         uint256 i = fundAudits[_fundAddress].length - 1; // array end index
