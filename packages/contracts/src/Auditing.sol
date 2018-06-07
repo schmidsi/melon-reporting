@@ -1,11 +1,12 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
+
+import "./AuditingInterface.sol";
 
 // TO DISCUSS:
 // - require timespanEnd < now?
 
 /// @title Auditing smart contract for melon.
-
-contract Auditing {
+contract Auditing is AuditingInterface {
 
     struct Audit {
         address auditor; // who audited the report
@@ -33,19 +34,19 @@ contract Auditing {
     event Added(address _fundAddress, uint256 _index);
 
     /// Constructor
-    function Auditing(address[] _approvedAuditors) public payable {
+    constructor(address[] _approvedAuditors) public {
         approvedAuditors = _approvedAuditors;
     }
 
     /// Creates a new audit on a fund specified with `_fundAddress`,
     /// the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
-    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, Opinion _opinion) 
-            public {
+    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion) 
+            external {
         // check if the sender is an approved auditor with "require"
-        require(isApprovedAuditor(msg.sender));
+        require(this.isApprovedAuditor(msg.sender));
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, _opinion);
+        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, Opinion(_opinion));
         uint256 index = insertAudit(_fundAddress, newAudit);
 
         emit Added(_fundAddress, index);
@@ -54,7 +55,7 @@ contract Auditing {
     /// Validates that the provided data is mapped to an existing audit
     // TODO include opinion?
     function exists(address _fundAddress, address _auditor, bytes32 _dataHash) 
-            public view 
+            external view 
             returns (bool auditExists) {
         Audit[] memory audits = fundAudits[_fundAddress];
         for (uint256 i = 0; i < audits.length; i++) {
@@ -70,15 +71,15 @@ contract Auditing {
 
     /// Returns the length of the audit array of a specific fund
     function getLength(address _fundAddress)
-            public view
+            external view
             returns (uint256 index) {
         return fundAudits[_fundAddress].length;
     }
 
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
-            public view
-            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, Opinion opinion) {
+            external view
+            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
@@ -86,11 +87,59 @@ contract Auditing {
         dataHash = audit.dataHash;
         timespanStart = audit.timespanStart;
         timespanEnd = audit.timespanEnd;
-        opinion = Opinion(audit.opinion);
+        opinion = uint256(audit.opinion);
+    }
+
+    /// Returns true if a fund is completely audited over a specific timespan.
+    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
+            external view
+            returns (bool complete) {
+
+        Audit[] memory audits = fundAudits[_fundAddress];
+        // we expect the array to be sorted by enddates,
+        // so we use an algorithm that begins to check at the end of the array
+
+        // pseudo-code for a possible implementation
+        // for (i = 0; i < sortedArray.length; i++):
+        //   audit = sortedArray[i]
+        //   while audit.end < timespanStart:
+        //     continue // skip until in scope
+        //   nextIndex = i + 1
+        //   nextAudit = sortedArray[nextIndex]
+        //   while nextAudit.end <= audit.end:
+        //     nextAudit = sortedArray[++nextIndex]
+        //   if audit.end < nextAudit.start:
+        //     return false // gap
+        //   if nextAudit.start > timespanEnd:
+        //     break // end of scope is reached
+        for (uint256 i = 0; i < audits.length; i++) {
+            Audit memory tempAudit = audits[i];
+
+            while (tempAudit.timespanEnd < _timespanStart) {
+                continue; // skip until in scope
+            }
+
+            uint256 nextIndex = i + 1;
+            Audit memory nextAudit = audits[nextIndex];
+
+            while (nextAudit.timespanEnd <= tempAudit.timespanEnd) {
+                nextAudit = audits[++nextIndex];
+            }
+
+            if (tempAudit.timespanEnd < nextAudit.timespanStart) {
+                return false; // gap
+            }
+
+            if (nextAudit.timespanStart > _timespanEnd) {
+                break; // end of scope is reached, fund is audited up to timestamp
+            }
+        }
+
+        return true;
     }
 
     function isApprovedAuditor(address _auditor) 
-            public view
+            external view
             returns (bool auditorIsApproved) {
         for (uint256 i = 0; i < approvedAuditors.length; i++) {
             address auditor = approvedAuditors[i];
@@ -145,34 +194,5 @@ contract Auditing {
 
         return insertIndex;
     }
-
-    /*
-    /// Returns true if a fund is completely audited over a specific timespan.
-    function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
-            public view
-            returns (bool complete) {
-        Audit[] memory audits = fundAudits[_fundAddress];
-
-        // use array that is sorted by enddates
-        // TODO use algorithm that begins to check at the end of the array
-
-        // pseudo-code for a possible implementation
-        // sort array for timespanStart
-        // for (i = 0; i < sortedArray.length; i++):
-        //   audit = sortedArray[i]
-        //   while audit.end < timespanStart:
-        //     continue // skip until in scope
-        //   nextIndex = i + 1
-        //   nextAudit = sortedArray[nextIndex]
-        //   while nextAudit.end <= audit.end:
-        //     nextAudit = sortedArray[++nextIndex]
-        //   if audit.end < nextAudit.start:
-        //     return false // gap
-        //   if nextAudit.start > timespanEnd:
-        //     break // end of scope is reached
-
-        return true;
-    }
-    */
 
 }
