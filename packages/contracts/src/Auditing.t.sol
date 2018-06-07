@@ -40,8 +40,8 @@ contract AuditingTest is DSTest {
 
     function testAddMultipleAudits() public {
         // TODO
-        //addAudit(1, 1000);
-        //addAudit(1001, 2000);
+        addAudit(1, 1000);
+        addAudit(1001, 2000);
     }
 
     /// Helper for adding a simple audit on specific timestamps

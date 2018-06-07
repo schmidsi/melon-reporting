@@ -99,7 +99,7 @@ contract Auditing is AuditingInterface {
         Audit[] memory audits = fundAudits[_fundAddress];
 
         // easy case: there are no audits at all
-        if (audits.length == 0) {
+        if (audits.length == 0) { // TODO is this needed?
             return false;
         }
 
@@ -168,6 +168,7 @@ contract Auditing is AuditingInterface {
             private
             returns (uint256 insertIndex) {
 
+        // TODO: we can write the whole thing cleaner probably
         // edge case: no audits yet
         if (fundAudits[_fundAddress].length == 0) {
             fundAudits[_fundAddress].push(_audit);
@@ -204,6 +205,7 @@ contract Auditing is AuditingInterface {
         }
 
         // insert new audit
+        fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
         fundAudits[_fundAddress][insertIndex] = _audit;
 
         return insertIndex;
