@@ -163,13 +163,13 @@ contract Auditing is AuditingInterface {
         // search for first audit that has lower timespanEnd
         // TODO there might be a better implementation without the edge case check
         uint256 i = fundAudits[_fundAddress].length - 1; // array end index
-        for (i; i >= 0; i--) {
+        for (i; i > 0; i--) {
             uint256 tempTimespanEnd = fundAudits[_fundAddress][i].timespanEnd;
             if (tempTimespanEnd <= _audit.timespanEnd) { // 
                 // lower or equal timespanEnd found
                 // NOTE: We break on equal timespanEnds, because the new audit probably
                 // involves a longer time period. When the longer period is in front,
-                // the isComplete function is more performant (can skip larger timespans).
+                // the isComplete function will perform better (can skip larger timespans).
 
                 // TODO we might even check if the period is longer & insert by this!
                 break;
@@ -184,13 +184,14 @@ contract Auditing is AuditingInterface {
             insertIndex = i + 1;
         }
 
+        // resize dynamic array
+        fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
+
         // reassign indexes of audits that shall be in front of the new audit
-        for (uint256 j = fundAudits[_fundAddress].length; j > insertIndex; j--) {
+        for (uint256 j = fundAudits[_fundAddress].length - 1; j > insertIndex; j--) {
             fundAudits[_fundAddress][j] = fundAudits[_fundAddress][j - 1];
         }
 
-        // resize dynamic array
-        fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
         // insert new audit
         fundAudits[_fundAddress][insertIndex] = _audit;
 
