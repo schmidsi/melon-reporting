@@ -5,6 +5,9 @@ import "ds-test/test.sol";
 import "./Auditing.sol";
 
 contract AuditingTest is DSTest {
+
+    // TODO test that opinions like "4" fail
+
     Auditing auditing;
     address auditor1 = this; // this is the account that calls the functions of the contract
     address auditor2 = 0x1;
@@ -45,8 +48,8 @@ contract AuditingTest is DSTest {
 
     // Add multiple audits in order.
     function testAddMultipleAuditsInOrder() public {
-        addStandardAudit(1, 1000); // will have index 0
-        addStandardAudit(1001, 2000); // will have index 1
+        addStandardAudit(1, 1000); // must have index 0
+        addStandardAudit(1001, 2000); // must have index 1
 
         assert(standardAuditIsOnChain(0, 1, 1000));
         assert(standardAuditIsOnChain(1, 1001, 2000));
@@ -55,8 +58,8 @@ contract AuditingTest is DSTest {
     /// Add multiple audits in reverse order.
     /// This asserts that the insertAudit function in the contract works as expected.
     function testAddMultipleAuditsReverseOrder() public {
-        addStandardAudit(1001, 2000); // will have index 1 despite added first
-        addStandardAudit(1, 1000); // will have index 0
+        addStandardAudit(1001, 2000); // must have index 1 despite added first
+        addStandardAudit(1, 1000); // must have index 0
 
         assert(standardAuditIsOnChain(0, 1, 1000));
         assert(standardAuditIsOnChain(1, 1001, 2000));
@@ -65,9 +68,9 @@ contract AuditingTest is DSTest {
     /// Add multiple audits in 2-0-1 order.
     /// This asserts that the insertAudit function in the contract works as expected.
     function testAddMultipleAudits201Order() public {
-        addStandardAudit(2001, 3000); // will have index 2
-        addStandardAudit(1, 1000); // will have index 0
-        addStandardAudit(1001, 2000); // will have index 1
+        addStandardAudit(2001, 3000); // must have index 2
+        addStandardAudit(1, 1000); // must have index 0
+        addStandardAudit(1001, 2000); // must have index 1
 
         assert(standardAuditIsOnChain(0, 1, 1000));
         assert(standardAuditIsOnChain(1, 1001, 2000));
@@ -75,6 +78,16 @@ contract AuditingTest is DSTest {
     }
 
     // TODO test that inserting/sorting works by timespanEnd
+
+    // Add multiple audits in order.
+    function testOrderingByTimespanEnd() public {
+        // TODO
+        addStandardAudit(200, 500); // must have index 0
+        addStandardAudit(1, 1000); // must have index 1
+
+        assert(standardAuditIsOnChain(0, 200, 500));
+        assert(standardAuditIsOnChain(1, 1, 1000));
+    }
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
