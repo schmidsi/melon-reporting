@@ -94,8 +94,6 @@ contract Auditing is AuditingInterface {
     function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
             external view
             returns (bool complete) {
-
-
         Audit[] memory audits = fundAudits[_fundAddress];
 
         // easy case: there are no audits at all
@@ -105,20 +103,7 @@ contract Auditing is AuditingInterface {
 
         // we expect the array to be sorted by enddates,
         // so we use an algorithm that begins to check at the end of the array
-
-        // pseudo-code for a possible implementation
-        // for (i = 0; i < sortedArray.length; i++):
-        //   audit = sortedArray[i]
-        //   while audit.end < timespanStart:
-        //     continue // skip until in scope
-        //   nextIndex = i + 1
-        //   nextAudit = sortedArray[nextIndex]
-        //   while nextAudit.end <= audit.end:
-        //     nextAudit = sortedArray[++nextIndex]
-        //   if audit.end < nextAudit.start:
-        //     return false // gap
-        //   if nextAudit.start > timespanEnd:
-        //     break // end of scope is reached
+        // TODO start by end?
         for (uint256 i = 0; i < audits.length; i++) {
             Audit memory tempAudit = audits[i];
 
@@ -204,8 +189,9 @@ contract Auditing is AuditingInterface {
             fundAudits[_fundAddress][j] = fundAudits[_fundAddress][j - 1];
         }
 
-        // insert new audit
+        // resize dynamic array
         fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
+        // insert new audit
         fundAudits[_fundAddress][insertIndex] = _audit;
 
         return insertIndex;

@@ -34,18 +34,36 @@ contract AuditingTest is DSTest {
     }
 
     /// add a simple audit to the test fund
-    function testAddAudit() public {
-        addAudit(1, 1000);
+    function testaddAudit() public {
+        uint256 timespanStart = 1;
+        uint256 timespanEnd = 1000;
+
+        addStandardAudit(timespanStart, timespanEnd);
+
+        assert(isStandardAudit(0, timespanStart, timespanEnd));
     }
 
     function testAddMultipleAudits() public {
-        // TODO
-        addAudit(1, 1000);
-        addAudit(1001, 2000);
+        addStandardAudit(1, 1000);
+        addStandardAudit(1001, 2000);
     }
 
     /// Helper for adding a simple audit on specific timestamps
-    function addAudit(uint timespanStart, uint timespanEnd) private {
+    function addStandardAudit(uint timespanStart, uint timespanEnd) private {
         auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0);
+    }
+
+    function isStandardAudit(uint256 index, uint256 timespanStart, uint256 timespanEnd) 
+            private
+            returns (bool) {
+        address a; 
+        bytes32 d; 
+        uint256 ts;
+        uint256 te; 
+        uint256 o;
+
+        (a, d, ts, te, o) = auditing.getByIndex(fundAddress, index);
+
+        return (a == auditor1) && (d == dataHash) && (ts == timespanStart) && (te == timespanEnd) && (o == 0);
     }
 }
