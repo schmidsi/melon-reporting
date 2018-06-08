@@ -62,6 +62,20 @@ contract AuditingTest is DSTest {
         assert(standardAuditIsOnChain(1, 1001, 2000));
     }
 
+    /// Add multiple audits in 2-0-1 order.
+    /// This asserts that the insertAudit function in the contract works as expected.
+    function testAddMultipleAudits201Order() public {
+        addStandardAudit(2001, 3000); // will have index 2
+        addStandardAudit(1, 1000); // will have index 0
+        addStandardAudit(1001, 2000); // will have index 1
+
+        assert(standardAuditIsOnChain(0, 1, 1000));
+        assert(standardAuditIsOnChain(1, 1001, 2000));
+        assert(standardAuditIsOnChain(2, 2001, 3000));
+    }
+
+    // TODO test that inserting/sorting works by timespanEnd
+
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
         auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0);
