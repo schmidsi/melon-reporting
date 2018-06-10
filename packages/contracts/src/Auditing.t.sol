@@ -22,17 +22,17 @@ contract AuditingTest is DSTest {
         auditing = new Auditing(auditors);
     }
 
-    function testIsApprovedAuditor() public {
+    function testIsApprovedAuditor() public view {
         assert(auditing.isApprovedAuditor(auditor1));
         assert(auditing.isApprovedAuditor(auditor2));
     }
 
-    function testFailNonApprovedAuditor() public {
+    function testFailNonApprovedAuditor() public view {
         assert(auditing.isApprovedAuditor(nonAuditor));
     }
 
     /// No audits are added here, so isComplete must fail.
-    function testFailIsCompleteWithoutAudits() public {
+    function testFailIsCompleteWithoutAudits() public view {
         assert(auditing.isComplete(fundAddress, 1, 1000));
     }
 
@@ -77,17 +77,41 @@ contract AuditingTest is DSTest {
         assert(standardAuditIsOnChain(2, 2001, 3000));
     }
 
-    // TODO test that inserting/sorting works by timespanEnd
-
-    // Add multiple audits in order.
+    /// Add multiple audits in order.
     function testOrderingByTimespanEnd() public {
-        // TODO
+        addStandardAudit(100, 1000); // must have index 2
         addStandardAudit(200, 500); // must have index 0
-        addStandardAudit(1, 1000); // must have index 1
+        addStandardAudit(1, 600); // must have index 1
 
         assert(standardAuditIsOnChain(0, 200, 500));
-        assert(standardAuditIsOnChain(1, 1, 1000));
+        assert(standardAuditIsOnChain(1, 1, 600));
+        assert(standardAuditIsOnChain(2, 100, 1000));
     }
+
+    /*
+    // TODO
+    ///
+    function testBiggerTimespanSameEnd() public {
+        addStandardAudit(100, 1000); // must have index 1
+        addStandardAudit(200, 1000); // must have index 0
+
+        assert(standardAuditIsOnChain(0, 200, 1000));
+        assert(standardAuditIsOnChain(1, 100, 1000));
+    }
+
+    /// 
+    function testBiggerTimespanSameEndMultiple() public {
+        addStandardAudit(100, 1000); // must have index 1
+        addStandardAudit(200, 1000); // must have index 0
+        addStandardAudit(900, 2000); // must have index 3
+        addStandardAudit(1100, 2000); // must have index 2
+
+        assert(standardAuditIsOnChain(0, 200, 1000));
+        assert(standardAuditIsOnChain(1, 100, 1000));
+        assert(standardAuditIsOnChain(2, 1100, 2000));
+        assert(standardAuditIsOnChain(3, 900, 2000));
+    }
+    */
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
@@ -95,8 +119,7 @@ contract AuditingTest is DSTest {
     }
 
     function standardAuditIsOnChain(uint256 index, uint256 timespanStart, uint256 timespanEnd) 
-            private
-            returns (bool) {
+            private view returns (bool) {
         address a; 
         bytes32 d; 
         uint256 ts;
