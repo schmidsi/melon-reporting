@@ -1,5 +1,41 @@
 # Minutes
 
+## Meeting 2018-06-12
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Michael Taschner (PWC)
+* Sabine Bartenschlager-Igel (PWC)
+
+### Agenda
+* Meeting PWC
+* Final Specification
+* GraphQL
+* Unit tests
+
+### Next steps
+* Implement alpha version (5.7.2018) (super tight schedule)
+* Documentation
+
+
+
+## Meeting 2018-06-07
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Michael Taschner (PWC)
+* Sabine Bartenschlager-Igel (PWC)
+
+### Reporting
+Michael: It would be interesting to retroactively construct transactions (with historic prices).
+Relevant for Melon in general: look at rules of traditional asset management.
+Sabine & Michael will look into: what is important for an auditor when going through a report.
+
+Note: We used most of the time to explain blockchain and Melon funds, we did not focus on the report.
+
+Note: The people from PWC use the term _managed account_, not _fund_ for Melon funds.
+
 ## Meeting 2018-05-22
 
 Present:

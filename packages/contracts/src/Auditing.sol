@@ -94,24 +94,16 @@ contract Auditing is AuditingInterface {
     function isComplete(address _fundAddress, uint256 _timespanStart, uint256 _timespanEnd)
             external view
             returns (bool complete) {
-
         Audit[] memory audits = fundAudits[_fundAddress];
+
+        // easy case: there are no audits at all
+        if (audits.length == 0) { // TODO is this needed?
+            return false;
+        }
+
         // we expect the array to be sorted by enddates,
         // so we use an algorithm that begins to check at the end of the array
-
-        // pseudo-code for a possible implementation
-        // for (i = 0; i < sortedArray.length; i++):
-        //   audit = sortedArray[i]
-        //   while audit.end < timespanStart:
-        //     continue // skip until in scope
-        //   nextIndex = i + 1
-        //   nextAudit = sortedArray[nextIndex]
-        //   while nextAudit.end <= audit.end:
-        //     nextAudit = sortedArray[++nextIndex]
-        //   if audit.end < nextAudit.start:
-        //     return false // gap
-        //   if nextAudit.start > timespanEnd:
-        //     break // end of scope is reached
+        // TODO start by end?
         for (uint256 i = 0; i < audits.length; i++) {
             Audit memory tempAudit = audits[i];
 
@@ -160,16 +152,24 @@ contract Auditing is AuditingInterface {
     function insertAudit(address _fundAddress, Audit _audit) 
             private
             returns (uint256 insertIndex) {
+
+        // TODO: we can write the whole thing cleaner probably
+        // edge case: no audits yet
+        if (fundAudits[_fundAddress].length == 0) {
+            fundAudits[_fundAddress].push(_audit);
+            return 0;
+        }
+
         // search for first audit that has lower timespanEnd
         // TODO there might be a better implementation without the edge case check
         uint256 i = fundAudits[_fundAddress].length - 1; // array end index
-        for (i; i >= 0; i--) {
+        for (i; i > 0; i--) {
             uint256 tempTimespanEnd = fundAudits[_fundAddress][i].timespanEnd;
             if (tempTimespanEnd <= _audit.timespanEnd) { // 
                 // lower or equal timespanEnd found
                 // NOTE: We break on equal timespanEnds, because the new audit probably
                 // involves a longer time period. When the longer period is in front,
-                // the isComplete function is more performant (can skip larger timespans).
+                // the isComplete function will perform better (can skip larger timespans).
 
                 // TODO we might even check if the period is longer & insert by this!
                 break;
@@ -184,8 +184,11 @@ contract Auditing is AuditingInterface {
             insertIndex = i + 1;
         }
 
+        // resize dynamic array
+        fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
+
         // reassign indexes of audits that shall be in front of the new audit
-        for (uint256 j = fundAudits[_fundAddress].length; j > insertIndex; j--) {
+        for (uint256 j = fundAudits[_fundAddress].length - 1; j > insertIndex; j--) {
             fundAudits[_fundAddress][j] = fundAudits[_fundAddress][j - 1];
         }
 
