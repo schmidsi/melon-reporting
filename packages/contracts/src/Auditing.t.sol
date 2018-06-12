@@ -37,7 +37,7 @@ contract AuditingTest is DSTest {
     }
 
     /// Add a simple audit to the test fund.
-    function testaddAudit() public {
+    function testAddAudit() public {
         uint256 timespanStart = 1;
         uint256 timespanEnd = 1000;
 
@@ -112,6 +112,14 @@ contract AuditingTest is DSTest {
         assert(standardAuditIsOnChain(3, 900, 2000));
     }
     */
+
+    /// Test that the isComplete function returns the expected result.
+    function testIsComplete() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(1000, 2000);
+
+        assert(auditing.isComplete(fundAddress, 1, 2000));
+    }
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {

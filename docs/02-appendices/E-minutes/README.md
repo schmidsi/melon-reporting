@@ -1,5 +1,25 @@
 # Minutes
 
+## Meeting 2018-06-12
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Michael Taschner (PWC)
+* Sabine Bartenschlager-Igel (PWC)
+
+### Agenda
+* Meeting PWC
+* Final Specification
+* GraphQL
+* Unit tests
+
+### Next steps
+* Implement alpha version (5.7.2018) (super tight schedule)
+* Documentation
+
+
+
 ## Meeting 2018-06-07
 Present:
 * Simon Emanuel Schmid
