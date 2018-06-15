@@ -2,15 +2,24 @@
 
 ## Summary
 
-Attached to this brief is
+Melonport creates a set of smart contracts that facilitates crypto asset
+management on the blockchain. There will be traditionally regulated
+"crypto funds" that build upon these. This thesis engineers the reporting
+and auditing of such funds.
 
-There is a short refresher about blockchain/smart-contracts/melon-protocol at
-the end of this brief.
+We are looking for collaborators who are willing to shape the future of
+reporting and auditing of such "crypto funds".
+
+Attached to this brief is a mockup to illustrate how a Melon fund report will
+look like which also can be downloaded [here](https://melon-reporting.now.sh/assets/Melon-Report-Mockup-v2.pdf).
+
+Furthermore, there is a short refresher about blockchain/smart-contracts/
+melon-protocol at the end and links to in-deep topics from this thesis.
 
 ## The case for reporting / auditing
 
 Melonport is already talking to people who want to setup and manage crypto
-funds powered by the Melon protocol fully regulated. In order to be compliant
+funds powered by the Melon protocol fully regulated. In order to be legally compliant
 they need to incorporate a solid reporting and auditing process. Some aspects
 of this process differ from the traditional process. Namely data sourcing:
 One can extract almost all relevant data reliably directly from the immutable
@@ -25,12 +34,13 @@ blockchain:
   ... See [Risk Engineering](http://www.docs.melonport.com/chapters/risk_engineering.html#risk-engineering)
 - Identification: It's possible to resolve some addresses to persons through
   projects like uPort.
+- Audits: The span of audits and who performed them with which opinion.
 
 In this thesis we create:
 
 - A data extractor to extract this data from the blockchain
 - A data schema that describes the format of this data
-- A data visualiser to make this raw data easily verifiable
+- A data visualiser to make this raw data easily readable, understandable and thus verifiable
 - A data signer to cryptographically sign & approve a certain set of data
 
 ## Call to action
@@ -43,7 +53,13 @@ sparring partner from the industry who understands:
 - Its implications on the financial sector in general
 - Its implications on reporting and auditing in specific
 
-Who can help us to
+Someone who can help us to answer the following question:
+
+- Is a report like the one attached sufficient?
+- If something is missing: What?
+- Does the data schema makes sense like this?
+- What could be the focus of an auditor of blockchain funds? Where are the
+  weaknesses that needs to be audited?
 
 ## Refresher
 
@@ -90,4 +106,17 @@ Who can help us to
   - Rules set at fund setup cannot be changed later
   - The fund manager cannot embezzle the assets in the fund
 
-http://www.docs.melonport.com/
+## Links
+
+### General Melon
+
+- Current state of the interface: https://ipfs.io/ipns/melon.fund/
+- General Melon Protocol docs: http://www.docs.melonport.com/
+
+### Reporting & Auditing
+
+- Use cases: https://melon-reporting.now.sh/01-thesis/04-analysis/01-UseCases.html
+- On-chain data ERM: https://melon-reporting.now.sh/01-thesis/04-analysis/03-OnChainData.html
+- System overview: https://melon-reporting.now.sh/01-thesis/05-solution/01-SystemOverview.html
+- Fund Report Data Schema: https://melon-reporting.now.sh/01-thesis/05-solution/04-FundReportDataSchema.html
+- Auditing contract standard: https://melon-reporting.now.sh/01-thesis/05-solution/05-MelonAuditingContractStandard.html
