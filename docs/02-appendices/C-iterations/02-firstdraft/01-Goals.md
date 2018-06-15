@@ -21,6 +21,7 @@ These are the specifications for the goals of the second iteration that we propo
 
 ### Boundaries
 
+- Recommended: Add positions (open/close & P&L per position)
 - Optional: ENS Name lookups
 - Optional: KYC indicators
 - Optional: Printing functionality. It is not sure that printing will work without problems.
