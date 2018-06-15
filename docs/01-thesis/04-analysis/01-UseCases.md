@@ -81,7 +81,7 @@ The system extracts following data:
   - Complete: All underlying report data is visually represented
   - Comparable: For different funds with the same timespan the rendered reports look similar.
 
-_Bonus_: Make the report printable
+_Optional_: Make the report printable
 
 ### Audit Report
 
