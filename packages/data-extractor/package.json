@@ -1,0 +1,21 @@
+{
+  "name": "@melonproject/data-extractor",
+  "version": "0.0.0",
+  "description": "Extracts fund report data from the blockchain",
+  "main": "index.js",
+  "license": "AGPL-3.0",
+  "private": false,
+  "scripts": {
+    "start": "micro",
+    "dev": "ts-node node_modules/.bin/micro-dev src/index.ts"
+  },
+  "dependencies": {
+    "@melonproject/melon.js": "^0.8.7",
+    "micro": "^9.3.2"
+  },
+  "devDependencies": {
+    "micro-dev": "^3.0.0",
+    "ts-node": "^6.1.1",
+    "typescript": "^2.9.2"
+  }
+}
