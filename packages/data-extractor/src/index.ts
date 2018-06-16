@@ -5,9 +5,11 @@ import {
   getParityProvider,
   getRanking,
   performCalculations,
+  getCanonicalPriceFeedContract,
 } from '@melonproject/melon.js';
 import * as match from 'micro-match';
 import * as Joi from 'joi';
+// import * as R from 'ramda';
 
 const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   const environment = await getParityProvider('https://kovan.melonport.com');
@@ -35,7 +37,54 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     })),
   );
 
-  return { config, informations, calculations, holdings };
+  const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
+    environment,
+  );
+  const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
+  const lastHistoryEntry = await canonicalPriceFeedContract.instance.getHistoryAt.call(
+    {},
+    [historyLength - 1],
+  );
+
+  // const priceHistoryPromises = R.range(0, historyLength - 1).map(i =>
+  //   canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
+  // );
+
+  // const priceHistoryChunks = R.splitEvery(20, priceHistoryPromises);
+
+  // const priceHistory = priceHistoryChunks.reduce(async (accP, item) => {
+  //   const acc = await accP;
+  //   console.log(acc);
+  //   const curr = Promise.all(item);
+  //   return [acc, curr];
+  // }, new Promise(resolve => resolve([])));
+
+  // const [, priceHistory] = R.mapAccum(
+  //   (acc, item) => {
+  //     acc.then;
+  //     return [acc, item];
+  //   },
+  //   new Promise(resolve => resolve()),
+  //   priceHistoryChunks,
+  // );
+
+  // R.reduce(
+  //   (acc, item) => {},
+  //   new Promise(resolve => resolve),
+  //   priceHistoryChunks,
+  // );
+
+  // console.log(canonicalPriceFeedContract.instance.getHistoryAt);
+
+  return {
+    config,
+    informations,
+    calculations,
+    holdings,
+    historyLength,
+    lastHistoryEntry,
+    // priceHistory,
+  };
 };
 
 const ranking = async () => {
@@ -61,8 +110,6 @@ module.exports = async req => {
   const params = match('/:fundAddress?/:timeSpanStart?/:timeSpanEnd?', req.url);
 
   const { error, value } = Joi.validate(params, paramsSchema);
-
-  console.log(params, error, value);
 
   if (error) return error;
 

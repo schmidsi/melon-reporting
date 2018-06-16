@@ -13,9 +13,11 @@
     "@melonproject/melon.js": "^0.8.7",
     "joi": "^13.4.0",
     "micro": "^9.3.2",
-    "micro-match": "^0.1.2"
+    "micro-match": "^0.1.2",
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
+    "@types/ramda": "types/npm-ramda#dist",
     "micro-dev": "^3.0.0",
     "ts-node": "^6.1.1",
     "tslint": "^5.10.0",
