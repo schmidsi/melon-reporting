@@ -9,10 +9,12 @@ import {
 } from '@melonproject/melon.js';
 import * as match from 'micro-match';
 import * as Joi from 'joi';
-// import * as R from 'ramda';
+import * as R from 'ramda';
 
 const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
-  const environment = await getParityProvider('https://kovan.melonport.com');
+  const environment = await getParityProvider(
+    'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C',
+  );
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const config = await getConfig(environment);
@@ -46,18 +48,24 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     [historyLength - 1],
   );
 
-  // const priceHistoryPromises = R.range(0, historyLength - 1).map(i =>
-  //   canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
-  // );
+  const priceHistoryPromises = R.range(
+    historyLength - 100, // should be 0
+    historyLength - 1,
+  ).map(i => () =>
+    canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
+  );
 
-  // const priceHistoryChunks = R.splitEvery(20, priceHistoryPromises);
+  const priceHistoryChunks = R.splitEvery(10, priceHistoryPromises);
 
-  // const priceHistory = priceHistoryChunks.reduce(async (accP, item) => {
-  //   const acc = await accP;
-  //   console.log(acc);
-  //   const curr = Promise.all(item);
-  //   return [acc, curr];
-  // }, new Promise(resolve => resolve([])));
+  console.log(priceHistoryChunks);
+
+  const priceHistory = await priceHistoryChunks.reduce(async (accP, chunk) => {
+    const acc = await accP;
+    const curr: Array<Object> = await Promise.all(chunk.map(c => c()));
+    // await new Promise(resolve => setTimeout(() => resolve(), 1000));
+    // console.log('INTERVAL', curr);
+    return [...acc, ...curr];
+  }, new Promise<Array<Object>>(resolve => resolve([])));
 
   // const [, priceHistory] = R.mapAccum(
   //   (acc, item) => {
@@ -83,7 +91,7 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     holdings,
     historyLength,
     lastHistoryEntry,
-    // priceHistory,
+    priceHistory,
   };
 };
 
