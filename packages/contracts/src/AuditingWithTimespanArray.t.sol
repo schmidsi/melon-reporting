@@ -56,6 +56,12 @@ contract AuditingWithTimespanArrayTest is DSTest {
         uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
         assertTrue(start == 1);
         assertTrue(end == 2000);
+
+        // next timespan should be 0-0
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assertTrue(start2 == 0);
+        assertTrue(end2 == 0);
     }
 
     // Add two audits that fit, second is earlier.
@@ -67,6 +73,12 @@ contract AuditingWithTimespanArrayTest is DSTest {
         uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
         assertTrue(start == 1);
         assertTrue(end == 2000);
+
+        // next timespan should be 0-0
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assertTrue(start2 == 0);
+        assertTrue(end2 == 0);
     }
 
 
@@ -105,7 +117,7 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(end2 == 3000);
     }
 
-    function testAddTwoAuditsFullyOverlapping() public {
+    function testAddTwoAuditsFullyOverlappingBiggerFirst() public {
         addStandardAudit(1, 2000);
         addStandardAudit(500, 1500);
 
