@@ -157,49 +157,55 @@ contract AuditingWithTimespanArray is AuditingInterface {
 
         // TODO check case?: insert in front of first timespan
 
-        if (auditedTimespans.length == 0) {
-            auditedTimespansPerFund[_fundAddress].push(Timespan(_audit.timespanStart, _audit.timespanEnd));
-        } else {
-            for (uint256 i = 0; i < auditedTimespans.length; i++) {
-                Timespan storage timespan = auditedTimespans[i]; // TODO memory ok?
-                if (timespan.end+1 <= _audit.timespanEnd) {
-                    timespan.end = _audit.timespanEnd;
-                    auditedTimespans[i] = timespan; // save back // TODO necessary?
-                }
-                if (timespan.start-1 >= _audit.timespanStart) {
-                    timespan.start = _audit.timespanStart;
-                    auditedTimespans[i] = timespan; // save back
-                }
-            }
+        auditedTimespans.push(Timespan(_audit.timespanStart, _audit.timespanEnd));
 
-            // look for merge possibilities
-            for (uint256 j = 0; j < auditedTimespans.length-1; j++) {
-                // last timespan is not considered because there is no next span to merge with
-                Timespan memory timespanMergeInto = auditedTimespans[j]; // TODO memory ok?
-                Timespan memory timespanToMerge = auditedTimespans[j+1]; // TODO memory ok?
+        // look for merge possibilities
+        for (uint256 j = 0; j < auditedTimespans.length-1; j++) {
+            // last timespan is not considered because there is no next span to merge with
+            Timespan memory timespanMergeInto = auditedTimespans[j]; // TODO memory ok?
+            Timespan memory timespanToMerge = auditedTimespans[j+1]; // TODO memory ok?
 
-                if (timespanMergeInto.end >= timespanToMerge.start-1) {
-                    // TODO maybe do this after loop?
+            //bool mergeEnd = timespanMergeInto.end+1 >= timespanToMerge.start;
+            //bool mergeStart = timespanMergeInto.start+1 <= timespanToMerge.end;
+            bool mergeEnd = timespanMergeInto.end+1 >= timespanToMerge.start && timespanMergeInto.end < timespanToMerge.end;
+            bool mergeStart = timespanMergeInto.start <= timespanToMerge.end+1 && timespanMergeInto.start > timespanToMerge.start;
 
+            if (mergeEnd || mergeStart) {
+                if (mergeEnd) {
                     // merge second in first
-                    timespanMergeInto.end = timespanToMerge.start;
-                    // save
-                    auditedTimespans[j] = timespanMergeInto; // save back
-
-                    // delete second
-                    delete auditedTimespans[j+1];
-
-                    // close array gap
-                    for (uint256 k = j; k < auditedTimespans.length-1; k++) {
-                        auditedTimespans[k] = auditedTimespans[k+1];
-                    }
-                    //auditedTimespans.length = auditedTimespans.length-1; // TODO delete this
+                    timespanMergeInto.end = timespanToMerge.end;
                 }
+
+                if (mergeStart) {
+                    // merge second in first
+                    timespanMergeInto.start = timespanToMerge.start;
+                }
+
+                auditedTimespans[j] = Timespan(timespanMergeInto.start, timespanMergeInto.end); // save back
+
+                emit Added(_fundAddress, auditedTimespans[j].start);
+                emit Added(_fundAddress, auditedTimespans[j].end);
+
+                // delete second
+                delete auditedTimespans[j+1];
+
+                /* ???
+                // close array gap
+                for (uint256 k = j; k < auditedTimespans.length-1; k++) {
+                    auditedTimespans[k] = auditedTimespans[k+1];
+                }
+                */
             }
+
         }
+        /*
+    }
+    */
 
         // just add audit to end in this contract version
         fundAudits[_fundAddress].push(_audit);
+
+        //emit Added(_fundAddress, auditedTimespansPerFund[_fundAddress].length);
 
         return fundAudits[_fundAddress].length - 1;
     }

@@ -48,7 +48,7 @@ contract AuditingWithTimespanArrayTest is DSTest {
     }
 
     // Add two audits that fit, second is later.
-    function testTwoFittingAuditsEnd() public {
+    function testAddTwoFittingAuditsInOrderAdded() public {
         addStandardAudit(1, 1000);
         addStandardAudit(1001, 2000);
 
@@ -59,20 +59,50 @@ contract AuditingWithTimespanArrayTest is DSTest {
     }
 
     // Add two audits that fit, second is earlier.
-    function testAddTwoFittingAuditsStart() public {
+    function testAddTwoFittingAuditsReverseOrderAdded() public {
         addStandardAudit(1001, 2000);
         addStandardAudit(1, 1000);
 
-        // assert TODO
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start == 1);
+        assert(end == 2000);
     }
 
 
     /// Add multiple audits with a gap.
-    function testAddTwoAuditsWithGap() public {
+    function testAddTwoAuditsWithGapInOrderAdded() public {
         addStandardAudit(100, 1000);
         addStandardAudit(2001, 3000);
 
-        // assert TODO
+        // two timespans should show up now
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start == 100);
+        assert(end == 1000);
+
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assert(start2 == 2001);
+        assert(end2 == 3000);
+    }
+
+    /// Add multiple audits with a gap in reverse order.
+    function testAddTwoAuditsWithGapReverseOrderAdded() public {
+        addStandardAudit(2001, 3000);
+        addStandardAudit(100, 1000);
+
+        // two timespans should show up, 
+        // but we do not order them, so first is first added
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assert(start == 100);
+        assert(end == 1000);
+
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start2 == 2001);
+        assert(end2 == 3000);
     }
 
     /// Test that the isComplete function returns when no audits are present.
