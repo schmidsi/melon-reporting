@@ -46,6 +46,12 @@ contract AuditingWithTimespanArray is AuditingInterface {
         return auditedTimespansPerFund[_fundAddress][_index].end;
     }
 
+    function getAuditedTimespansLength(address _fundAddress) 
+            public view 
+            returns (uint length) {
+        return auditedTimespansPerFund[_fundAddress].length;
+    }
+
     // a list of all auditors that can use the `add()` function
     address[] public approvedAuditors;
 
@@ -187,15 +193,14 @@ contract AuditingWithTimespanArray is AuditingInterface {
                 emit Added(_fundAddress, auditedTimespans[j].end);
 
                 // delete second
-                delete auditedTimespansPerFund[_fundAddress][j+1];
+                //delete auditedTimespansPerFund[_fundAddress][j+1];
                 //auditedTimespansPerFund[_fundAddress].length = auditedTimespansPerFund[_fundAddress].length-1;
-
-                emit Added(_fundAddress, auditedTimespans[j+1].start);
-                emit Added(_fundAddress, auditedTimespans[j+1].end);
+                removeAuditedTimespan(_fundAddress, j+1);
 
             } else if (timespanMergeInto.start <= timespanToMerge.start && timespanMergeInto.end >= timespanToMerge.end) {
                 // fully redundant timespan, delete
-                delete auditedTimespansPerFund[_fundAddress][j+1];
+                //delete auditedTimespansPerFund[_fundAddress][j+1];
+                removeAuditedTimespan(_fundAddress, j+1);
             }
 
         }
@@ -206,6 +211,11 @@ contract AuditingWithTimespanArray is AuditingInterface {
         //emit Added(_fundAddress, auditedTimespansPerFund[_fundAddress].length);
 
         return fundAudits[_fundAddress].length - 1;
+    }
+
+    function removeAuditedTimespan(address _fundAddress, uint index) private {
+        delete auditedTimespansPerFund[_fundAddress][index];
+        auditedTimespansPerFund[_fundAddress].length = auditedTimespansPerFund[_fundAddress].length-1;
     }
 
 }
