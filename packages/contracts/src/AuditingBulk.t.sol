@@ -20,11 +20,11 @@ contract AuditingBulkTest is DSTest {
         auditing = new Auditing(auditors);
         auditing2 = new AuditingWithTimespanArray(auditors);
 
-        uint oneIn = 101;
-        uint tenIn = 110;
-        uint hundredIn = 200;
+        //uint auditCount = 101;
+        uint auditCount = 110;
+        //uint auditCount = 200;
 
-        for (uint i = 100; i < tenIn; i++) {
+        for (uint i = 100; i < auditCount; i++) {
             addStandardAudit(i, i+1); // for index shifting version
             addStandardAudit2(i, i+1); // for timespan array version
         }

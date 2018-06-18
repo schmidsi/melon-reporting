@@ -37,6 +37,7 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.isComplete(fundAddress, 1, 1000));
     }
 
+    /// 1
     /// Add a simple audit to the test fund.
     function testAddAudit() public {
         uint256 timespanStart = 1;
@@ -47,8 +48,9 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(standardAuditIsOnChain(0, timespanStart, timespanEnd));
     }
 
+    // 2.1
     // Add two audits that fit, second is later.
-    function testAddTwoFittingAuditsInOrderAdded() public {
+    function testAddTwoFittingAuditsInOrder() public {
         addStandardAudit(1, 1000);
         addStandardAudit(1001, 2000);
 
@@ -64,8 +66,9 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(end2 == 0);
     }
 
+    // 2.2
     // Add two audits that fit, second is earlier.
-    function testAddTwoFittingAuditsReverseOrderAdded() public {
+    function testAddTwoFittingAuditsReverseOrder() public {
         addStandardAudit(1001, 2000);
         addStandardAudit(1, 1000);
 
@@ -81,26 +84,63 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(end2 == 0);
     }
 
+    // 2.3
+    // Add two audits which overlap, second is later.
+    function testAddTwoAuditsOverlapInOrder() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(500, 1500);
 
-    /// Add multiple audits with a gap.
-    function testAddTwoAuditsWithGapInOrderAdded() public {
-        addStandardAudit(100, 1000);
-        addStandardAudit(2001, 3000);
-
-        // two timespans should show up now
         uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
         uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
-        assertTrue(start == 100);
+        assertTrue(start == 1);
+        assertTrue(end == 1500);
+
+        // next timespan should be 0-0
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assertTrue(start2 == 0);
+        assertTrue(end2 == 0);
+    }
+
+    // 2.4
+    // Add two audits that fit, second is earlier.
+    function testAddTwoAuditsOverlapReverseOrder() public {
+        addStandardAudit(500, 2000);
+        addStandardAudit(1, 1500);
+
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assertTrue(start == 1);
+        assertTrue(end == 2000);
+
+        // next timespan should be 0-0
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        assertTrue(start2 == 0);
+        assertTrue(end2 == 0);
+    }
+
+    // 2.5
+    // Add two audits with a gap, second is later.
+    function testAddTwoAuditsWithGapInOrder() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(2000, 3000);
+
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assertTrue(start == 1);
         assertTrue(end == 1000);
 
+        // next timespan should be 0-0
         uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
         uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
-        assertTrue(start2 == 2001);
+        assertTrue(start2 == 2000);
         assertTrue(end2 == 3000);
     }
 
-    /// Add multiple audits with a gap in reverse order.
-    function testAddTwoAuditsWithGapReverseOrderAdded() public {
+    /// 2.6
+    /// Add two audits with a gap, first is later.
+    function testAddTwoAuditsWithGapReverseOrder() public {
         addStandardAudit(2001, 3000);
         addStandardAudit(100, 1000);
 
@@ -117,9 +157,10 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(end2 == 3000);
     }
 
-    function testAddTwoAuditsFullyOverlappingBiggerFirst() public {
-        addStandardAudit(1, 2000);
+    /// 2.7
+    function testAddTwoAuditsFullyOverlappingSmallerFirst() public {
         addStandardAudit(500, 1500);
+        addStandardAudit(1, 2000);
 
         // only one timespan should show up
         uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
@@ -134,9 +175,10 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(end2 == 0);
     }
 
-    function testAddTwoAuditsFullyOverlappingSmallerFirst() public {
-        addStandardAudit(500, 1500);
+    /// 2.8
+    function testAddTwoAuditsFullyOverlappingBiggerFirst() public {
         addStandardAudit(1, 2000);
+        addStandardAudit(500, 1500);
 
         // only one timespan should show up
         uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
@@ -162,7 +204,8 @@ contract AuditingWithTimespanArrayTest is DSTest {
     }
 
     function standardAuditIsOnChain(uint256 index, uint256 timespanStart, uint256 timespanEnd) 
-            private view returns (bool) {
+            private view 
+            returns (bool) {
         address a; 
         bytes32 d; 
         uint256 ts;
