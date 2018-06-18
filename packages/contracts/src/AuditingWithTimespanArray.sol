@@ -34,6 +34,18 @@ contract AuditingWithTimespanArray is AuditingInterface {
 
     mapping(address => Timespan[]) public auditedTimespansPerFund;
 
+    function getAuditedTimespanStart(address _fundAddress, uint256 _index) 
+            public view
+            returns (uint256 start) {
+        return auditedTimespansPerFund[_fundAddress][_index].start;
+    }
+
+    function getAuditedTimespanEnd(address _fundAddress, uint256 _index) 
+            public view
+            returns (uint256 end) {
+        return auditedTimespansPerFund[_fundAddress][_index].end;
+    }
+
     // a list of all auditors that can use the `add()` function
     address[] public approvedAuditors;
 
@@ -141,46 +153,26 @@ contract AuditingWithTimespanArray is AuditingInterface {
             private
             returns (uint256 insertIndex) {
 
-        Timespan[] memory auditedTimespans = auditedTimespansPerFund[_fundAddress];
-        //Timespan storage firstTimespan = auditedTimespans[0];
-        // normal case: expand single timespan at end
-        /*
-        // TODO: still needed with loop below?
-        if (auditedTimespans.length == 1 && audit.timespanEnd < ) {
-            // expand end audited timestamp
-
-            if (audit.timespanEnd > firstTimespan.end) {
-                firstTimespan.end = audit.timespanEnd;
-            }
-        } else if (auditedTimespans.length == 1 && audit.timespanStart < ) {
-            // expand start audited timestamp
-
-            if (audit.timespanStart < firstTimespan.start) {
-                firstTimespan.start = audit.timespanStart;
-            }
-        } else {
-            // case: audit closes gap(s)
-
-            // case: audit produces gap, add new 
-        }
-        */
+        Timespan[] storage auditedTimespans = auditedTimespansPerFund[_fundAddress];
 
         // TODO check case?: insert in front of first timespan
 
-        for (uint256 i = 0; i < auditedTimespans.length; i++) {
-            Timespan memory timespan = auditedTimespans[i]; // TODO memory ok?
-            if (timespan.end+1 >= _audit.timespanEnd) {
-                timespan.end = _audit.timespanEnd;
-                auditedTimespans[i] = timespan; // save back // TODO necessary?
+        if (auditedTimespans.length == 0) {
+            auditedTimespansPerFund[_fundAddress].push(Timespan(_audit.timespanStart, _audit.timespanEnd));
+        } else {
+            for (uint256 i = 0; i < auditedTimespans.length; i++) {
+                Timespan storage timespan = auditedTimespans[i]; // TODO memory ok?
+                if (timespan.end+1 <= _audit.timespanEnd) {
+                    timespan.end = _audit.timespanEnd;
+                    auditedTimespans[i] = timespan; // save back // TODO necessary?
+                }
+                if (timespan.start-1 >= _audit.timespanStart) {
+                    timespan.start = _audit.timespanStart;
+                    auditedTimespans[i] = timespan; // save back
+                }
             }
-            if (timespan.start-1 <= _audit.timespanStart) {
-                timespan.start = _audit.timespanStart;
-                auditedTimespans[i] = timespan; // save back
-            }
-        }
 
-        // look for merge possibilities
-        if (auditedTimespans.length > 0) {
+            // look for merge possibilities
             for (uint256 j = 0; j < auditedTimespans.length-1; j++) {
                 // last timespan is not considered because there is no next span to merge with
                 Timespan memory timespanMergeInto = auditedTimespans[j]; // TODO memory ok?
@@ -201,15 +193,13 @@ contract AuditingWithTimespanArray is AuditingInterface {
                     for (uint256 k = j; k < auditedTimespans.length-1; k++) {
                         auditedTimespans[k] = auditedTimespans[k+1];
                     }
-                    //auditedTimespans.length = auditedTimespans.length-1; // TODO
-                    //auditedTimespans.length--;
+                    //auditedTimespans.length = auditedTimespans.length-1; // TODO delete this
                 }
             }
         }
 
         // just add audit to end in this contract version
         fundAudits[_fundAddress].push(_audit);
-        emit Added(_fundAddress, fundAudits[_fundAddress].length-1);
 
         return fundAudits[_fundAddress].length - 1;
     }

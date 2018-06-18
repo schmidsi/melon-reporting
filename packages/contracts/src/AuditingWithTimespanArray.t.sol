@@ -8,7 +8,8 @@ contract AuditingWithTimespanArrayTest is DSTest {
 
     // TODO test that opinions like "4" fail
 
-    AuditingInterface auditing;
+    AuditingWithTimespanArray auditing;
+    //AuditingInterface auditing;
     address auditor1 = this; // this is the account that calls the functions of the contract
     address auditor2 = 0x1;
     address nonAuditor = 0x2;
@@ -51,7 +52,10 @@ contract AuditingWithTimespanArrayTest is DSTest {
         addStandardAudit(1, 1000);
         addStandardAudit(1001, 2000);
 
-        // assert TODO
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start == 1);
+        assert(end == 2000);
     }
 
     // Add two audits that fit, second is earlier.
