@@ -22,18 +22,18 @@ contract AuditingTest is DSTest {
         auditing = new Auditing(auditors);
     }
 
-    function testIsApprovedAuditor() public view {
-        assert(auditing.isApprovedAuditor(auditor1));
-        assert(auditing.isApprovedAuditor(auditor2));
+    function testIsApprovedAuditor() public {
+        assertTrue(auditing.isApprovedAuditor(auditor1));
+        assertTrue(auditing.isApprovedAuditor(auditor2));
     }
 
-    function testFailNonApprovedAuditor() public view {
-        assert(auditing.isApprovedAuditor(nonAuditor));
+    function testFailNonApprovedAuditor() public {
+        assertTrue(auditing.isApprovedAuditor(nonAuditor));
     }
 
     /// No audits are added here, so isComplete must fail.
-    function testFailIsCompleteWithoutAudits() public view {
-        assert(auditing.isComplete(fundAddress, 1, 1000));
+    function testFailIsCompleteWithoutAudits() public {
+        assertTrue(auditing.isComplete(fundAddress, 1, 1000));
     }
 
     /// Add a simple audit to the test fund.
@@ -43,7 +43,7 @@ contract AuditingTest is DSTest {
 
         addStandardAudit(timespanStart, timespanEnd);
 
-        assert(standardAuditIsOnChain(0, timespanStart, timespanEnd));
+        assertTrue(standardAuditIsOnChain(0, timespanStart, timespanEnd));
     }
 
     // Add multiple audits in order.
@@ -51,8 +51,8 @@ contract AuditingTest is DSTest {
         addStandardAudit(1, 1000); // must have index 0
         addStandardAudit(1001, 2000); // must have index 1
 
-        assert(standardAuditIsOnChain(0, 1, 1000));
-        assert(standardAuditIsOnChain(1, 1001, 2000));
+        assertTrue(standardAuditIsOnChain(0, 1, 1000));
+        assertTrue(standardAuditIsOnChain(1, 1001, 2000));
     }
 
     /// Add multiple audits in reverse order.
@@ -61,8 +61,8 @@ contract AuditingTest is DSTest {
         addStandardAudit(1001, 2000); // must have index 1 despite added first
         addStandardAudit(1, 1000); // must have index 0
 
-        assert(standardAuditIsOnChain(0, 1, 1000));
-        assert(standardAuditIsOnChain(1, 1001, 2000));
+        assertTrue(standardAuditIsOnChain(0, 1, 1000));
+        assertTrue(standardAuditIsOnChain(1, 1001, 2000));
     }
 
     /// Add multiple audits in 2-0-1 order.
@@ -72,9 +72,9 @@ contract AuditingTest is DSTest {
         addStandardAudit(1, 1000); // must have index 0
         addStandardAudit(1001, 2000); // must have index 1
 
-        assert(standardAuditIsOnChain(0, 1, 1000));
-        assert(standardAuditIsOnChain(1, 1001, 2000));
-        assert(standardAuditIsOnChain(2, 2001, 3000));
+        assertTrue(standardAuditIsOnChain(0, 1, 1000));
+        assertTrue(standardAuditIsOnChain(1, 1001, 2000));
+        assertTrue(standardAuditIsOnChain(2, 2001, 3000));
     }
 
     /// Add multiple audits in order.
@@ -83,9 +83,9 @@ contract AuditingTest is DSTest {
         addStandardAudit(200, 500); // must have index 0
         addStandardAudit(1, 600); // must have index 1
 
-        assert(standardAuditIsOnChain(0, 200, 500));
-        assert(standardAuditIsOnChain(1, 1, 600));
-        assert(standardAuditIsOnChain(2, 100, 1000));
+        assertTrue(standardAuditIsOnChain(0, 200, 500));
+        assertTrue(standardAuditIsOnChain(1, 1, 600));
+        assertTrue(standardAuditIsOnChain(2, 100, 1000));
     }
 
     /*
@@ -125,8 +125,8 @@ contract AuditingTest is DSTest {
     */
 
     /// Test that the isComplete function returns when no audits are present.
-    function testIsCompleteFalseOnNoAudits() public view {
-        assert(!auditing.isComplete(fundAddress, 1, 1000));
+    function testIsCompleteFalseOnNoAudits() public {
+        assertTrue(!auditing.isComplete(fundAddress, 1, 1000));
     }
 
     /// Helper for adding a simple audit on specific timestamps.

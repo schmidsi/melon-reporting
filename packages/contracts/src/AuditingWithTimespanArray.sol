@@ -187,7 +187,11 @@ contract AuditingWithTimespanArray is AuditingInterface {
                 emit Added(_fundAddress, auditedTimespans[j].end);
 
                 // delete second
-                delete auditedTimespans[j+1];
+                delete auditedTimespansPerFund[_fundAddress][j+1];
+                //auditedTimespansPerFund[_fundAddress].length = auditedTimespansPerFund[_fundAddress].length-1;
+
+                emit Added(_fundAddress, auditedTimespans[j+1].start);
+                emit Added(_fundAddress, auditedTimespans[j+1].end);
 
                 /* ???
                 // close array gap
