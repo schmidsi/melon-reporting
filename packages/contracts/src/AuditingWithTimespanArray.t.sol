@@ -105,6 +105,28 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assert(end2 == 3000);
     }
 
+    function testAddTwoAuditsFullyOverlapping() public {
+        addStandardAudit(1, 2000);
+        addStandardAudit(500, 1500);
+
+        // only one timespan should show up
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start == 1);
+        assert(end == 2000);
+    }
+
+    function testAddTwoAuditsFullyOverlappingSmallerFirst() public {
+        addStandardAudit(500, 1500);
+        addStandardAudit(1, 2000);
+
+        // only one timespan should show up
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        assert(start == 1);
+        assert(end == 2000);
+    }
+
     /// Test that the isComplete function returns when no audits are present.
     function testIsCompleteFalseOnNoAudits() public view {
         assert(!auditing.isComplete(fundAddress, 1, 1000));
