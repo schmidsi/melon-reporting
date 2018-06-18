@@ -8,7 +8,7 @@ contract AuditingTest is DSTest {
 
     // TODO test that opinions like "4" fail
 
-    Auditing auditing;
+    AuditingInterface auditing;
     address auditor1 = this; // this is the account that calls the functions of the contract
     address auditor2 = 0x1;
     address nonAuditor = 0x2;
@@ -125,7 +125,7 @@ contract AuditingTest is DSTest {
     */
 
     /// Test that the isComplete function returns when no audits are present.
-    function testIsCompleteFalseOnNoAudits() public {
+    function testIsCompleteFalseOnNoAudits() public view {
         assert(!auditing.isComplete(fundAddress, 1, 1000));
     }
 
