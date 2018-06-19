@@ -158,6 +158,18 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
     }
 
+    /// 2.9
+    function testAddTwoAuditsSameFit() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(1, 1000);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 1000));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+    }
+
     /// 3.1
     function testAddThreeAuditsAllFitting123Order() public {
         addStandardAudit(1, 1000);
@@ -263,6 +275,91 @@ contract AuditingWithTimespanArrayTest is DSTest {
 
         // timespan array should hold two values
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 2);
+    }
+
+    /// 3.9
+    function testAddThreeAudits12OverlapFully132Order() public {
+        addStandardAudit(501, 1000);
+        addStandardAudit(2001, 3000);
+        addStandardAudit(1, 1500);
+
+        // two timespans should show up
+        assertTrue(timespanIsOnChain(0, 1, 1500));
+        assertTrue(timespanIsOnChain(1, 2001, 3000));
+
+        // timespan array should hold two values
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 2);
+    }
+
+    /// 3.10
+    function testAddThreeAudits1OverlapsAll132Order() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(2001, 3000);
+        addStandardAudit(1, 3000);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 3000));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+    }
+
+    /// 3.11
+    function testAddThreeAudits1Overlaps1More132Order() public {
+        addStandardAudit(501, 1000);
+        addStandardAudit(2501, 3000);
+        addStandardAudit(1, 3000);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 3000));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+    }
+
+    /// 3.12
+    function testAddThreeAuditsAllOverlap321Order() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(501, 2000);
+        addStandardAudit(1501, 2500);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 2500));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+    }
+
+    /// 3.13
+    function testAddThreeAuditsAllOverlap312Order() public {
+        addStandardAudit(1501, 2500);
+        addStandardAudit(1, 1000);
+        addStandardAudit(501, 2000);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 2500));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+    }
+
+    /// Closing a deep gap test.
+    function testCloseDeepGap() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(1001, 2000);
+        // here is the gap
+        addStandardAudit(3001, 4000);
+        addStandardAudit(4001, 5000);
+        addStandardAudit(5001, 6000);
+        addStandardAudit(6001, 7000);
+        // then close the gap:
+        addStandardAudit(2001, 3000);
+
+        // only one timespan should show up
+        assertTrue(timespanIsOnChain(0, 1, 7000));
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
     }
 
     /// Test that the isComplete function returns when no audits are present.
