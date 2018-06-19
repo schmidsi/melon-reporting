@@ -37,28 +37,6 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.isComplete(fundAddress, 1, 1000));
     }
 
-    /// Test that ordering works as expected with two audits.
-    function testOrderingTwoAudits() public {
-        addStandardAudit(2000, 3000);
-        addStandardAudit(1, 1000);
-
-        // should be ordered 1-0
-        assertTrue(standardAuditIsOnChain(0, 1, 1000));
-        assertTrue(standardAuditIsOnChain(1, 2000, 3000));
-    }
-
-    /// Test that ordering works as expected.
-    function testOrderingThreeAudits() public {
-        addStandardAudit(4000, 5000);
-        addStandardAudit(2000, 3000);
-        addStandardAudit(1, 1000);
-
-        // should be ordered 1-0
-        assertTrue(standardAuditIsOnChain(0, 1, 1000));
-        assertTrue(standardAuditIsOnChain(1, 2000, 3000));
-        assertTrue(standardAuditIsOnChain(2, 4000, 5000));
-    }
-
     /// 1
     /// Add a simple audit to the test fund.
     function testAddAudit() public {
@@ -155,14 +133,14 @@ contract AuditingWithTimespanArrayTest is DSTest {
         addStandardAudit(100, 1000);
 
         // two timespans should show up, 
-        // but we do not order them, so first is first added
-        uint start = auditing.getAuditedTimespanStart(fundAddress, 1);
-        uint end = auditing.getAuditedTimespanEnd(fundAddress, 1);
+        // they should also be ordered
+        uint start = auditing.getAuditedTimespanStart(fundAddress, 0);
+        uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
         assertTrue(start == 100);
         assertTrue(end == 1000);
 
-        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 0);
-        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 0);
+        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
+        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
         assertTrue(start2 == 2001);
         assertTrue(end2 == 3000);
     }
@@ -224,12 +202,6 @@ contract AuditingWithTimespanArrayTest is DSTest {
         uint end = auditing.getAuditedTimespanEnd(fundAddress, 0);
         assertTrue(start == 1);
         assertTrue(end == 3000);
-
-        // only one timespan should show up
-        uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
-        uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
-        assertTrue(start2 == 1);
-        assertTrue(end2 == 3000);
 
         // timespan array should only hold one value
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
