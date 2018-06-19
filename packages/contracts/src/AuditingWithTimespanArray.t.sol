@@ -37,6 +37,28 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.isComplete(fundAddress, 1, 1000));
     }
 
+    /// Test that ordering works as expected with two audits.
+    function testOrderingTwoAudits() public {
+        addStandardAudit(2000, 3000);
+        addStandardAudit(1, 1000);
+
+        // should be ordered 1-0
+        assertTrue(standardAuditIsOnChain(0, 1, 1000));
+        assertTrue(standardAuditIsOnChain(1, 2000, 3000));
+    }
+
+    /// Test that ordering works as expected.
+    function testOrderingThreeAudits() public {
+        addStandardAudit(4000, 5000);
+        addStandardAudit(2000, 3000);
+        addStandardAudit(1, 1000);
+
+        // should be ordered 1-0
+        assertTrue(standardAuditIsOnChain(0, 1, 1000));
+        assertTrue(standardAuditIsOnChain(1, 2000, 3000));
+        assertTrue(standardAuditIsOnChain(2, 4000, 5000));
+    }
+
     /// 1
     /// Add a simple audit to the test fund.
     function testAddAudit() public {
@@ -191,7 +213,6 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
     }
 
-    /*
     /// 3.2
     function testAddThreeAuditsAllFitting132Order() public {
         addStandardAudit(1, 1000);
@@ -204,13 +225,15 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(start == 1);
         assertTrue(end == 3000);
 
-        // next timespan should be 0-0
+        // only one timespan should show up
         uint start2 = auditing.getAuditedTimespanStart(fundAddress, 1);
         uint end2 = auditing.getAuditedTimespanEnd(fundAddress, 1);
-        assertTrue(start2 == 0);
-        assertTrue(end2 == 0);
+        assertTrue(start2 == 1);
+        assertTrue(end2 == 3000);
+
+        // timespan array should only hold one value
+        assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
     }
-    */
 
     /// Test that the isComplete function returns when no audits are present.
     function testIsCompleteFalseOnNoAudits() public {

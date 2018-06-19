@@ -161,18 +161,67 @@ contract AuditingWithTimespanArray is AuditingInterface {
 
         Timespan[] storage auditedTimespans = auditedTimespansPerFund[_fundAddress];
 
-        // TODO check case?: insert in front of first timespan
+        if (auditedTimespans.length == 0 || auditedTimespans[auditedTimespans.length-1].start <= _audit.timespanStart) {
+            // TODO second case here might be already done by loop below with length-1
+            // check normal case first
+            auditedTimespans.push(Timespan(_audit.timespanStart, _audit.timespanEnd));
+            insertIndex = auditedTimespans.length-1;
+            fundAudits[_fundAddress].push(_audit);
+        } else {
+            // insert by timespan start from end of array 
+            // so that array is sorted and best performance is reached 
+            // on normal case insert (insert after last audit)
+            for (uint256 j = auditedTimespans.length-1; j > 0; j--) {
+                if (_audit.timespanStart >= auditedTimespans[j].start) {
+                    break;
+                }
+            }
 
-        auditedTimespans.push(Timespan(_audit.timespanStart, _audit.timespanEnd));
+
+            if (j == 0 && auditedTimespans[j].start > _audit.timespanStart) {
+                insertIndex = 0;
+            } else {
+                insertIndex = j + 1;
+            }
+
+
+            // resize dynamic array
+            auditedTimespans.length = auditedTimespans.length + 1;
+            // reassign indexes of ranges that come after this timespan (shift)
+            for (uint256 k = j; k < auditedTimespans.length-1; k++) {
+                auditedTimespans[k+1] = auditedTimespans[k];
+            }
+            
+            // insert
+            //fundAudits[_fundAddress][insertIndex] = _audit;
+            auditedTimespans[j] = Timespan(_audit.timespanStart, _audit.timespanEnd);
+
+            // resize dynamic array
+            fundAudits[_fundAddress].length = fundAudits[_fundAddress].length + 1;
+
+            // reassign indexes of audits that shall be in front of the new audit
+            for (uint256 a = fundAudits[_fundAddress].length - 1; a > insertIndex; a--) {
+                fundAudits[_fundAddress][a] = fundAudits[_fundAddress][a - 1];
+            }
+
+            // insert new audit
+            fundAudits[_fundAddress][insertIndex] = _audit;
+            emit Added(0xfafafafafa, insertIndex);
+        }
+
+        for (uint s = 0; s < auditedTimespans.length; s++) {
+            // sanity check TODO delete
+            emit Added(0xfafa, auditedTimespans[s].start);
+        }
+
+        //auditedTimespans.push(Timespan(_audit.timespanStart, _audit.timespanEnd));
 
         // look for merge possibilities
-        for (uint256 j = 0; j < auditedTimespans.length-1; j++) {
+        for (uint256 i = 0; i < auditedTimespans.length-1; i++) {
             // last timespan is not considered because there is no next span to merge with
-            Timespan memory timespanMergeInto = auditedTimespans[j]; // TODO memory ok?
-            Timespan memory timespanToMerge = auditedTimespans[j+1]; // TODO memory ok?
+            Timespan memory timespanMergeInto = auditedTimespans[i]; // TODO memory ok?
+            Timespan memory timespanToMerge = auditedTimespans[i+1]; // TODO memory ok?
 
-            //bool mergeEnd = timespanMergeInto.end+1 >= timespanToMerge.start;
-            //bool mergeStart = timespanMergeInto.start+1 <= timespanToMerge.end;
             bool mergeEnd = timespanMergeInto.end+1 >= timespanToMerge.start && timespanMergeInto.end < timespanToMerge.end;
             bool mergeStart = timespanMergeInto.start <= timespanToMerge.end+1 && timespanMergeInto.start > timespanToMerge.start;
 
@@ -187,30 +236,22 @@ contract AuditingWithTimespanArray is AuditingInterface {
                     timespanMergeInto.start = timespanToMerge.start;
                 }
 
-                auditedTimespans[j] = Timespan(timespanMergeInto.start, timespanMergeInto.end); // save back
-
-                emit Added(_fundAddress, auditedTimespans[j].start);
-                emit Added(_fundAddress, auditedTimespans[j].end);
+                auditedTimespans[i] = Timespan(timespanMergeInto.start, timespanMergeInto.end); // save back
 
                 // delete second
-                //delete auditedTimespansPerFund[_fundAddress][j+1];
-                //auditedTimespansPerFund[_fundAddress].length = auditedTimespansPerFund[_fundAddress].length-1;
-                removeAuditedTimespan(_fundAddress, j+1);
+                removeAuditedTimespan(_fundAddress, i+1);
 
             } else if (timespanMergeInto.start <= timespanToMerge.start && timespanMergeInto.end >= timespanToMerge.end) {
                 // fully redundant timespan, delete
-                //delete auditedTimespansPerFund[_fundAddress][j+1];
-                removeAuditedTimespan(_fundAddress, j+1);
+                removeAuditedTimespan(_fundAddress, i+1);
             }
-
         }
 
         // just add audit to end in this contract version
-        fundAudits[_fundAddress].push(_audit);
+        //fundAudits[_fundAddress].push(_audit);
 
-        //emit Added(_fundAddress, auditedTimespansPerFund[_fundAddress].length);
-
-        return fundAudits[_fundAddress].length - 1;
+        //return fundAudits[_fundAddress].length - 1;
+        return insertIndex;
     }
 
     function removeAuditedTimespan(address _fundAddress, uint index) private {
