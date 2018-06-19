@@ -170,15 +170,6 @@ contract AuditingWithTimespanArray is AuditingInterface {
             shiftAndInsertTimespan(_fundAddress, _audit);
         }
 
-/*
-        // sanity check, TODO delete
-        for (uint x = 0; x < auditedTimespans.length; x++) {
-            emit Added(0x1111111, auditedTimespans[x].start);
-            emit Added(0x2222222, auditedTimespans[x].end);
-        }
-        */
-
-
         // look for merge possibilities
         bool fullyMerged = auditedTimespans.length < 2;
         uint256 i = 0;
@@ -217,14 +208,6 @@ contract AuditingWithTimespanArray is AuditingInterface {
             // also, if there is only one value or zero, there is nothing to be merged
             fullyMerged = i == auditedTimespans.length-1 || auditedTimespans.length < 2;
         }
-
-/*
-        // sanity check, TODO delete
-        for (uint y = 0; y < auditedTimespans.length; y++) {
-            emit Added(0x3333333, auditedTimespans[y].start);
-            emit Added(0x4444444, auditedTimespans[y].end);
-        }
-        */
 
         // ordering of audits does not matter in this version, just add audit to end of array
         fundAudits[_fundAddress].push(_audit);
@@ -278,12 +261,6 @@ contract AuditingWithTimespanArray is AuditingInterface {
         }
 
         auditedTimespans.length = auditedTimespans.length-1;
-
-        // sanity check, TODO delete
-        for (uint y = 0; y < auditedTimespans.length; y++) {
-            emit Added(0xeeeeeee, auditedTimespans[y].start);
-            emit Added(0xfffffff, auditedTimespans[y].end);
-        }
     }
 
 }
