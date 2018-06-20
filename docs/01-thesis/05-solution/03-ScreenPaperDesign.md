@@ -1,3 +1,3 @@
 # Screen/Paper Design
 
-[Download mockup PDF](/assets/Melon-Report-Mockup-v1.pdf)
+[Download mockup PDF](/assets/Melon-Report-Mockup-v2.pdf)
