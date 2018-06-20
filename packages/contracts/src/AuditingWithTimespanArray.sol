@@ -121,13 +121,6 @@ contract AuditingWithTimespanArray is AuditingInterface {
             returns (bool complete) {
         Timespan[] memory auditedTimespans = auditedTimespansPerFund[_fundAddress];
 
-        //mapping(address => Timespan[]) public auditedTimespansPerFund;
-
-        // TODO check if this is needed or case is covered by normal loop
-        if (auditedTimespans.length == 0) {
-            return false;
-        }
-
         for (uint i = 0; i < auditedTimespans.length; i++) {
             Timespan memory timespan = auditedTimespans[i];
             if (timespan.start <= _timespanStart && timespan.end >= _timespanEnd) {

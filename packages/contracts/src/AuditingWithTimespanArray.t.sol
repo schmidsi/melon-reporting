@@ -362,6 +362,15 @@ contract AuditingWithTimespanArrayTest is DSTest {
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
     }
 
+    function testIsComplete1243Order() public {
+        addStandardAudit(1, 1000);
+        addStandardAudit(1001, 2000);
+        addStandardAudit(3001, 4000);
+        addStandardAudit(2001, 3000);
+
+        assertTrue(auditing.isComplete(fundAddress, 1, 4000));
+    }
+
     /// Test that the isComplete function returns when no audits are present.
     function testIsCompleteFalseOnNoAudits() public {
         assertTrue(!auditing.isComplete(fundAddress, 1, 1000));
