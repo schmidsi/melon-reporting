@@ -5,8 +5,8 @@
 Present:
 * Simon Emanuel Schmid
 * Benjamin Zumbrunn
-* Michael Taschner (PWC)
-* Sabine Bartenschlager-Igel (PWC)
+* Sarah Hauser (FHNW)
+* Markus Knecht (FHNW)
 
 ### Agenda
 * Meeting PWC
@@ -14,11 +14,41 @@ Present:
 * GraphQL
 * Unit tests
 
+### PWC
+Document the "priorities" of PWC --> they are interested that the data shown is correct, they want to know why it is correct, where it comes from etc.
+Hauser: stay with PWC, otherwise the "initial work" was useless.
+
+### Final specification
+Determinism: it's more than just that: it's a "transient function" in functional programming.
+It's probably _bijective_ in mathematics.
+Maybe it's better to not use one of these terms and just describe what the implications of the extractor function is
+--> Draw a box in the documentation with the exact specification.
+
+For trusting the data, the database layer gives another problem.
+Better: think about how we can easily verify the correctness of the data.
+
+Think about the actors and their needs
+* Auditor: has to trust the data, because he signs it
+* Investor: wants to quickly see the reports
+
+Idea: Just save the report JSON after an audit was made to a database. An investor could then easily look at the report.
+Plus: Verification is also easy then: compare the datahash of the JSON with the hash from the audit on the blockchain.
+
+But: look also for other ideas! Tradeoffs from verification.
+
+### Smart Contract & storage
+Document the risk management stakeholder better: why does he need the isComplete function, etc.
+
+Look for other possibilities how to sort the array...
+
+Idea: maybe audit saving with mapping is possible? linked list data structure in solidity?
+Idea: maybe say "only 4 audits per year are possible". Then the size / timespans would be fixed.
+
+Test long arrays with lots of audits: is the gas cost reasonable?
+
 ### Next steps
 * Implement alpha version (5.7.2018) (super tight schedule)
 * Documentation
-
-
 
 ## Meeting 2018-06-07
 Present:
