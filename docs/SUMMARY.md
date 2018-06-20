@@ -26,7 +26,6 @@
 
 - [Solution](01-thesis/05-solution/README.md)
 
-<<<<<<< HEAD
   * [System Overview](01-thesis/05-solution/01-SystemOverview.md)
   * [Software Architecture](01-thesis/05-solution/02-SoftwareArchitecture.md)
   * [Screen/Paper Design](01-thesis/05-solution/03-ScreenPaperDesign.md)
@@ -36,14 +35,6 @@
   * [Deterministic Data Extraction](01-thesis/05-solution/07-DeterministicDataExtraction.md)
   * [Auditing Contract Considerations](01-thesis/05-solution/08-AuditingContractConsiderations.md)
   * [Auditing Contract Implementation](01-thesis/05-solution/09-AuditingContractImplementation.md)
-=======
-  - [System Overview](01-thesis/05-solution/01-SystemOverview.md)
-  - [Software Architecture](01-thesis/05-solution/02-SoftwareArchitecture.md)
-  - [Screen/Paper Design](01-thesis/05-solution/03-ScreenPaperDesign.md)
-  - [Fund Report Data Schema](01-thesis/05-solution/04-FundReportDataSchema.md)
-  - [Melon Auditing Contract Standard](01-thesis/05-solution/05-MelonAuditingContractStandard.md)
-  - [Auditing Contract](01-thesis/05-solution/06-AuditingContract.md)
->>>>>>> origin/master
 
 - [Conclusion](01-thesis/06-conclusion/README.md)
 
