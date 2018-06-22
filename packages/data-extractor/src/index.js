@@ -1,6 +1,7 @@
 import {
   getConfig,
   getFundInformations,
+  getFundContract,
   getHoldingsAndPrices,
   getParityProvider,
   getRanking,
@@ -10,20 +11,36 @@ import {
   getCanonicalPriceFeedContract,
   toReadable,
 } from '@melonproject/melon.js';
+import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 import * as match from 'micro-match';
 import * as Joi from 'joi';
 import * as R from 'ramda';
 
-const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
+// TODO: Remove kovan from addressBook
+const getExchangeName = ofAddress =>
+  (Object.entries(addressBook.kovan).find(
+    ([name, address]) => address === ofAddress,
+  ) || ['n/a'])[0];
+
+const dataExtractor = async (
+  fundAddress,
+  _timeSpanStart,
+  timeSpanEnd = Math.round(Date.now() / 1000),
+) => {
   const environment = await getParityProvider('https://kovan.melonport.com');
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
-  const config = await getConfig(environment);
-  const calculations = await performCalculations(environment, {
+  const informations = await getFundInformations(environment, {
     fundAddress,
   });
 
-  const informations = getFundInformations(environment, {
+  const timeSpanStart =
+    _timeSpanStart ||
+    Math.round(new Date(informations.inception).getTime() / 1000);
+
+  const config = await getConfig(environment);
+
+  const calculations = await performCalculations(environment, {
     fundAddress,
   });
 
@@ -34,6 +51,7 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
     environment,
   );
+
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
   const lastHistoryEntry = await canonicalPriceFeedContract.instance.getHistoryAt.call(
     {},
@@ -81,6 +99,30 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     ),
   );
 
+  const fundContract = await getFundContract(environment, fundAddress);
+
+  const [
+    exchangeAddresses,
+  ] = await fundContract.instance.getExchangeInfo.call();
+
+  const meta = {
+    fundName: informations.name,
+    fundAddress: informations.fundAddress,
+    timeSpanStart,
+    timeSpanEnd,
+    manager: informations.owner,
+    inception: Math.round(new Date(informations.inception).getTime() / 1000),
+    quoteToken: {
+      symbol: config.quoteAssetSymbol,
+      address: getAddress(config, config.quoteAssetSymbol),
+    },
+    exchanges: exchangeAddresses.map(entry => ({
+      address: entry._value,
+      name: getExchangeName(entry._value),
+    })),
+    totalSupply: calculations.totalSupply,
+  };
+
   const holdings = holdingsAndPrices.map(holding => ({
     token: {
       symbol: holding.name,
@@ -95,14 +137,21 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   }));
 
   return {
-    preparedHistory,
-    holdings,
-    config,
-    informations,
-    calculations,
-    holdingsAndPrices,
-    historyLength,
-    lastHistoryEntry,
+    data: {
+      meta,
+      holdings,
+    },
+    debug: {
+      addressBook,
+      exchangeAddresses,
+      config,
+      calculations,
+      historyLength,
+      // preparedHistory,
+      // informations,
+      // holdingsAndPrices,
+      // lastHistoryEntry,
+    },
   };
 };
 
