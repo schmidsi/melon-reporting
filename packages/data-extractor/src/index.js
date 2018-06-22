@@ -23,7 +23,7 @@ const getExchangeName = ofAddress =>
     ([name, address]) => address === ofAddress,
   ) || ['n/a'])[0];
 
-const dataExtractor = async (
+export const dataExtractor = async (
   fundAddress,
   _timeSpanStart,
   timeSpanEnd = Math.round(Date.now() / 1000),
@@ -41,6 +41,8 @@ const dataExtractor = async (
 
   const config = await getConfig(environment);
 
+  const fundContract = await getFundContract(environment, fundAddress);
+
   const calculations = await performCalculations(environment, {
     fundAddress,
   });
@@ -55,15 +57,33 @@ const dataExtractor = async (
 
   const ordersHistory = await getOrdersHistory(environment, { fundAddress });
 
-  const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
-  const lastHistoryEntry = await canonicalPriceFeedContract.instance.getHistoryAt.call(
-    {},
-    [historyLength - 1],
+  const lastRequestId = await fundContract.instance.getLastRequestId.call();
+
+  const requestPromises = R.range(0, lastRequestId.toNumber() + 1).map(
+    i => () =>
+      fundContract.instance.requests
+        .call({}, [i])
+        .then(([participant, status, // requestType,
+          requestAsset, shareQuantity, giveQuantity, receiveQuantity, timestamp, atUpdateId]) => ({
+          participant,
+          status,
+          // requestType,
+          requestAsset,
+          shareQuantity,
+          giveQuantity,
+          receiveQuantity,
+          timestamp,
+          atUpdateId,
+        })),
   );
+
+  const requests = await Promise.all(requestPromises.map(p => p()));
+
+  const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
 
   const priceHistoryPromises = R.range(
     historyLength - 200, // should be 0
-    historyLength - 1,
+    historyLength.toNumber(),
   ).map(i => () =>
     canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
   );
@@ -101,8 +121,6 @@ const dataExtractor = async (
         ),
     ),
   );
-
-  const fundContract = await getFundContract(environment, fundAddress);
 
   const [
     exchangeAddresses,
@@ -145,6 +163,8 @@ const dataExtractor = async (
       holdings,
     },
     debug: {
+      lastRequestId,
+      requests,
       ordersHistory,
       addressBook,
       exchangeAddresses,
