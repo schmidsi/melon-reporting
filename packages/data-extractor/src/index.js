@@ -1,14 +1,15 @@
 import {
+  getAddress,
+  getCanonicalPriceFeedContract,
   getConfig,
-  getFundInformations,
   getFundContract,
+  getFundInformations,
   getHoldingsAndPrices,
+  getOrdersHistory,
   getParityProvider,
   getRanking,
-  performCalculations,
-  getAddress,
   getSymbol,
-  getCanonicalPriceFeedContract,
+  performCalculations,
   toReadable,
 } from '@melonproject/melon.js';
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
@@ -51,6 +52,8 @@ const dataExtractor = async (
   const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
     environment,
   );
+
+  const ordersHistory = await getOrdersHistory(environment, { fundAddress });
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
   const lastHistoryEntry = await canonicalPriceFeedContract.instance.getHistoryAt.call(
@@ -142,6 +145,7 @@ const dataExtractor = async (
       holdings,
     },
     debug: {
+      ordersHistory,
       addressBook,
       exchangeAddresses,
       config,
