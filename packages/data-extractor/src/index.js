@@ -5,16 +5,17 @@ import {
   getParityProvider,
   getRanking,
   performCalculations,
+  getAddress,
+  getSymbol,
   getCanonicalPriceFeedContract,
+  toReadable,
 } from '@melonproject/melon.js';
 import * as match from 'micro-match';
 import * as Joi from 'joi';
 import * as R from 'ramda';
 
 const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
-  const environment = await getParityProvider(
-    'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C',
-  );
+  const environment = await getParityProvider('https://kovan.melonport.com');
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const config = await getConfig(environment);
@@ -26,18 +27,9 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     fundAddress,
   });
 
-  const holdings = await getHoldingsAndPrices(environment, {
+  const holdingsAndPrices = await getHoldingsAndPrices(environment, {
     fundAddress,
-  }).then(h =>
-    h.map(holding => ({
-      symbol: holding.name,
-      price: holding.price,
-      balance: holding.balance,
-      fraction: holding.balance.eq(0)
-        ? 0
-        : calculations.nav.div(holding.balance.times(holding.price)),
-    })),
-  );
+  });
 
   const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
     environment,
@@ -49,7 +41,7 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   );
 
   const priceHistoryPromises = R.range(
-    historyLength - 100, // should be 0
+    historyLength - 200, // should be 0
     historyLength - 1,
   ).map(i => () =>
     canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
@@ -57,41 +49,60 @@ const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
 
   const priceHistoryChunks = R.splitEvery(10, priceHistoryPromises);
 
-  console.log(priceHistoryChunks);
-
   const priceHistory = await priceHistoryChunks.reduce(async (accP, chunk) => {
     const acc = await accP;
-    const curr: Array<Object> = await Promise.all(chunk.map(c => c()));
+    const curr = await Promise.all(chunk.map(c => c()));
     // await new Promise(resolve => setTimeout(() => resolve(), 1000));
     // console.log('INTERVAL', curr);
     return [...acc, ...curr];
-  }, new Promise<Array<Object>>(resolve => resolve([])));
+  }, new Promise(resolve => resolve([])));
 
-  // const [, priceHistory] = R.mapAccum(
-  //   (acc, item) => {
-  //     acc.then;
-  //     return [acc, item];
-  //   },
-  //   new Promise(resolve => resolve()),
-  //   priceHistoryChunks,
-  // );
+  const preparedHistory = R.groupBy(
+    entry => entry.address.toLowerCase(),
+    R.flatten(
+      priceHistory
+        .map(([addresses, prices, timestamp]) => ({
+          tokens: addresses.map(({ _value }) => ({
+            address: _value,
+            symbol: getSymbol(config, _value),
+          })),
+          prices: prices.map(({ _value }) => ({
+            price: _value,
+          })),
+          timestamp,
+        }))
+        .map(({ tokens, prices, timestamp }) =>
+          R.zipWith(
+            (token, price) => ({ ...token, ...price, timestamp }),
+            tokens,
+            prices,
+          ),
+        ),
+    ),
+  );
 
-  // R.reduce(
-  //   (acc, item) => {},
-  //   new Promise(resolve => resolve),
-  //   priceHistoryChunks,
-  // );
-
-  // console.log(canonicalPriceFeedContract.instance.getHistoryAt);
+  const holdings = holdingsAndPrices.map(holding => ({
+    token: {
+      symbol: holding.name,
+      address: getAddress(config, holding.name),
+    },
+    balance: holding.balance,
+    priceHistory: [
+      preparedHistory[getAddress(config, holding.name)].map(entry =>
+        toReadable(config, entry.price, holding.name),
+      ),
+    ],
+  }));
 
   return {
+    preparedHistory,
+    holdings,
     config,
     informations,
     calculations,
-    holdings,
+    holdingsAndPrices,
     historyLength,
     lastHistoryEntry,
-    priceHistory,
   };
 };
 
