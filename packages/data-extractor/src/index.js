@@ -16,6 +16,7 @@ import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 import * as match from 'micro-match';
 import * as Joi from 'joi';
 import * as R from 'ramda';
+import { request } from 'https';
 
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
@@ -28,7 +29,7 @@ export const dataExtractor = async (
   _timeSpanStart,
   timeSpanEnd = Math.round(Date.now() / 1000),
 ) => {
-  const environment = await getParityProvider('https://kovan.melonport.com');
+  const environment = await getParityProvider();
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
@@ -63,21 +64,60 @@ export const dataExtractor = async (
     i => () =>
       fundContract.instance.requests
         .call({}, [i])
-        .then(([participant, status, // requestType,
-          requestAsset, shareQuantity, giveQuantity, receiveQuantity, timestamp, atUpdateId]) => ({
-          participant,
-          status,
-          // requestType,
-          requestAsset,
-          shareQuantity,
-          giveQuantity,
-          receiveQuantity,
-          timestamp,
-          atUpdateId,
-        })),
+        .then(
+          ([
+            participant,
+            status,
+            requestAsset,
+            shareQuantity,
+            giveQuantity,
+            receiveQuantity,
+            timestamp,
+            atUpdateId,
+          ]) => ({
+            participant,
+            status,
+            requestAsset,
+            shareQuantity,
+            giveQuantity,
+            receiveQuantity,
+            timestamp,
+            atUpdateId,
+          }),
+        ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
+
+  const participations = requests
+    .filter(r => r.status.eq(2))
+    .map(
+      ({
+        requestAsset,
+        participant,
+        shareQuantity,
+        giveQuantity,
+        timestamp,
+      }) => ({
+        investor: participant,
+        token: {
+          symbol: getSymbol(config, requestAsset),
+          address: requestAsset,
+        },
+        type: 'invest',
+        amount: toReadable(
+          config,
+          giveQuantity,
+          getSymbol(config, requestAsset),
+        ),
+        shares: toReadable(
+          config,
+          shareQuantity,
+          getSymbol(config, requestAsset),
+        ),
+        timestamp,
+      }),
+    );
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
 
@@ -161,6 +201,7 @@ export const dataExtractor = async (
     data: {
       meta,
       holdings,
+      participations,
     },
     debug: {
       lastRequestId,
