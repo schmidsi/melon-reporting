@@ -11,8 +11,6 @@ Redirecter.getInitialProps = async ({ query, res }) => {
 
   const merged = R.merge(defaultTimeSpan, query);
 
-  console.log(res);
-
   const target = routes.findByName('report').toPath(merged);
 
   if (res) {
