@@ -1,7 +1,7 @@
 import { getFundInformations, getParityProvider } from '@melonproject/melon.js';
 
 const getDefaultTimeSpan = async fundAddress => {
-  const environment = await getParityProvider('https://kovan.melonport.com');
+  const environment = await getParityProvider();
   const informations = await getFundInformations(environment, {
     fundAddress,
   });

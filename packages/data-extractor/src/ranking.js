@@ -1,7 +1,7 @@
 import { getParityProvider, getRanking } from '@melonproject/melon.js';
 
 const ranking = async () => {
-  const environment = await getParityProvider('https://kovan.melonport.com');
+  const environment = await getParityProvider();
   return getRanking(environment);
 };
 
