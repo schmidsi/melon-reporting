@@ -21,13 +21,16 @@ const getExchangeName = ofAddress =>
     ([name, address]) => address === ofAddress,
   ) || ['n/a'])[0];
 
-const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
+const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const environment = await getParityProvider();
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
     fundAddress,
   });
+
+  const timeSpanStart = parseInt(_timeSpanStart);
+  const timeSpanEnd = parseInt(_timeSpanEnd);
 
   ensure(
     timeSpanStart < timeSpanEnd,
