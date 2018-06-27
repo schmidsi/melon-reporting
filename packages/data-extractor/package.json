@@ -2,7 +2,7 @@
   "name": "@melonproject/data-extractor",
   "version": "0.0.0",
   "description": "Extracts fund report data from the blockchain",
-  "main": "src/dataExtractor.js",
+  "main": "src/index.js",
   "license": "AGPL-3.0",
   "private": false,
   "scripts": {

@@ -3,7 +3,7 @@ import * as R from 'ramda';
 
 import getRanking from '@melonproject/data-extractor/ranking';
 
-const Index = ({ ranking }) => (
+const Browse = ({ ranking }) => (
   <div>
     <h1>Browse</h1>
     {ranking.map(rank => <div>{rank}</div>)}
@@ -11,9 +11,9 @@ const Index = ({ ranking }) => (
   </div>
 );
 
-Index.getInitialProps = async () => {
+Browse.getInitialProps = async () => {
   const ranking = await getRanking();
   return { ranking };
 };
 
-export default Index;
+export default Browse;

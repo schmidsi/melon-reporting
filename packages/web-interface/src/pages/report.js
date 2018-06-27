@@ -1,9 +1,21 @@
 import Link from 'next/link';
 
-const Index = () => (
+import dataExtractor from '@melonproject/data-extractor/dataExtractor';
+
+const Report = ({ data, debug }) => (
   <div>
     <h1>Report</h1>
+    <pre>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );
 
-export default Index;
+Report.getInitialProps = async ({ query }) => {
+  const data = await dataExtractor(
+    query.fundAddress,
+    query.timeSpanStart,
+    query.timeSpanEnd,
+  );
+  return data;
+};
+
+export default Report;

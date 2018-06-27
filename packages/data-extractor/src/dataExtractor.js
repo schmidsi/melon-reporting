@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import {
+  ensure,
   getAddress,
   getCanonicalPriceFeedContract,
   getConfig,
@@ -20,11 +21,7 @@ const getExchangeName = ofAddress =>
     ([name, address]) => address === ofAddress,
   ) || ['n/a'])[0];
 
-export const dataExtractor = async (
-  fundAddress,
-  _timeSpanStart,
-  timeSpanEnd = Math.round(Date.now() / 1000),
-) => {
+const dataExtractor = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   const environment = await getParityProvider();
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
@@ -32,9 +29,11 @@ export const dataExtractor = async (
     fundAddress,
   });
 
-  const timeSpanStart =
-    _timeSpanStart ||
-    Math.round(new Date(informations.inception).getTime() / 1000);
+  ensure(
+    timeSpanStart < timeSpanEnd,
+    'timeSpanStart needs to be bigger than timeSpanEnd',
+    { timeSpanEnd, timeSpanStart },
+  );
 
   const config = await getConfig(environment);
 
@@ -215,3 +214,5 @@ export const dataExtractor = async (
     },
   };
 };
+
+export default dataExtractor;
