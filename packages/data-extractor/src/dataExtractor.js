@@ -188,11 +188,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       address: getAddress(config, holding.name),
     },
     balance: holding.balance,
-    priceHistory: [
-      preparedHistory[getAddress(config, holding.name)].map(entry =>
-        toReadable(config, entry.price, holding.name),
-      ),
-    ],
+    priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
+      toReadable(config, entry.price, holding.name),
+    ),
   }));
 
   return {
