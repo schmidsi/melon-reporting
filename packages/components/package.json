@@ -8,7 +8,9 @@
     "styled-jsx": "^2.2.7"
   },
   "scripts": {
-    "dev": "start-storybook -p 3060 -c config",
+    "dev": "start-storybook -p 3060 -c config"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@storybook/react": "^3.4.8"
+  }
 }
