@@ -1,18 +1,14 @@
 {
-  "name": "components",
+  "name": "@melon-reporting/components",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4",
     "styled-jsx": "^2.2.7"
   },
   "scripts": {
-    "dev": "styleguidist server",
-    "eject": "react-scripts eject"
+    "dev": "start-storybook -p 3060 -c config",
   },
-  "devDependencies": {
-    "react-styleguidist": "^7.0.19"
-  }
+  "devDependencies": {}
 }
