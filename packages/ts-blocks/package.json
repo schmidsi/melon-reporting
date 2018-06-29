@@ -5,7 +5,8 @@
   "author": "Simon Emanuel Schmid <simon@schmid.io>",
   "license": "AGPL-3.0",
   "scripts": {
-    "start": "webpack"
+    "start": "webpack",
+    "dev": "styleguidist server"
   },
   "dependencies": {
     "@types/react": "^16.4.5",
@@ -15,6 +16,8 @@
   },
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.0",
+    "react-docgen-typescript": "^1.6.1",
+    "react-styleguidist": "^7.0.19",
     "source-map-loader": "^0.2.3",
     "typescript": "^2.9.2",
     "webpack": "^4.13.0",
