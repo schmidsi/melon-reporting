@@ -5,6 +5,7 @@
     "module": "commonjs",
     "lib": ["esnext"],
     "declaration": true,
+    "jsx": "react",
     "sourceMap": true,
     "strict": false,
     "allowJs": true,

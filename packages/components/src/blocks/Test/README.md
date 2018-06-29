@@ -1,5 +1,0 @@
-Test example:
-
-```js
-<Test />
-```
