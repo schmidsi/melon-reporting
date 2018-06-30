@@ -1,11 +1,10 @@
 import React from 'react';
 
-import styles from './styles.css';
+import css from './styles.css';
 
 const DescriptionList = ({ children }) => (
   <div>
-    <table className="description-list">
-      <style jsx>{styles}</style>
+    <table className={css.descriptionList}>
       <tbody>
         {Object.entries(children).map(([key, value]) => (
           <tr key={key}>

@@ -33,22 +33,15 @@ module.exports = config => {
       test: /\.css$/,
       use: [
         {
-          loader: 'babel-loader',
+          loader: 'style-loader',
+        },
+        {
+          loader: 'css-loader',
           options: {
-            babelrc: false,
-            plugins: [
-              'babel-plugin-transform-es2015-modules-commonjs',
-              ['styled-jsx/babel', { plugins: ['styled-jsx-plugin-postcss'] }],
-            ],
+            modules: true,
           },
         },
-        'styled-jsx-css-loader',
       ],
-      include: path.resolve(__dirname, '../src'),
-    },
-    {
-      test: /\.svg$/,
-      loader: 'svg-sprite-loader',
     },
   );
 

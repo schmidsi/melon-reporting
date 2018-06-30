@@ -1,13 +1,13 @@
-.description-list th {
+.descriptionList th {
   font-weight: 600;
   text-align: left;
   padding: 0 0.5em 0 0;
 }
 
-.description-list td {
+.descriptionList td {
   padding: 0;
 }
 
-.description-list {
+.descriptionList {
   border-collapse: collapse;
 }

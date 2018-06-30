@@ -10,8 +10,8 @@ import {
   Legend,
 } from 'recharts';
 
-import dataExtractor from '@melonproject/data-extractor/dataExtractor';
-import ColoredNumber from '@melon-reporting/components/ColoredNumber';
+import dataExtractor from '../api/dataExtractor';
+import ColoredNumber from '../components/blocks/ColoredNumber';
 
 const Report = ({ data, debug }) => (
   <div>

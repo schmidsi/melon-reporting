@@ -7,7 +7,6 @@ import global from '../../global.css';
 
 storiesOf(ColoredNumber.name, module).add('default', () => (
   <div>
-    <style jsx>{global}</style>
     <ul>
       <li>
         <ColoredNumber>{1203.123}</ColoredNumber>

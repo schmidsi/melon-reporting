@@ -1,9 +1,5 @@
 import Document, { Head, Main, NextScript } from 'next/document';
 
-import styles from '../styles/app';
-
-// import global from '@melon-reporting/components/global.css';
-
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx);
@@ -14,9 +10,7 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <style jsx global>
-            {styles}
-          </style>
+          <link rel="stylesheet" href="/_next/static/style.css" />
         </Head>
         <body className="custom_class">
           <Main />

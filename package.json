@@ -3,6 +3,10 @@
   "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
   "main": "index.js",
   "private": true,
+  "contributors": [
+    "Simon Emanuel Schmid <simon@schmid.io>",
+    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
+  ],
   "scripts": {
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
@@ -23,10 +27,28 @@
   "bugs": {
     "url": "https://github.com/melonproject/reporting/issues"
   },
+  "dependencies": {
+    "@melonproject/melon.js": "^0.8.7",
+    "@zeit/next-css": "^0.2.0",
+    "@zeit/next-typescript": "^1.1.0",
+    "classnames": "^2.2.6",
+    "date-fns": "^1.29.0",
+    "express": "^4.16.3",
+    "joi": "^13.4.0",
+    "micro": "^9.3.2",
+    "micro-match": "^0.1.2",
+    "next": "^6.0.3",
+    "next-routes": "^1.4.2",
+    "ramda": "^0.25.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "recharts": "^1.0.0-beta.10"
+  },
   "devDependencies": {
     "@storybook/addon-info": "^3.4.8",
     "@storybook/addon-options": "^3.4.8",
     "@storybook/react": "^3.4.8",
+    "@types/ramda": "types/npm-ramda#dist",
     "babel-loader": "^7.1.4",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
@@ -35,21 +57,5 @@
     "ts-loader": "^3.5.0",
     "typescript": "^2.9.2"
   },
-  "homepage": "https://github.com/melonproject/reporting#readme",
-  "dependencies": {
-    "@zeit/next-typescript": "^1.1.0",
-    "classnames": "^2.2.6",
-    "date-fns": "^1.29.0",
-    "express": "^4.16.3",
-    "next-routes": "^1.4.2",
-    "next": "^6.0.3",
-    "ramda": "^0.25.0",
-    "react-dom": "^16.4.1",
-    "react": "^16.4.1",
-    "recharts": "^1.0.0-beta.10",
-  },
-  "contributors": [
-    "Simon Emanuel Schmid <simon@schmid.io>",
-    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
-  ]
+  "homepage": "https://github.com/melonproject/reporting#readme"
 }
