@@ -1,7 +1,7 @@
 {
   "name": "@melon-reporting/components",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@storybook/addon-options": "^3.4.8",
     "classnames": "^2.2.6",

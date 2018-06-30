@@ -1,7 +1,7 @@
 const routes = (module.exports = require('next-routes')());
 
 routes
-  .add('report', '/report/:fundAddress/:timeSpanStart/:timeSpanEnd', 'report')
+  .add('report', '/report/:fundAddress/:timeSpanStart/:timeSpanEnd', 'Report')
   .add(
     'defaultTimespan',
     '/report/:fundAddress/:timeSpanStart?',
@@ -9,4 +9,4 @@ routes
   )
   .add('noFundAddress', '/report', 'redirects/toBrowse')
   .add('root', '/', 'redirects/toBrowse')
-  .add('browse', '/browse', 'browse');
+  .add('browse', '/browse', 'Browse');

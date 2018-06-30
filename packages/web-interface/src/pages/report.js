@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 
 import dataExtractor from '@melonproject/data-extractor/dataExtractor';
+import ColoredNumber from '@melon-reporting/components/ColoredNumber';
 
 const Report = ({ data, debug }) => (
   <div>
@@ -36,6 +37,7 @@ const Report = ({ data, debug }) => (
         dot={false}
       />
     </LineChart>
+    <ColoredNumber>{123.324}</ColoredNumber>
     <pre>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );

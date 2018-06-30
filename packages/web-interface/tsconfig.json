@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "allowJs": true,
+    "declaration": false,
+    "paths": {
+      "@melon-reporting/components": ["../components/src"],
+    }
+  }
+}
