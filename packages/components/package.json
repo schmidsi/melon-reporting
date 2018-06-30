@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@storybook/addon-options": "^3.4.8",
     "classnames": "^2.2.6",
     "ramda": "^0.25.0",
     "react": "^16.4.1",
