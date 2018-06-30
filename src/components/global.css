@@ -1,11 +1,11 @@
 * {
   box-sizing: border-box;
-  font-family: "Source Serif Pro", serif;
-  font-size: 16px;
-  line-height: 1.75;
 }
 
 body {
+  font-family: "Source Serif Pro", serif;
+  font-size: 16px;
+  line-height: 1.75;
   background-color: rgb(255, 253, 244);
   background-size: 28px 28px;
   background-image: linear-gradient(to top, lightgrey 1px, transparent 1px);

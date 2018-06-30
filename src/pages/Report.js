@@ -38,6 +38,7 @@ const Report = ({ data, debug }) => (
       />
     </LineChart>
     <ColoredNumber>{123.324}</ColoredNumber>
+    <ColoredNumber>{-123.324}</ColoredNumber>
     <pre>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );
