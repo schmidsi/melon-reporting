@@ -5,7 +5,7 @@ import DescriptionList from './';
 
 import global from '../../global.css';
 
-storiesOf(DescriptionList.name, module).add('with text', () => (
+storiesOf(DescriptionList.name, module).add('default', () => (
   <div>
     <style jsx>{global}</style>
     <DescriptionList size={7} detailsAlign="right">

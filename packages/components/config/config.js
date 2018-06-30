@@ -1,8 +1,7 @@
 import { configure } from '@storybook/react';
 
-function loadStories() {
-  require('../src/blocks/DescriptionList/story.tsx');
-  // You can require as many stories as you need.
-}
+const stories = require.context('../src', true, /\/story\.(tsx?)$/);
 
-configure(loadStories, module);
+configure(() => {
+  return stories.keys().forEach(stories);
+}, module);
