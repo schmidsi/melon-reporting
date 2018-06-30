@@ -3,10 +3,6 @@ import { storiesOf } from '@storybook/react';
 
 import ColoredNumber from './';
 
-//    import global from '../../global.css';
-
-console.log(ColoredNumber);
-
 storiesOf('ColoredNumber', module).add('default', () => (
   <div>
     <ul>

@@ -1,6 +1,8 @@
 import { configure } from '@storybook/react';
 import { setOptions } from '@storybook/addon-options';
 
+import '../../src/components/global.css';
+
 const stories = require.context(
   '../../src/components',
   true,
