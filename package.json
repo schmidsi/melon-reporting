@@ -48,14 +48,10 @@
     "@storybook/addon-info": "^3.4.8",
     "@storybook/addon-options": "^3.4.8",
     "@storybook/react": "^3.4.8",
-    "@types/ramda": "types/npm-ramda#dist",
     "babel-loader": "^7.1.4",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
-    "gitbook-plugin-katex": "^1.1.4",
-    "lerna": "^2.11.0",
-    "ts-loader": "^3.5.0",
-    "typescript": "^2.9.2"
+    "gitbook-plugin-katex": "^1.1.4"
   },
   "homepage": "https://github.com/melonproject/reporting#readme"
 }

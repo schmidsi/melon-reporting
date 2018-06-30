@@ -1,7 +1,11 @@
 import { configure } from '@storybook/react';
 import { setOptions } from '@storybook/addon-options';
 
-const stories = require.context('../src', true, /\/story\.(tsx?)$/);
+const stories = require.context(
+  '../../src/components',
+  true,
+  /\/story\.(jsx?)$/,
+);
 
 configure(() => {
   return stories.keys().forEach(stories);

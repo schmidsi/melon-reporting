@@ -12,6 +12,7 @@ import {
 
 import dataExtractor from '../api/dataExtractor';
 import ColoredNumber from '../components/blocks/ColoredNumber';
+import DescriptionList from '../components/blocks/DescriptionList';
 
 const Report = ({ data, debug }) => (
   <div>
@@ -37,8 +38,15 @@ const Report = ({ data, debug }) => (
         dot={false}
       />
     </LineChart>
-    <ColoredNumber>{123.324}</ColoredNumber>
-    <ColoredNumber>{-123.324}</ColoredNumber>
+
+    <DescriptionList>
+      {{
+        Profit: <ColoredNumber>{123.324}</ColoredNumber>,
+        Loss: <ColoredNumber>{-123.324}</ColoredNumber>,
+        Address: data.meta.fundAddress,
+        'Quote Token': data.meta.quoteToken.symbol,
+      }}
+    </DescriptionList>
     <pre>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );
