@@ -1,6 +1,6 @@
 {
   "name": "@melonproject/reporting",
-  "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
+  "description": "Melon Fund Reporting",
   "main": "index.js",
   "private": true,
   "contributors": [
@@ -10,7 +10,7 @@
   "scripts": {
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
-    "dev": "node src/server.js",
+    "start": "node src/server.js",
     "storybook": "start-storybook -p 3060 -c config/storybook"
   },
   "repository": {
@@ -34,9 +34,6 @@
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "express": "^4.16.3",
-    "joi": "^13.4.0",
-    "micro": "^9.3.2",
-    "micro-match": "^0.1.2",
     "next": "^6.0.3",
     "next-routes": "^1.4.2",
     "ramda": "^0.25.0",
