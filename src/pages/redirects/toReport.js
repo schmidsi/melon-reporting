@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-import getDefaultTimeSpan from '@melonproject/data-extractor/getDefaultTimeSpan';
+import getDefaultTimeSpan from '../../api/getDefaultTimeSpan';
 
 import { default as routes, Router } from '../../routes';
 
