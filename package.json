@@ -11,7 +11,7 @@
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
     "start": "node src/server.js",
-    "storybook": "start-storybook -p 3060 -c config/storybook"
+    "storybook": "start-storybook -p 3060 -c config/storybook -s design/mockups"
   },
   "repository": {
     "type": "git",

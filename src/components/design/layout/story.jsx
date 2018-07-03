@@ -2,11 +2,11 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 import Container from './Container';
-import Col from './Col';
+import Column from './Column';
 
 storiesOf('Layout', module).add('default', () => (
   <Container>
-    <Col proportion={7}>Lorem Ipsuma</Col>
-    <Col proportion={5}>Dolor sit amet</Col>
+    <Column proportion={7}>Lorem Ipsuma</Column>
+    <Column proportion={5}>Dolor sit amet</Column>
   </Container>
 ));
