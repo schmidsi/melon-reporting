@@ -57,7 +57,7 @@ Report.getInitialProps = async ({ query }) => {
     query.timeSpanStart,
     query.timeSpanEnd,
   );
-  console.log(data);
+
   return data;
 };
 
