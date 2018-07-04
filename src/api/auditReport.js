@@ -3,7 +3,7 @@ import auditingabi from '../contracts/abi/AuditingContract';
 import hashReport from './hashReport';
 const auditingContractAddress = "0x263072c3df847F40c979b94ab885e61d34cf2838";
 
-const auditReport = async (data) => {
+const auditReport = async (data, opinion) => {
   const web3 = new Web3(Web3.givenProvider);
   const auditingContract = new web3.eth.Contract(auditingabi, auditingContractAddress);
 
@@ -13,12 +13,11 @@ const auditReport = async (data) => {
   const dataHash = hashReport(data);
   const timespanStart = data.meta.timeSpanStart;
   const timespanEnd = data.meta.timeSpanEnd;
-  const opinion = 0;
+  const opinionValue = parseInt(opinion);
 
-  console.log(data);
-  console.log(dataHash);
+  console.log(opinionValue);
 
-  auditingContract.methods.add(data.meta.fundAddress, dataHash, timespanStart, timespanEnd, opinion)
+  auditingContract.methods.add(data.meta.fundAddress, dataHash, timespanStart, timespanEnd, opinionValue)
     .send({
       from: auditorAccount
     })
