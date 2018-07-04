@@ -51,7 +51,7 @@ const Report = ({ data, debug }) => (
         'Quote Token': data.meta.quoteToken.symbol,
       }}
     </DescriptionList>
-    <pre>{JSON.stringify(data, null, 4)}</pre>
+    <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );
 

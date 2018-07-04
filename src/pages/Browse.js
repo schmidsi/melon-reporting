@@ -9,9 +9,9 @@ const Browse = ({ ranking }) => (
     {ranking.map(fund => (
       <div key={fund.address}>
         <Link route="defaultTimespan" params={{ fundAddress: fund.address }}>
-          <span>
+          <a>
             {fund.name} - {fund.address}
-          </span>
+          </a>
         </Link>
       </div>
     ))}

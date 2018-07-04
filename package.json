@@ -11,8 +11,12 @@
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
     "dev": "node src/server.js",
+    "build": "next build src",
     "start": "NODE_ENV=production node src/server.js",
     "storybook": "start-storybook -p 3060 -c config/storybook -s design/mockups"
+  },
+  "now": {
+    "alias": "melon-reporting.now.sh"
   },
   "repository": {
     "type": "git",
