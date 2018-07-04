@@ -7,7 +7,9 @@ Present:
 * Benjamin Zumbrunn
 * Sarah Hauser (FHNW)
 * Markus Knecht (FHNW)
-...
+* Mona El Isa (Melonport)
+* John Orthwein (Melonport)
+* Jenna Zenk (Melonport)
 
 ### Agenda
 * Walkthrough

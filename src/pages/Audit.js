@@ -1,4 +1,3 @@
-
 import auditReport from '../api/auditReport';
 
 class Audit extends React.Component {

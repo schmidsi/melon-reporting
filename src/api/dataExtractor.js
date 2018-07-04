@@ -54,6 +54,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     environment,
   );
 
+  /*
+  const auditsFromFund = await getAuditsFromFund(environment, {
+    fundAddress,
+  });
+  */
+
   const ordersHistory = await getOrdersHistory(environment, { fundAddress });
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
@@ -193,11 +199,14 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ),
   }));
 
+  //const audits = auditsPerFund.map(audit => ());
+
   return {
     data: {
       meta,
       holdings,
       participations,
+      //audits
     },
     debug: {
       lastRequestId,
