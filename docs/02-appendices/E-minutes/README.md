@@ -1,5 +1,40 @@
 # Minutes
 
+## Meeting 2018-07-05
+
+Present:
+* Simon Emanuel Schmid
+* Benjamin Zumbrunn
+* Sarah Hauser (FHNW)
+* Markus Knecht (FHNW)
+* Mona El Isa (Melonport)
+* John Orthwein (Melonport)
+* Jenna Zenk (Melonport)
+
+### Agenda
+* Walkthrough
+* Updated Mockup
+* Feedback so far
+* Mock data generator proposal
+* Data extractor
+* New contract + tests
+* FHNW misc
+
+### Walkthrough
+
+### Updated Mockup
+
+### Feedback so far
+
+### Mock data generator proposal
+
+### Data extractor
+
+### New contract + tests
+
+### FHNW misc
+
+
 ## Meeting 2018-06-12
 
 Present:
