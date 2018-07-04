@@ -14,6 +14,8 @@ import dataExtractor from '../api/dataExtractor';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 
+import auditReport from '../components/auditing/auditReport';
+
 const Report = ({ data, debug }) => (
   <div>
     <h1>{data.meta.fundName}</h1>
@@ -22,6 +24,11 @@ const Report = ({ data, debug }) => (
       {format(new Date(data.meta.timeSpanStart * 1000), 'D. MMM YYYY')} to{' '}
       {format(new Date(data.meta.timeSpanEnd * 1000), 'D. MMM YYYY')}
     </h2>
+
+    <button onClick={() => auditReport(data)}>
+      Audit
+    </button>
+
     <LineChart
       width={600}
       height={300}
