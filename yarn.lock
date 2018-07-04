@@ -757,24 +757,23 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@melonproject/melon.js@^0.8.7":
-  version "0.8.13"
-  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.13.tgz#aab0aca74c0a1b424970250e48cf9f0c841fb91f"
+"@melonproject/melon.js@0.8.14-alpha.1":
+  version "0.8.14-alpha.1"
+  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.14-alpha.1.tgz#7376c563a1a240bcf5dc904798b5b392a9a01ee3"
   dependencies:
     "0x.js" "^0.35.0"
     "@babel/runtime" "7.0.0-beta.42"
-    "@melonproject/smart-contracts" "0.8.0-alpha.29"
+    "@melonproject/smart-contracts" "0.8.0-alpha.31"
     "@parity/api" "^2.1.5"
     bignumber.js "4.1.0"
     bip39 "^2.4.0"
-    debug "2.6.9"
     ethers-utils "^2.1.11"
     ethers-wallet "^2.1.8"
     ramda "^0.25.0"
 
-"@melonproject/smart-contracts@0.8.0-alpha.29":
-  version "0.8.0-alpha.29"
-  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-alpha.29.tgz#952121bb3d068cd686923a74a9b6f0eb7c715dc9"
+"@melonproject/smart-contracts@0.8.0-alpha.31":
+  version "0.8.0-alpha.31"
+  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-alpha.31.tgz#c80798cda8e12bc0e1c04486d48a860d592230ee"
   dependencies:
     "0x.js" "^0.35.0"
     "@parity/api" "^2.1.20"
