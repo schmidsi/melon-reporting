@@ -14,7 +14,7 @@ import dataExtractor from '../api/dataExtractor';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 
-import auditReport from '../components/auditing/auditReport';
+import auditReport from '../api/auditReport';
 
 const Report = ({ data, debug }) => (
   <div>
