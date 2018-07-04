@@ -15,8 +15,6 @@ const auditReport = async (data, opinion) => {
   const timespanEnd = data.meta.timeSpanEnd;
   const opinionValue = parseInt(opinion);
 
-  console.log(opinionValue);
-
   auditingContract.methods.add(data.meta.fundAddress, dataHash, timespanStart, timespanEnd, opinionValue)
     .send({
       from: auditorAccount

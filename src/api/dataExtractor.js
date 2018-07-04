@@ -15,6 +15,8 @@ import {
 } from '@melonproject/melon.js';
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 
+import getAuditsFromFund from './getAuditsFromFund';
+
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
@@ -54,11 +56,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     environment,
   );
 
-  /*
-  const auditsFromFund = await getAuditsFromFund(environment, {
-    fundAddress,
+  const audits = await getAuditsFromFund(environment, {
+    fundAddress
   });
-  */
 
   const ordersHistory = await getOrdersHistory(environment, { fundAddress });
 
@@ -199,14 +199,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ),
   }));
 
-  //const audits = auditsPerFund.map(audit => ());
-
   return {
     data: {
       meta,
       holdings,
       participations,
-      //audits
+      audits
     },
     debug: {
       lastRequestId,
