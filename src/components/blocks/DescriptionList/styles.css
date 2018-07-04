@@ -1,0 +1,13 @@
+.descriptionList th {
+  font-weight: 600;
+  text-align: left;
+  padding: 0 0.5em 0 0;
+}
+
+.descriptionList td {
+  padding: 0;
+}
+
+.descriptionList {
+  border-collapse: collapse;
+}

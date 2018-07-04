@@ -1,31 +1,21 @@
 {
-  "name": "reporting-thesis",
-  "description": "Melon Fund Reporting module as thesis at University of Applied Sciences Northwestern Switzerland",
+  "name": "@melonproject/reporting",
+  "description": "Melon Fund Reporting",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
+  "contributors": [
+    "Simon Emanuel Schmid <simon@schmid.io>",
+    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
+  ],
   "scripts": {
     "gitbook": "gitbook",
     "deploy:docs": "./scripts/deploy-docs.sh",
-    "prototype": "lerna run --stream prototype",
-    "bootstrap": "lerna bootstrap",
-    "clean": "lerna run --parallel clean",
-    "lint": "lerna run --parallel lint",
-    "format": "lerna run --parallel format",
-    "test": "lerna run --parallel test",
-    "build": "lerna run --stream build",
-    "dev": "lerna run --stream dev"
+    "start": "node src/server.js",
+    "storybook": "start-storybook -p 3060 -c config/storybook -s design/mockups"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/melonproject/reporting-thesis.git"
+    "url": "git+https://github.com/melonproject/reporting.git"
   },
   "keywords": [
     "melon",
@@ -33,24 +23,32 @@
     "soldity",
     "visualisation"
   ],
-  "author": "",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/melonproject/reporting-thesis/issues"
+    "url": "https://github.com/melonproject/reporting/issues"
+  },
+  "dependencies": {
+    "@melonproject/melon.js": "^0.8.7",
+    "@zeit/next-css": "^0.2.0",
+    "@zeit/next-typescript": "^1.1.0",
+    "classnames": "^2.2.6",
+    "date-fns": "^1.29.0",
+    "express": "^4.16.3",
+    "next": "^6.0.3",
+    "next-routes": "^1.4.2",
+    "ramda": "^0.25.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "recharts": "^1.0.0-beta.10"
   },
   "devDependencies": {
+    "@storybook/addon-info": "^3.4.8",
+    "@storybook/addon-options": "^3.4.8",
+    "@storybook/react": "^3.4.8",
+    "babel-loader": "^7.1.4",
     "gitbook-cli": "^2.3.2",
-    "lerna": "^2.11.0",
-    "svgexport": "^0.3.2"
-  },
-  "homepage": "https://github.com/melonproject/reporting-thesis#readme",
-  "dependencies": {
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
-    "gitbook-plugin-katex": "^1.1.4",
-    "npm": "^6.1.0"
+    "gitbook-plugin-katex": "^1.1.4"
   },
-  "contributors": [
-    "Simon Emanuel Schmid <simon@schmid.io>",
-    "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
-  ]
+  "homepage": "https://github.com/melonproject/reporting#readme"
 }

@@ -1,0 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: "Source Serif Pro", serif;
+  font-size: 18px;
+  line-height: 1.75;
+  background-color: rgb(255, 253, 244);
+  background-size: 32px 32px;
+  background-image: linear-gradient(to top, lightgrey 1px, transparent 1px);
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1.75em;
+}

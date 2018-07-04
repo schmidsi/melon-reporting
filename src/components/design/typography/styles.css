@@ -1,0 +1,13 @@
+.title {
+  margin-top: 88px;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 48px;
+  text-rendering: geometricPrecision;
+}
+
+.subtitle {
+  font-weight: 400;
+  font-size: 24px;
+  margin-top: -23px;
+}

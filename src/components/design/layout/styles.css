@@ -1,0 +1,12 @@
+.container {
+  margin: 0 auto;
+  width: 960px;
+  max-width: 100%;
+  display: flex;
+}
+
+.col {
+  flex-grow: 1;
+  flex-basis: 0;
+  /* border: 1px solid grey; */
+}
