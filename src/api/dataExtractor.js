@@ -57,7 +57,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const audits = await getAuditsFromFund(environment, {
-    fundAddress
+    fundAddress,
   });
 
   const ordersHistory = await getOrdersHistory(environment, { fundAddress });
@@ -202,9 +202,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   return {
     data: {
       meta,
-      holdings,
       participations,
-      audits
+      audits,
+      holdings,
     },
     debug: {
       lastRequestId,
