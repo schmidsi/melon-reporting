@@ -5,24 +5,22 @@ import "ds-test/test.sol";
 import "./Auditing.sol";
 import "./AuditingWithTimespanArray.sol";
 
-contract AuditingBulkTest is DSTest {
+contract AuditingBulkTestOne is DSTest {
     AuditingInterface auditing;
     AuditingInterface auditing2;
     address auditor1 = this; // this is the account that calls the functions of the contract
-    address fundAddress = 0x3; // for index shifting version
-    address fundAddress2 = 0x4; // for timespan array version
+    address fundAddress = 0x1a; // for index shifting version
+    address fundAddress2 = 0x1b; // for timespan array version
     bytes32 dataHash = "98dgf97d";
 
     address[] auditors;
+
+    uint auditCount = 101;
 
     function setUp() public {
         auditors = [auditor1];
         auditing = new Auditing(auditors);
         auditing2 = new AuditingWithTimespanArray(auditors);
-
-        //uint auditCount = 101;
-        uint auditCount = 110;
-        //uint auditCount = 200;
 
         for (uint i = 100; i < auditCount; i++) {
             addStandardAudit(i, i+1); // for index shifting version
@@ -31,19 +29,19 @@ contract AuditingBulkTest is DSTest {
 
     }
 
-    function testAddOneAuditToArrayEnd() public {
-        addStandardAudit(200, 201);
+    function testAddOneAuditToArrayVar1End() public {
+        addStandardAudit(auditCount, auditCount+1);
     }
 
-    function testAddOneAuditToArrayEnd2() public {
-        addStandardAudit2(200, 201);
+    function testAddOneAuditToArrayVar2End() public {
+        addStandardAudit2(auditCount, auditCount+1);
     }
 
-    function testAddOneAuditToArrayStart() public {
+    function testAddOneAuditToArrayVar1Start() public {
         addStandardAudit(99, 100);
     }
 
-    function testAddOneAuditToArrayStart2() public {
+    function testAddOneAuditToArrayVar2Start() public {
         addStandardAudit2(99, 100);
     }
 
