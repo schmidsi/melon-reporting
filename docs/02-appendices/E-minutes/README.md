@@ -14,6 +14,7 @@ Present:
 
 ### Agenda
 
+- Goals
 - Walkthrough
 - Updated Mockup
 - Feedback so far
