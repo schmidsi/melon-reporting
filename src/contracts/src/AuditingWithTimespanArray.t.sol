@@ -360,6 +360,7 @@ contract AuditingWithTimespanArrayTest is DSTest {
 
         // timespan array should only hold one value
         assertTrue(auditing.getAuditedTimespansLength(fundAddress) == 1);
+        assertTrue(auditing.isComplete(fundAddress, 1, 7000));
     }
 
     function testIsComplete1243Order() public {

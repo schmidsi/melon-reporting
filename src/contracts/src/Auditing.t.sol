@@ -146,4 +146,5 @@ contract AuditingTest is DSTest {
 
         return (a == auditor1) && (d == dataHash) && (ts == timespanStart) && (te == timespanEnd) && (o == 0);
     }
+
 }

@@ -14,18 +14,7 @@ Weaknesses:
 * When an audit with a very early timespanEnd is inserted, the gas cost rises rapidly because a lot of indexes have to be shifted.
 * Indexes to audits can change
 
-### Variant 2: Linked List
-[Blog post: Linked Lists in Solidity](https://medium.com/coinmonks/linked-lists-in-solidity-cfd967af389b)
-
-Strengths:
-* Low gas cost for special case: insert audit in between existing audits
-
-Weaknesses: 
-* Iterating through the linked list is very expensive
-* We cannot access audits by index, only if we would create the indexes on the fly
-* "On the fly" indexes would also change after an insertion
-
-### Variant 3: Helper array of timespans
+### Variant 2: Helper array of timespans
 An array _timespanAudited_ with (a struct of?) timespanStart and timespanEnd.
 Best case is that only one timespan is in it: From when to when the fund is audited.
 But if there are gaps, the array holds more values.
@@ -38,7 +27,18 @@ Strengths:
 * Standard add is cheap (case: fund is well audited without gaps)
 
 Weaknesses:
-* 
+* Audit array is not sorted by timespans.
+
+### Variant 3: Linked List
+[Blog post: Linked Lists in Solidity](https://medium.com/coinmonks/linked-lists-in-solidity-cfd967af389b)
+
+Strengths:
+* Low gas cost for special case: insert audit in between existing audits
+
+Weaknesses: 
+* Iterating through the linked list is very expensive
+* We cannot access audits by index, only if we would create the indexes on the fly
+* "On the fly" indexes would also change after an insertion
 
 ### Variant 4: Fixed audits per time period
 We could only allow audits to be performed on whole months or other fixed timespans. We could store them very easily in a map.
