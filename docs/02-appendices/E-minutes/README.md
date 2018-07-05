@@ -35,18 +35,44 @@ http://localhost:3000/report/0xC4ce568951958746904065Ee9E1C0aeE927D5260/15302672
   - Maybe create helper functions
 
 ### Walkthrough
+Also save text representation of "opinion" to show better what's not good.
 
 ### Updated Mockup
-
-### Feedback so far
+Write down the reasoning of the Web Interface in the thesis!
+Why is it easy to use, why something is implemented this way, Stakeholders agreed on it etc.
 
 ### Mock data generator proposal
+Arguments for generator:
+* Fund Database and Blockchain Sync Service will be done by Melonport anyway
+* Mock data could inspire the redesign of the new protocol
+
+Arguments against generator:
+* Disconnection from "real project"
+
+Build a hybrid with real data (like meta, audits...) and mockup data (trades...)
 
 ### Data extractor
 
 ### New contract + tests
+Argue about worst, mid and best case
+Big O notation!
+also visualize this
+
+Variants expensiveness
+Make really clear: gas cost and theoretical!
+
+Maybe argument about building blocks, not variants
+Show how the architecture looks for the variants... (what is a map?)
+
+Come back to "reality"... how does an auditor usually operate and which variant would be best for this?
+Argue about risk management!!! isComplete is most important there
+
+Problem with gas limits: are there any limits with filling gaps?
 
 ### FHNW misc
+Do weekly updates again
+Focus also on "easy to use interface".
+
 
 ## Meeting 2018-06-12
 
