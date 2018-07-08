@@ -114,15 +114,14 @@ contract AuditingTest is DSTest {
     */
 
     /// Test that the isComplete function returns the expected result.
-    /*
     function testIsComplete() public {
         // TODO
         addStandardAudit(1, 1000);
+        //addStandardAudit(1, 999); // should also return true!
         addStandardAudit(1000, 2000);
 
         assert(auditing.isComplete(fundAddress, 1, 2000));
     }
-    */
 
     /// Test that the isComplete function returns when no audits are present.
     function testIsCompleteFalseOnNoAudits() public {

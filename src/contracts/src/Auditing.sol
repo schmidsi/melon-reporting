@@ -111,23 +111,32 @@ contract Auditing is AuditingInterface {
                 continue; // skip until in scope
             }
 
-            uint256 nextIndex = i + 1;
-            Audit memory nextAudit = audits[nextIndex];
+            /*
+            if (i + 1 == audits.length) {
+                return false; // end of audits reached, but not end of provided scope
+            }
+            */
 
+            //Audit memory nextAudit = audits[i];
+
+            /*
             while (nextAudit.timespanEnd <= tempAudit.timespanEnd) {
-                nextAudit = audits[++nextIndex];
+                nextAudit = audits[i + 1];
+            }
+            */
+
+            // TODO
+
+            if (tempAudit.timespanStart >= _timespanEnd) {
+                return true; // end of scope is reached, fund is audited up to timestamp
             }
 
-            if (tempAudit.timespanEnd < nextAudit.timespanStart) {
-                return false; // gap
-            }
-
-            if (nextAudit.timespanStart > _timespanEnd) {
-                break; // end of scope is reached, fund is audited up to timestamp
+            if (tempAudit.timespanEnd < _timespanStart || i+1 == audits.length) {
+                return false; // gap was found or end of array is reached
             }
         }
 
-        return true;
+        //return true;
     }
 
     function isApprovedAuditor(address _auditor) 
