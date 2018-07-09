@@ -90,6 +90,6 @@
 - [References](02-appendices/F-references/README.md)
 - [Glossary](GLOSSARY.md)
 - [Original Project Submission](02-appendices/H-originalprojectsubmission/README.md)
-- [Statement of Honesty](02-appendices/I-statementofhonesty/README.md)
+- [Declaration of Academic Integrity](02-appendices/I-declarationofacademicintegrity/README.md)
 - [List of figures](02-appendices/J-listoffigures/README.md)
 - [List of tables](02-appendices/K-listoftables/README.md)

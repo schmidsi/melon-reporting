@@ -2,8 +2,8 @@ pragma solidity ^0.4.23;
 
 import "ds-test/test.sol";
 
+import "./AuditingFirst.sol";
 import "./Auditing.sol";
-import "./AuditingWithTimespanArray.sol";
 
 contract AuditingBulkTestHundred is DSTest {
     AuditingInterface auditing;
@@ -19,8 +19,8 @@ contract AuditingBulkTestHundred is DSTest {
 
     function setUp() public {
         auditors = [auditor1];
-        auditing = new Auditing(auditors);
-        auditing2 = new AuditingWithTimespanArray(auditors);
+        auditing = new AuditingFirst(auditors);
+        auditing2 = new Auditing(auditors);
 
         for (uint i = 100; i < auditCount; i++) {
             addStandardAudit(i, i+1); // for index shifting version

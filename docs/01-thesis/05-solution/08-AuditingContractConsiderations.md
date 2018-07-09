@@ -29,6 +29,13 @@ Strengths:
 Weaknesses:
 * Audit array is not sorted by timespans.
 
+Big O:
+Worst case: O(n)
+Average case: O(n)
+Best case: O(1)
+
+Pr
+
 ### Variant 3: Linked List
 [Blog post: Linked Lists in Solidity](https://medium.com/coinmonks/linked-lists-in-solidity-cfd967af389b)
 
@@ -54,6 +61,3 @@ Weaknesses:
 * No flexibility for audit timespans
 * Indexes do not align with _audits done_ when there is a gap. We could get an audit for indices 0 and 2, but not for index 1.
 * isComplete is more expensive than with variant 3
-
-### Variant 5: Mapping instead of array
-TODO
