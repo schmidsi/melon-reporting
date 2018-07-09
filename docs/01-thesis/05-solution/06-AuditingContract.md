@@ -1,124 +1,266 @@
 # Auditing Contract
 
-* [Auditing](#auditing)
-  * [isApprovedAuditor](#function-isapprovedauditor)
-  * [getByIndex](#function-getbyindex)
-  * [getLastIndex](#function-getlastindex)
-  * [exists](#function-exists)
-  * [add](#function-add)
-  * [fundAudits](#function-fundaudits)
-  * [approvedAuditors](#function-approvedauditors)
-  * [Added](#event-added)
+**Deployment cost**: less than 791800 gas
 
-## *function* isApprovedAuditor
-
-Auditing.isApprovedAuditor(_auditor) `view` `51c8151a`
+## Constructor
 
 
-Inputs
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _auditor | undefined |
+Params:
 
+1. **_approvedAuditors** *of type `address[]`*
 
-## *function* getByIndex
-
-Auditing.getByIndex(_fundAddress, _index) `view` `834389c7`
-
-**Returns the requested audit data**
+## Events
+### Added(address,uint256)
 
 
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _fundAddress | undefined |
-| *uint256* | _index | undefined |
+**Execution cost**: No bound available
 
 
-## *function* getLastIndex
+Params:
 
-Auditing.getLastIndex(_fundAddress) `view` `83e714ad`
-
-**Returns the last index of a specific fund**
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _fundAddress | undefined |
+1. **_fundAddress** *of type `address`*
+2. **_index** *of type `uint256`*
 
 
-## *function* exists
-
-Auditing.exists(_fundAddress, _auditor, _dataHash) `view` `c7c39870`
-
-**Validates that the provided data is mapped to an existing audit**
+## Methods
+### getAuditedTimespansLength(address)
 
 
-Inputs
+**Execution cost**: less than 738 gas
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _fundAddress | undefined |
-| *address* | _auditor | undefined |
-| *bytes32* | _dataHash | undefined |
+**Attributes**: constant
 
 
-## *function* add
+Params:
 
-Auditing.add(_fundAddress, _dataHash, _timespanStart, _timespanEnd) `nonpayable` `ec06b1be`
+1. **_fundAddress** *of type `address`*
 
-**Creates a new audit on a fund specified with `_fundAddress`, the hashed data in `_dataHash` and the timespan timestamps  in `_timespanStart` and `_timespanEnd`.**
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _fundAddress | undefined |
-| *bytes32* | _dataHash | undefined |
-| *uint256* | _timespanStart | undefined |
-| *uint256* | _timespanEnd | undefined |
+Returns:
 
 
-## *function* fundAudits
+1. **length** *of type `uint256`*
 
-Auditing.fundAudits(, ) `view` `f8b79ea9`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
+--- 
+### auditedTimespansPerFund(address,uint256)
 
 
-## *function* approvedAuditors
+**Execution cost**: less than 1092 gas
 
-Auditing.approvedAuditors() `view` `f909c6ca`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* |  | undefined |
+**Attributes**: constant
 
 
-## *event* Added
+Params:
 
-Auditing.Added(_fundAddress, _index) `446e00ad`
+1. **param_0** *of type `address`*
+2. **param_1** *of type `uint256`*
 
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _fundAddress | not indexed |
-| *uint256* | _index | not indexed |
+Returns:
 
 
----
+1. **start** *of type `uint256`*
+2. **end** *of type `uint256`*
+
+--- 
+### approvedAuditors(uint256)
+
+
+**Execution cost**: less than 1057 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **param_0** *of type `uint256`*
+
+Returns:
+
+
+1. **output_0** *of type `address`*
+
+--- 
+### add(address,bytes32,uint256,uint256,uint256)
+>
+>Creates a new audit on a fund specified with `_fundAddress`, the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps  in `_timespanStart` and `_timespanEnd`.
+
+
+**Execution cost**: No bound available
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_dataHash** *of type `bytes32`*
+3. **_timespanStart** *of type `uint256`*
+4. **_timespanEnd** *of type `uint256`*
+5. **_opinion** *of type `uint256`*
+
+
+--- 
+### exists(address,address,bytes32)
+>
+>Validates that the provided data is mapped to an existing audit
+
+
+**Execution cost**: No bound available
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_auditor** *of type `address`*
+3. **_dataHash** *of type `bytes32`*
+
+Returns:
+
+
+1. **auditExists** *of type `bool`*
+
+--- 
+### fundAudits(address,uint256)
+
+
+**Execution cost**: less than 2192 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **param_0** *of type `address`*
+2. **param_1** *of type `uint256`*
+
+Returns:
+
+
+1. **auditor** *of type `address`*
+2. **dataHash** *of type `bytes32`*
+3. **timespanStart** *of type `uint256`*
+4. **timespanEnd** *of type `uint256`*
+5. **opinion** *of type `uint8`*
+
+--- 
+### getAuditedTimespanEnd(address,uint256)
+
+
+**Execution cost**: less than 993 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_index** *of type `uint256`*
+
+Returns:
+
+
+1. **end** *of type `uint256`*
+
+--- 
+### getAuditedTimespanStart(address,uint256)
+
+
+**Execution cost**: less than 1015 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_index** *of type `uint256`*
+
+Returns:
+
+
+1. **start** *of type `uint256`*
+
+--- 
+### getByIndex(address,uint256)
+>
+>Returns the requested audit data
+
+
+**Execution cost**: less than 2967 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_index** *of type `uint256`*
+
+Returns:
+
+
+1. **auditor** *of type `address`*
+2. **dataHash** *of type `bytes32`*
+3. **timespanStart** *of type `uint256`*
+4. **timespanEnd** *of type `uint256`*
+5. **opinion** *of type `uint256`*
+
+--- 
+### getLength(address)
+>
+>Returns the length of the audit array of a specific fund
+
+
+**Execution cost**: less than 851 gas
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+
+Returns:
+
+
+1. **index** *of type `uint256`*
+
+--- 
+### isApprovedAuditor(address)
+
+
+**Execution cost**: No bound available
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_auditor** *of type `address`*
+
+Returns:
+
+
+1. **auditorIsApproved** *of type `bool`*
+
+--- 
+### isComplete(address,uint256,uint256)
+>
+>Returns true if a fund is completely audited over a specific timespan.
+
+
+**Execution cost**: No bound available
+
+**Attributes**: constant
+
+
+Params:
+
+1. **_fundAddress** *of type `address`*
+2. **_timespanStart** *of type `uint256`*
+3. **_timespanEnd** *of type `uint256`*
+
+Returns:
+
+
+1. **complete** *of type `bool`*
