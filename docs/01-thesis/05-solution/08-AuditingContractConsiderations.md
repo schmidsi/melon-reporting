@@ -3,16 +3,24 @@
 There are multiple ways to store audits, each with their own strengths and weaknesses. Storage also has an effect on crucial function calls like _isComplete_. In this chapter, we compare the theoretical complexity as well as the estimated gas costs of four variants. We also balance the pros and cons considering standard auditing processes and flexibility of the implementation on timespans.
 
 Two crucial tasks have to be solved with the auditing contract implementation:
-* The cost of storing an audit (add) must be as low as possible
-* Checking "audit completeness" of a fund over a timespan (isComplete) must be as efficient as possible
 
-We came up with the following variants:
+> The cost of storing an audit (add) must be as low as possible
+
+We want to incentivize auditors to properly audit funds regarding the timeline. This means that they should be encouraged to never produce gaps in audited timespans of a fund and audit in a linear fashion. When they audit steadily, they should expect steady gas costs when calling the _add_ function. When they have to close gaps in the audited timespan, they should not be punished too hard by gas costs.
+
+> Checking _audit completeness_ of a fund over a timespan (isComplete) must be as efficient as possible
+
+Audit completeness of a fund over a timespan will not only be verified manually by investors. Melon risk management modules will also rely on completeness verification in the future. A risk module may prevent a fund manager to trade when the fund has not been audited recently (see [Ex Ante](http://www.docs.melonport.com/chapters/risk_engineering.html#ex-ante---engineering)). As these risk modules are calls from smart contracts, the _isComplete_ function must be as efficient as possible in regards to gas costs and method invocation time.
+
+## Autiting Contract Variants
+
+We came up with the following variants in regards to the contract data structures:
 * Variant 1 - Array with shifting indices
 * Variant 2 - Helper array of audited timespans
 * Variant 3 - Linked list
-* Variant 4 - Fixed audits per time period
+* Variant 4 - Fixed time periods
 
-## Scenarios for Big-O
+## Scenarios regarding complexity
 
 ### add
 Worst case scenario: Audit is added to start
@@ -84,7 +92,7 @@ Weaknesses:
 * Add audit to end of array: O(1)
 
 **Average case: Theta(3)**
-* Look for insertion position: O(1)
+* Look for insertion position with two timespans present: O(1)
 * Shift index of second timespan: O(1)
 * Insert new timespan: O(1)
 
@@ -114,7 +122,7 @@ Weaknesses:
 * We cannot access audits by index, only if we would create the indexes on the fly
 * "On the fly" indexes would also change after an insertion
 
-## Variant 4 - Fixed audits per time period
+## Variant 4 - Fixed time periods
 We could only allow audits to be performed on whole months or other fixed timespans. We could store them very easily in a map.
 
 Mapping could be done with *year => Audit[12]* or similar.
@@ -129,9 +137,9 @@ Weaknesses:
 * Indexes do not align with _audits done_ when there is a gap. We could get an audit for indices 0 and 2, but not for index 1.
 * isComplete is more expensive than with variant 3
 
-## Considering reality
-It is important to incentivize auditors to properly audit funds. This means that they should be encouraged to never produce gaps in audited timespans of a fund.
+The fixed time periods variant could also benefit from a separate timespan array like in variant 2. This would make the audit completeness check much more efficient, but would not change the fact that time periods are not flexible.
 
+## Considering reality
 Variant 1: the likeliness to compare all values on isComplete is very high (example: check inception to now) --> worst case is very likely
 
 ## Decision

@@ -8,7 +8,6 @@
     "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
   ],
   "scripts": {
-    "gitbook": "gitbook serve",
     "deploy:docs": "./scripts/deploy-docs.sh",
     "dev": "node src/server.js",
     "build": "next build src",

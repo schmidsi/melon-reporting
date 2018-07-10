@@ -4,8 +4,6 @@
 * Compare gas costs
 * Compare method invocation times (isComplete)
 
-Variant 1: storing in array, index shifting on adding out-of-order audits
-Variant 2: 
 
 ## Implementation
 
