@@ -6,7 +6,7 @@ There are multiple ways to store audits, each with their own strengths and weakn
 
 ### Variant 1: Array with shifting indices
 
-![](/assets/array-with-shifting-indexes.svg)
+![](/assets/array-with-shifting-indexes.svg?v3)
 
 There is one array per fund, storing all the audits. The audits are sorted by _timespanEnd_.
 
@@ -20,6 +20,8 @@ Weaknesses:
 - Indexes to audits can change
 
 ### Variant 2: Helper array of timespans
+
+![](/assets/helper-array-with-timespans.svg)
 
 An array _timespanAudited_ with (a struct of?) timespanStart and timespanEnd.
 Best case is that only one timespan is in it: From when to when the fund is audited.
