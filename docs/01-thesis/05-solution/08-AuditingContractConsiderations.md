@@ -39,14 +39,19 @@ Best case scenario:
 Theoretical complexity does not suffice for our scope, because gas cost on average and best case performance will vary a lot, and these normally have a complexity of $$O(1)$$ in theory. For this reason, we extend Big-O notation with more precise values like $$\Omega(7)$$ for 7 rather gas-intensive operations. We call this _practical complexity_.
 
 ## Variant 1 - Array with shifting indices
+
+![](/assets/array-with-shifting-indexes.svg?v3)
+
 There is one array per fund, storing all the audits. The audits are sorted by _timespanEnd_.
 
 Strengths:
-* Array is always sorted
 
-Weaknesses: 
-* When an audit with a very early timespanEnd is inserted, the gas cost rises rapidly because a lot of indexes have to be shifted.
-* Indexes to audits can change
+- Array is always sorted
+
+Weaknesses:
+
+- When an audit with a very early timespanEnd is inserted, the gas cost rises rapidly because a lot of indexes have to be shifted.
+- Indexes to audits can change
 
 ### add complexity
 
@@ -83,6 +88,9 @@ Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$
 
 
 ## Variant 2 - Helper array of audited timespans
+
+![](/assets/helper-array-with-timespans.svg)
+
 An array _timespanAudited_ with (a struct of?) timespanStart and timespanEnd.
 Best case is that only one timespan is in it: From when to when the fund is audited.
 But if there are gaps, the array holds more values.
@@ -90,12 +98,14 @@ But if there are gaps, the array holds more values.
 When we use the _isComplete_ function, we just have to check this array, so we don't have to iterate over a lot of audits and their timespans.
 
 Strengths:
-* Probable cheap isComplete call (best case: only testing 2 values)
-* Indexes always stay the same
-* Standard add is cheap (case: fund is well audited without gaps)
+
+- Cheap isComplete call (best case: only testing 2 values)
+- Indexes always stay the same
+- Standard add is cheap (case: fund is well audited without gaps)
 
 Weaknesses:
-* Audit array is not sorted by timespans.
+
+- Audit array is not sorted by timespans.
 
 ### add complexity
 
@@ -177,12 +187,13 @@ Theoretical: $$\Omega(1)$$
 ## Variant 4 - Fixed time periods
 We could only allow audits to be performed on whole months or other fixed timespans. We could store them very easily in a map.
 
-Mapping could be done with *year => Audit[12]* or similar.
+Mapping could be done with _year => Audit[12]_ or similar.
 
 Strengths:
-* No timespans, so no possibility of off-by-one errors
-* Gaps are very easily detectable
-* Indexing is easy
+
+- No timespans, so no possibility of off-by-one errors
+- Gaps are very easily detectable
+- Indexing is easy
 
 Weaknesses:
 * No flexibility for audit timespans

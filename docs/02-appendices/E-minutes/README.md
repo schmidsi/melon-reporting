@@ -35,31 +35,46 @@ http://localhost:3000/report/0xC4ce568951958746904065Ee9E1C0aeE927D5260/15302672
   - Maybe create helper functions
 
 ### Walkthrough
-Also save text representation of "opinion" to show better what's not good.
+
+[Also save text representation of "opinion" to show better what's not good. (#118)](https://github.com/melonproject/reporting/issues/118)
 
 ### Updated Mockup
+
 Write down the reasoning of the Web Interface in the thesis!
 Why is it easy to use, why something is implemented this way, Stakeholders agreed on it etc.
 
+Addressed in:
+
+- [Extract specification from use cases #131](https://github.com/melonproject/reporting/issues/131)
+- [Describe & sell "Standard Report Web Interface" #133](https://github.com/melonproject/reporting/issues/133)
+
 ### Mock data generator proposal
+
 Arguments for generator:
-* Fund Database and Blockchain Sync Service will be done by Melonport anyway
-* Mock data could inspire the redesign of the new protocol
+
+- Fund Database and Blockchain Sync Service will be done by Melonport anyway
+- Mock data could inspire the redesign of the new protocol
 
 Arguments against generator:
-* Disconnection from "real project"
+
+- Disconnection from "real project"
 
 Build a hybrid with real data (like meta, audits...) and mockup data (trades...)
+
+Adressed in: [Test data generator #81](https://github.com/melonproject/reporting/issues/81)
 
 ### Data extractor
 
 ### New contract + tests
+
 Argue about worst, mid and best case
 Big O notation!
-also visualize this
+also visualize this: https://github.com/melonproject/reporting/issues/134
 
 Variants expensiveness
 Make really clear: gas cost and theoretical!
+
+-> [Visualize Worst, Average & Best Case Scenarios for Variant 1 & 2 #135](https://github.com/melonproject/reporting/issues/135)
 
 Maybe argument about building blocks, not variants
 Show how the architecture looks for the variants... (what is a map?)
@@ -70,9 +85,9 @@ Argue about risk management!!! isComplete is most important there
 Problem with gas limits: are there any limits with filling gaps?
 
 ### FHNW misc
+
 Do weekly updates again
 Focus also on "easy to use interface".
-
 
 ## Meeting 2018-06-12
 
@@ -93,7 +108,7 @@ Present:
 ### PWC
 
 Document the "priorities" of PWC --> they are interested that the data shown is correct, they want to know why it is correct, where it comes from etc.
-Hauser: stay with PWC, otherwise the "initial work" was useless.
+Hauser: stay with PWC, otherwise the "initial work" was useless. [#136](https://github.com/melonproject/reporting/issues/136)
 
 ### Final specification
 
@@ -117,7 +132,7 @@ But: look also for other ideas! Tradeoffs from verification.
 
 ### Smart Contract & storage
 
-Document the risk management stakeholder better: why does he need the isComplete function, etc.
+Document the risk management stakeholder better: why does he need the isComplete function, etc. [#137](https://github.com/melonproject/reporting/issues/137)
 
 Look for other possibilities how to sort the array...
 
@@ -142,7 +157,7 @@ Present:
 
 ### Reporting
 
-Michael: It would be interesting to retroactively construct transactions (with historic prices).
+Michael: It would be interesting to retroactively construct transactions (with historic prices). [#81](https://github.com/melonproject/reporting/issues/81)
 Relevant for Melon in general: look at rules of traditional asset management.
 Sabine & Michael will look into: what is important for an auditor when going through a report.
 
@@ -178,6 +193,8 @@ Assessment sheet: Knecht sends it to us (with the bonus points for blockchain pr
 Say explicitly that the approach from Melonport (and in the Blockchain space generally) is something new (old world/new world) and wants to be a bit _disruptive_.
 
 --> Describe Melonport in some sentences.
+
+See: [#109](https://github.com/melonproject/reporting/issues/109)
 
 ### Modular approach
 
@@ -264,7 +281,7 @@ Enhance report with costs around funds (gas prices)
 
 ### Data Schema
 
-priceHistory: in the old world its a snapshot
+priceHistory: in the old world its a snapshots
 maybe use "volume weighed average price"? might be too complicated to calculate...
 
 ### MIP
