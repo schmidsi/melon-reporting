@@ -35,6 +35,7 @@
   * [Deterministic Data Extraction](01-thesis/05-solution/07-DeterministicDataExtraction.md)
   * [Auditing Contract Considerations](01-thesis/05-solution/08-AuditingContractConsiderations.md)
   * [Auditing Contract Implementation](01-thesis/05-solution/09-AuditingContractImplementation.md)
+  * [Auditing Contract Tests](01-thesis/05-solution/10-AuditingContractTests.md)
 
 - [Conclusion](01-thesis/06-conclusion/README.md)
 
