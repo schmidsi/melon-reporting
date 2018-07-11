@@ -21,8 +21,7 @@
 
   - [Use Cases](01-thesis/04-analysis/01-UseCases.md)
   - [Data Classification](01-thesis/04-analysis/02-DataClassification.md)
-  - [On-Chain Data](01-thesis/04-analysis/03-OnChainData.md)
-  - [Off-Chain Data](01-thesis/04-analysis/04-OffChainData.md)
+  - [Data](01-thesis/04-analysis/03-Data.md)
 
 - [Solution](01-thesis/05-solution/README.md)
 

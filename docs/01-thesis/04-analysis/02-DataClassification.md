@@ -7,7 +7,8 @@
 * **Long text**: A long text, usually written in prose.
 * **Number**: Any representation of a number, e.g. a price or a percentage.
 * **Address**: Data that is considered to be an address, e.g. an Ethereum address.
-* **Timestamp**: Any format representing time. This is mostly a unix timestamp, so the accuracy is at most one second.
+* **Time**: Any format representing time. This is mostly a unix timestamp, so the accuracy is at most one second.
+* **Container**: A more complex type, holding multiple values.
 
 ### Source
 
@@ -15,7 +16,7 @@
 * **On-chain event**: Data can be retrieved from the blockchain by searching for events. This data cannot be used by smart contracts. I.e. a smart contract cannot check if a certain event happened. _Examples_: Price history
 * **Off-chain**: Data that is not retrievable from the blockchain.
 * **Free text**: General text. Usually lawyer jargon.
-* **Given**: Data that is given by a template/recommendation,
+* **Given**: Data that is given by a template/recommendation, or is known through other sources.
 
 ### Availability
 
@@ -39,6 +40,22 @@
 | Data                | Data Type          | Source               | Availability          | Consistency
 | ------------------- | ------------------ | -------------------- | --------------------- | ------------
 | Fund name           | Short text         | On-chain call        | Simple                | Static
+| Fund address        | Address            | Given                | Simple                | Generated 
+| Timespan start      | Time               | Given                | Simple                | Configuration 
+| Timespan end        | Time               | Given                | Simple                | Configuration 
+| Manager             | Address            | On-chain call        | Simple                | Static 
+| Inception           | Time               | On-chain call        | Simple                | Generated
+| Quote symbol        | Short text         | On-chain call        | Simple                | Static 
+| Quote address       | Address            | On-chain call        | Simple                | Static 
+| Exchange address    | Address            | On-chain call        | Simple                | Static 
+| Exchange name       | Short text         | On-chain call        | Simple                | Static 
+| Total supply        | Number             | On-chain call        | Simple                | Live
+| Participation       | Container          | On-chain event       | Complex               | Archive
+| Audit               | Container          | On-chain call        | Simple                | Archive
+| Holding symbol      | Short text         | On-chain call        | Simple                | Static
+| Holding address     | Address            | On-chain call        | Simple                | Static
+| Holding balance     | Number             | On-chain call        | Simple                | Live
+| Price history       | Number             | On-chain event       | Complex               | Archive
 
 ## Reasoning
 The reasoning behind this classification is described in [Appendix D](/appendix/D-research/DataClassification.md).
