@@ -1,5 +1,9 @@
 # Data classification
 
+For data classification, we studied the CAP theorem and the properties of ACID. As all of our data for the _Reporting and Auditing_ module will be fetched from the Ethereum blockchain, these paradigms do not perfectly apply to our use case. Therefore, we came up with our own classification which we qualify here.
+
+Further reasoning on this can be found in the [Appendices](/02-appendices/D-research/08-DataClassification.html).
+
 ## Classifications
 
 ### Data Type
