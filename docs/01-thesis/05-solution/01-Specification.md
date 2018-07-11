@@ -2,6 +2,8 @@
 
 _Note:_ The following specification serves as the official project scope agreed upon by the coaches and the client during the prototype presentation meeting on 3rd Mai 2018 in Zug.
 
+
+
 ### Investor
 
 - Timespan: Mainly inception to now
