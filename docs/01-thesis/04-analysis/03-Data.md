@@ -4,13 +4,21 @@
 
 The following ERM is a representation of the minimalistic data available on the blockchain of a fund to build charts and reports. All data can be derived from this model. It is still a challenge to obtain historical data (price feed history) since we need to search the blockchain for events. But this is subject to another chapter. For research purposes it is sufficient to know that this data is available.
 
-![](/assets/Melon-DB-ERM.svg)
+![](/assets/Melon-DB-ERM-before.svg?v2)
+
+**Quantifiers** (same as regex):
+
+- 1: Only one
+- \*: Zero or more
+- +: One or more
+- ?: Zero or one
+- 2+: Two or more
 
 ### Explanation
 
-* The fund is in the center. Once set up, a fund cannot change its name/address/owner
-* Every fund has one quote asset in which its value is denominated. Usually MLN.
-* Total number of shares ($$ s $$) can be retrieved with the following formula:
+- The fund is in the center. Once set up, a fund cannot change its name/address/owner
+- Every fund has one quote asset in which its value is denominated. Usually MLN.
+- Total number of shares ($$ s $$) can be retrieved with the following formula:
 
   <!-- prettier-ignore -->
   $$
@@ -19,7 +27,7 @@ The following ERM is a representation of the minimalistic data available on the 
 
   Where $$ I $$ is the set of all investments and $$ q_i $$ the quantity of shares per investment.
 
-* AUM ($$ aum $$) can be retrieved with the following formula:
+- AUM ($$ aum $$) can be retrieved with the following formula:
 
   <!-- prettier-ignore -->
   $$
@@ -28,11 +36,11 @@ The following ERM is a representation of the minimalistic data available on the 
 
   Where:
 
-  * $$ A $$ is the set of all assets a fund is invested in
-  * $$ h_a $$ the amount of holdings the fund has of asset $$ a $$
-  * $$ p_a $$ the price of asset $$ a $$
+  - $$ A $$ is the set of all assets a fund is invested in
+  - $$ h_a $$ the amount of holdings the fund has of asset $$ a $$
+  - $$ p_a $$ the price of asset $$ a $$
 
-* Shareprice ($$ sp $$):
+- Shareprice ($$ sp $$):
 
   <!-- prettier-ignore -->
   $$
