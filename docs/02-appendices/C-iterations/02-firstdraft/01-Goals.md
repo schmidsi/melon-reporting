@@ -4,6 +4,32 @@ The subsystems in [System Overview](/01-thesis/05-solution/01-SytemOverview) are
 
 Besides the subsystems from _System Overview_, here follow the rest of the goals.
 
+## Deterministic Data Extractor
+
+As described in chapter [Deterministic Data Extraction](/01-thesis/05-solution/07-DeterministicDataExtraction.html)
+
+### Boundaries
+
+- We aim to work with **@melonproject/smart-contracts@~0.8.0**, the version for the Paros Olympiad if possible. If not, we fall back to whatever is deployed with useful data on Kovan or Main Chain.
+
+## Standard Report Web Interface
+
+As described in chapter [Standard Report Web Interface](/01-thesis/05-solution/11-StandardReportWebInterface.htmll)
+
+### Boundaries
+
+- Recommended: Add positions (open/close & P&L per position)
+- Optional: ENS Name lookups
+- Optional: KYC indicators
+- Optional: Printing functionality. It is not sure that printing will work without problems.
+- Optional: Sorting and other interactions
+- Without risk management and other data/fields that are not implemented in the smart contracts yet. I.e. Strategy, category, ...
+
+## Auditing Web App
+
+- Functionality on top of the Standard Report Web Interface to add an audit to the viewed data.
+- We sign the contract data with Metamask.
+
 ## Finalizing
 
 We will finalize the work from the prototype iteration according to the received feedback:
