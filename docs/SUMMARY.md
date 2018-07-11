@@ -32,11 +32,7 @@
   - [Melon Auditing Contract Standard](01-thesis/05-solution/05-MelonAuditingContractStandard.md)
   - [Auditing Contract](01-thesis/05-solution/06-AuditingContract.md)
   - [Deterministic Data Extraction](01-thesis/05-solution/07-DeterministicDataExtraction.md)
-  - [Auditing Contract Considerations](01-thesis/05-solution/08-AuditingContractConsiderations.md)
-  - [Auditing Contract Implementation](01-thesis/05-solution/09-AuditingContractImplementation.md)
-  - [Auditing Contract Tests](01-thesis/05-solution/10-AuditingContractTests.md)
-
-  * [Standard Report Web Interface](01-thesis/05-solution/11-StandardReportWebInterface.md)
+  - [Standard Report Web Interface](01-thesis/05-solution/08-StandardReportWebInterface.md)
 
 - [Conclusion](01-thesis/06-conclusion/README.md)
 
@@ -73,6 +69,7 @@
     - [Goals](02-appendices/C-iterations/02-firstdraft/01-Goals.md)
     - [Implementation](02-appendices/C-iterations/02-firstdraft/02-Implementation.md)
     - [Validative User Testing](02-appendices/C-iterations/02-firstdraft/03-ValidativeUserTesting.md)
+    - [Auditing Contract](02-appendices/C-iterations/02-firstdraft/04-AuditingContract.md)
   - [Final product](02-appendices/C-iterations/03-finalproduct/README.md)
     - [Changes to first draft](02-appendices/C-iterations/03-finalproduct/01-Changestofirstdraft.md)
 

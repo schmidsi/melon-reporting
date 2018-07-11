@@ -1,266 +1,322 @@
 # Auditing Contract
 
-**Deployment cost**: less than 791800 gas
+## Considerations
 
-## Constructor
+There are multiple ways to store audits, each with their own strengths and weaknesses. Storage also has an effect on crucial function calls like _isComplete_. In this chapter, we compare the theoretical complexity as well as the estimated gas costs of four variants. We also balance the pros and cons considering standard auditing processes and flexibility of the implementation on timespans.
 
+There are two main considerations:
 
+> The cost of storing an audit (by _add_) must be as low as possible
 
-Params:
+We want to incentivize auditors to properly audit funds regarding the timeline. This means that they should be encouraged to never produce gaps in audited timespans of a fund and audit in a linear fashion. When they audit steadily, they should expect steady gas costs when calling the _add_ function. When they have to close gaps in the audited timespan, they should not be punished too hard by gas costs.
 
-1. **_approvedAuditors** *of type `address[]`*
+> Validating _audit completeness_ of a fund over a timespan (by _isComplete_) must be as efficient as possible
 
-## Events
-### Added(address,uint256)
+Audit completeness of a fund over a timespan will not only be verified manually by investors. Melon risk management modules will also rely on completeness verification in the future. A risk module may prevent a fund manager to trade when the fund has not been audited recently (see [Ex Ante](http://www.docs.melonport.com/chapters/risk_engineering.html#ex-ante---engineering)). As these risk modules are calls from smart contracts, the _isComplete_ function must be as efficient as possible in regards to gas cost and method invocation time.
 
+### Auditing Contract Variants
 
-**Execution cost**: No bound available
+We came up with the following variants in regards to the contract data structures:
+* Variant 1 - Array with shifting indices
+* Variant 2 - Helper array of audited timespans
+* Variant 3 - Linked list
+* Variant 4 - Fixed time periods
 
+### Scenarios regarding complexity
 
-Params:
+TODO graphs for cases!
 
-1. **_fundAddress** *of type `address`*
-2. **_index** *of type `uint256`*
+#### add
+Worst case scenario: Audit is added to start
+Average case scenario: Audit closes gap in middle
+Best case scenario: Audit is added to end
 
+#### isComplete
+TODO: maybe do this directly in variants because contracts have different worst cases...
+Worst case scenario: 
+Average case scenario:
+Best case scenario:
 
-## Methods
-### getAuditedTimespansLength(address)
+### Practical and theoretical cases
+Theoretical complexity does not suffice for our scope, because gas cost on average and best case performance will vary a lot, and these normally have a complexity of $$O(1)$$ in theory. For this reason, we extend Big-O notation with more precise values like $$\Omega(7)$$ for 7 rather gas-intensive operations. We call this _practical complexity_.
 
+### Variant 1 - Array with shifting indices
 
-**Execution cost**: less than 738 gas
+![](/assets/array-with-shifting-indexes.svg?v3)
 
-**Attributes**: constant
+There is one array per fund, storing all the audits. The audits are sorted by _timespanEnd_.
 
+Strengths:
 
-Params:
+- Array is always sorted
 
-1. **_fundAddress** *of type `address`*
+Weaknesses:
 
-Returns:
+- When an audit with a very early timespanEnd is inserted, the gas cost rises rapidly because a lot of indexes have to be shifted.
+- Indexes to audits can change
 
+#### add complexity
 
-1. **length** *of type `uint256`*
+##### Worst case
+Theoretical: $$O(n)$$ - Practical: $$O(2n+1)$$
+* Look for insertion position: O(n)
+* Shift indices: O(n)
+* Insert new timespan: O(1)
 
---- 
-### auditedTimespansPerFund(address,uint256)
+##### Average case
+Theoretical: $$\Theta(n)$$ - Practical: $$\Theta(n+1)$$
+* Look for insertion position: O(n/2)
+* Shift indices: O(n/2)
+* Insert new timespan: O(1)
 
+##### Best case
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(2)$$ 
+* Compare last value and break out of loop: O(1)
+* Add audit to end of array: O(1)
 
-**Execution cost**: less than 1092 gas
+#### isComplete complexity
 
-**Attributes**: constant
+##### Worst case
+Theoretical: $$O(n)$$ - Practical: $$O(n)$$ 
+* Compare all values in array: O(n)
 
+##### Average case
+Theoretical: $$\Theta(n)$$ - Practical: $$\Theta(n/2)$$ 
+* Compare half of the values in array: O(n/2)
 
-Params:
+##### Best case
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$ 
+* First audit covers given timespan: O(1)
 
-1. **param_0** *of type `address`*
-2. **param_1** *of type `uint256`*
 
-Returns:
+### Variant 2 - Helper array of audited timespans
 
+![](/assets/helper-array-with-timespans.svg)
 
-1. **start** *of type `uint256`*
-2. **end** *of type `uint256`*
+An array _timespanAudited_ with (a struct of?) timespanStart and timespanEnd.
+Best case is that only one timespan is in it: From when to when the fund is audited.
+But if there are gaps, the array holds more values.
 
---- 
-### approvedAuditors(uint256)
+When we use the _isComplete_ function, we just have to check this array, so we don't have to iterate over a lot of audits and their timespans.
 
+Strengths:
 
-**Execution cost**: less than 1057 gas
+- Cheap isComplete call (best case: only testing 2 values)
+- Indexes always stay the same
+- Standard add is cheap (case: fund is well audited without gaps)
 
-**Attributes**: constant
+Weaknesses:
 
+- Audit array is not sorted by timespans.
 
-Params:
+#### add complexity
 
-1. **param_0** *of type `uint256`*
+##### Worst case
+Theoretical: $$O(n)$$ - Practical: $$O(3n+1)$$ 
+* Shift and insert new timespan: O(2n)
+* Merge all previous timespans: O(n)
+* Add audit to end of array: O(1)
 
-Returns:
+##### Average case
+Theoretical: $$\Theta(1)$$ - Practical: $$\Theta(9)$$
+* Look for insertion position with two timespans present: O(2)
+* Shift index of second timespan: O(1)
+* Insert new timespan: O(1)
+* Merge three timespans to one (delete two, change one): O(3)
+* Add audit to end of array: O(1)
 
+##### Best case
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(5)$$
+* Look for insertion position one timespan present: O(1)
+* Add new timespan to end of timespan array O(1)
+* Merge two timespans (delete one, change one): O(2)
+* Add audit to end of array: O(1)
 
-1. **output_0** *of type `address`*
+#### isComplete complexity
 
---- 
-### add(address,bytes32,uint256,uint256,uint256)
->
->Creates a new audit on a fund specified with `_fundAddress`, the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps  in `_timespanStart` and `_timespanEnd`.
+#### Worst case
+Theoretical: $$O(n)$$ - Practical: $$O(n)$$
+* _n_ audits produced _n_ gaps, compare all: O(n)
 
+##### Average case
+Theoretical: $$\Theta(1)$$ - Practical: $$\Theta(2)$$ 
+* One gap, check two timespans: O(2)
 
-**Execution cost**: No bound available
+##### Best case
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$ 
+* No gaps, check one timespan: O(1)
 
 
-Params:
+### Variant 3 - Linked List
+[Blog post: Linked Lists in Solidity](https://medium.com/coinmonks/linked-lists-in-solidity-cfd967af389b)
 
-1. **_fundAddress** *of type `address`*
-2. **_dataHash** *of type `bytes32`*
-3. **_timespanStart** *of type `uint256`*
-4. **_timespanEnd** *of type `uint256`*
-5. **_opinion** *of type `uint256`*
+Strengths:
+* Low gas cost for special case: _insert audit in between existing audits_
 
+Weaknesses: 
+* Iterating through the linked list is expensive
+* We cannot access audits by index, only if we would create the indexes on the fly
+* _On the fly_ indexes would also change after an insertion
 
---- 
-### exists(address,address,bytes32)
->
->Validates that the provided data is mapped to an existing audit
+As we did not implement a linked list variant in solidity, we will argue about the theoretical complexity of the data structure [compared to the dynamic array variants](https://en.wikipedia.org/wiki/Linked_list#Linked_lists_vs._dynamic_arrays).
 
+The linked list variant could benefit from a separate timespan array like in variant 2. This would make the audit completeness check much more efficient with comparably small extra effort.
 
-**Execution cost**: No bound available
+#### add complexity
 
-**Attributes**: constant
+##### Worst case
+Theoretical: $$O(n)$$
 
+##### Average case
+Theoretical: $$\Theta(n)$$
 
-Params:
+##### Best case
+Theoretical: $$\Omega(1)$$
+* Assumption: _head_ of list is known
 
-1. **_fundAddress** *of type `address`*
-2. **_auditor** *of type `address`*
-3. **_dataHash** *of type `bytes32`*
+#### isComplete complexity
 
-Returns:
+##### Worst case
+Theoretical: $$O(n)$$
 
+##### Average case
+Theoretical: $$\Theta(n)$$
 
-1. **auditExists** *of type `bool`*
+##### Best case
+Theoretical: $$\Omega(1)$$
 
---- 
-### fundAudits(address,uint256)
 
+### Variant 4 - Fixed time periods
+We could only allow audits to be performed on whole months or other fixed timespans. We could store them very easily in a map.
 
-**Execution cost**: less than 2192 gas
+Mapping could be done with _year => Audit[12]_ or similar.
 
-**Attributes**: constant
+Strengths:
 
+- No timespans, so no possibility of off-by-one errors
+- Gaps are very easily detectable
+- Indexing is easy
 
-Params:
+Weaknesses:
+* No flexibility for audit timespans
+* Indexes do not align with _audits done_ when there is a gap. We could get an audit for indices 0 and 2, but not for index 1.
+* isComplete is more expensive than with variant 3
 
-1. **param_0** *of type `address`*
-2. **param_1** *of type `uint256`*
+The fixed time periods variant could also benefit from a separate timespan array like in variant 2. This would make the audit completeness check much more efficient, but would not change the fact that time periods are not flexible.
 
-Returns:
+As we did not implement a variant with fixed time periods in solidity, we will argue about the theoretical complexity of the [hash table data structure](https://en.wikipedia.org/wiki/Hash_table).
 
+#### add complexity
 
-1. **auditor** *of type `address`*
-2. **dataHash** *of type `bytes32`*
-3. **timespanStart** *of type `uint256`*
-4. **timespanEnd** *of type `uint256`*
-5. **opinion** *of type `uint8`*
+##### Worst case
+Theoretical: $$O(n)$$
 
---- 
-### getAuditedTimespanEnd(address,uint256)
+##### Average case
+Theoretical: $$\Theta(1)$$
 
+##### Best case
+Theoretical: $$\Omega(1)$$
 
-**Execution cost**: less than 993 gas
+#### isComplete complexity
 
-**Attributes**: constant
+##### Worst case
+Theoretical: $$O(n)$$
 
+##### Average case
+Theoretical: $$\Theta(1)$$
 
-Params:
+##### Best case
+Theoretical: $$\Omega(1)$$
 
-1. **_fundAddress** *of type `address`*
-2. **_index** *of type `uint256`*
 
-Returns:
+### Considering reality
 
+#### Variant 1
+The likeliness to compare all values on isComplete is very high (example: check inception to now), which means that the worst case would happen very often.
 
-1. **end** *of type `uint256`*
+#### Variant 2
+We expect the auditors to add audits in a linear fashion in regard to timespans without introducing a lot of gaps. _Variant 2_ would perform very good on completeness verification.
 
---- 
-### getAuditedTimespanStart(address,uint256)
+#### Variant 3
+This variant would introduce a new data structure. With this, the contract would be a lot more complex without providing crucial benefits.
 
+#### Variant 4
+Flexibility would be very low with this solution. Auditors would be restricted to a period. Also, multiple audits on the same period would not be possible this way.
 
-**Execution cost**: less than 1015 gas
 
-**Attributes**: constant
+### Decision
+Considering both theoretical and practical aspects, _Variant 2 - Helper array of audited timespans_ is the most flexible, cost efficient and practical implementation.
 
+The benefits of this overweigh the slightly higher complexity on adding an audit.
 
-Params:
+As _Variant 1 - Array with shifting indices_ is very similar to _Variant 2_, we implemented both versions. In the next two chapters, we look at the implementation as well as resulting gas costs and method invocation complexity through tests.
 
-1. **_fundAddress** *of type `address`*
-2. **_index** *of type `uint256`*
+## Implementation
+TODO
 
-Returns:
+## Tests
+TODO graphs of implemented tests (all the timelines...)
 
+### insertAudit Gas cost
+This is the default gas value that a block currently can hold:
+**Block gas limit: 8'000'029** [(Source)](https://ethstats.net/)
+TODO IMG
+(Screenshot from 2018-06-15)
 
-1. **start** *of type `uint256`*
+#### Variant 1
+Gas cost for adding one audit when **one** audit is present:
 
---- 
-### getByIndex(address,uint256)
->
->Returns the requested audit data
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add to array end" (no index shift) | 201501
+| Gas cost "add to array start" (one index shift) | 256201
+| Extra gas cost for index shift (one shift - no shift) | 54700
 
+Gas cost for adding one audit when **ten** audits are present:
 
-**Execution cost**: less than 2967 gas
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add to array end" (no index shift) | 201573
+| Gas cost "add to array start" (ten index shifts) | 765043
+| Extra gas cost for index shift (ten shifts - no shift / 10) | 56347
 
-**Attributes**: constant
+Gas cost for adding one audit when **100** audits are present:
 
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add to array end" (no index shift) | 201573
+| Gas cost "add to array start" (hundred index shifts) | 5853463
+| Extra gas cost for index shift (hundred shifts - no shift / 100) | 56519
 
-Params:
+Side note: "add to array start" implies that **X** values have to be shifted.
 
-1. **_fundAddress** *of type `address`*
-2. **_index** *of type `uint256`*
+Adding an audit to the start of the array is a potential problem with _Variant 1_ considering the block gas limit, even if the auditors have audited the fund in a linear fashion beforehand (i.e. they did not produce gaps).
 
-Returns:
+#### Variant 2
+Gas cost for adding one audit when **one** audit is present:
 
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add latest timespan" | 369429 |
+| Gas cost "add earliest timespan" | 394581 |
+| Extra gas cost | 25152 |
 
-1. **auditor** *of type `address`*
-2. **dataHash** *of type `bytes32`*
-3. **timespanStart** *of type `uint256`*
-4. **timespanEnd** *of type `uint256`*
-5. **opinion** *of type `uint256`*
+Gas cost for adding one audit when **ten** audits are present:
 
---- 
-### getLength(address)
->
->Returns the length of the audit array of a specific fund
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add latest timespan" | 369429
+| Gas cost "add earliest timespan" | 394581
+| Extra gas cost | 25152
 
+Gas cost for adding one audit when **100** audits are present:
 
-**Execution cost**: less than 851 gas
+| Case | Gas cost |
+| ------------------------------- | ----------- |
+| Gas cost "add latest timespan" | 369429 |
+| Gas cost "add earliest timespan" | 394581 |
+| Extra gas cost | 25152 |
 
-**Attributes**: constant
+With _Variant 2_, adding an audit as the earliest in regards to the timespan is not a gas limit issue.
 
-
-Params:
-
-1. **_fundAddress** *of type `address`*
-
-Returns:
-
-
-1. **index** *of type `uint256`*
-
---- 
-### isApprovedAuditor(address)
-
-
-**Execution cost**: No bound available
-
-**Attributes**: constant
-
-
-Params:
-
-1. **_auditor** *of type `address`*
-
-Returns:
-
-
-1. **auditorIsApproved** *of type `bool`*
-
---- 
-### isComplete(address,uint256,uint256)
->
->Returns true if a fund is completely audited over a specific timespan.
-
-
-**Execution cost**: No bound available
-
-**Attributes**: constant
-
-
-Params:
-
-1. **_fundAddress** *of type `address`*
-2. **_timespanStart** *of type `uint256`*
-3. **_timespanEnd** *of type `uint256`*
-
-Returns:
-
-
-1. **complete** *of type `bool`*
+### isComplete Gas cost
