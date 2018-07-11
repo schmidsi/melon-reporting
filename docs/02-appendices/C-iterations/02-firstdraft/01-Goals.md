@@ -1,6 +1,6 @@
 # Goals
 
-The subsystems in [System Overview](/docs/01-thesis/05-solution/01-SytemOverview) are the goals of the second iteration that we propose. The general goal is a fully functional product. I.e. 80% according to the Pareto principle. With the outcome of this iteration we should be able to do real user testings and gather feedback from a broad audience. So that we can implement this feedback in the last iteration.
+The subsystems in [System Overview](/01-thesis/05-solution/01-SytemOverview) are the goals of the second iteration that we propose. The general goal is a fully functional product. I.e. 80% according to the Pareto principle. With the outcome of this iteration we should be able to do real user testings and gather feedback from a broad audience. So that we can implement this feedback in the last iteration.
 
 Besides the subsystems from _System Overview_, here follow the rest of the goals.
 

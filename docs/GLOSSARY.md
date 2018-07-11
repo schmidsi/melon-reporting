@@ -1,6 +1,18 @@
+## ACID
+
+Atomicity, Consistency, Isolation, Durability
+
+https://en.wikipedia.org/wiki/ACID
+
 ## AUM
 
 Assets under management. A number indicating the total value of all assets in a fund denominated in the funds quote asset.
+
+## CAP
+
+Consistency, Availability, Partition tolerance
+
+https://en.wikipedia.org/wiki/CAP_theorem
 
 ## CISA
 
