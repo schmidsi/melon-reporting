@@ -1,5 +1,17 @@
 # Deterministic Data Extraction
 
+![](/assets/DataConsolidation.svg?v2)
+
+## Explanation
+
+- A function that extracts all necessary data for a fund report from the blockchain in one go:
+  `extractData(fundAddress, timespanStart, timespanEnd): FundReportJSON`
+- The function is deterministic: For the same arguments it returns always the same result.
+- The result is a valid JSON according to the [Fund Report Data Schema](/01-thesis/05-solution/04-FundReportDataSchema.html).
+- This JSON is the foundation for our [Standard Report Web Interface](/01-thesis/05-solution/11-StandardReportWebInterface.html) but could also be used for different types of reports: KIID, MiFID II, etc.
+
+## Calculations
+
 Assumption: A fund setup never changes. All settings on fund creation are persistent. This might change in the future (see [Future Work](...)).
 
 - DailyPrice (see Decisions)
