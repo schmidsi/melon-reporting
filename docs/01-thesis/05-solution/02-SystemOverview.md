@@ -1,6 +1,6 @@
 # System Overview
 
-![](/assets/system-overview.svg?v1)
+![](/assets/system-overview.png?v1)
 
 ## Explanation
 

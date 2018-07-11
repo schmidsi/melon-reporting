@@ -17,32 +17,36 @@ Audit completeness of a fund over a timespan will not only be verified manually 
 ### Auditing Contract Variants
 
 We came up with the following variants in regards to the contract data structures:
-* Variant 1 - Array with shifting indices
-* Variant 2 - Helper array of audited timespans
-* Variant 3 - Linked list
-* Variant 4 - Fixed time periods
+
+- Variant 1 - Array with shifting indices
+- Variant 2 - Helper array of audited timespans
+- Variant 3 - Linked list
+- Variant 4 - Fixed time periods
 
 ### Scenarios regarding complexity
 
 TODO graphs for cases!
 
 #### add
+
 Worst case scenario: Audit is added to start
 Average case scenario: Audit closes gap in middle
 Best case scenario: Audit is added to end
 
 #### isComplete
+
 TODO: maybe do this directly in variants because contracts have different worst cases...
-Worst case scenario: 
+Worst case scenario:
 Average case scenario:
 Best case scenario:
 
 ### Practical and theoretical cases
+
 Theoretical complexity does not suffice for our scope, because gas cost on average and best case performance will vary a lot, and these normally have a complexity of $$O(1)$$ in theory. For this reason, we extend Big-O notation with more precise values like $$\Omega(7)$$ for 7 rather gas-intensive operations. We call this _practical complexity_.
 
 ### Variant 1 - Array with shifting indices
 
-![](/assets/array-with-shifting-indexes.svg?v3)
+![](/assets/array-with-shifting-indexes.png?v3)
 
 There is one array per fund, storing all the audits. The audits are sorted by _timespanEnd_.
 
@@ -58,40 +62,51 @@ Weaknesses:
 #### add complexity
 
 ##### Worst case
+
 Theoretical: $$O(n)$$ - Practical: $$O(2n+1)$$
-* Look for insertion position: O(n)
-* Shift indices: O(n)
-* Insert new timespan: O(1)
+
+- Look for insertion position: O(n)
+- Shift indices: O(n)
+- Insert new timespan: O(1)
 
 ##### Average case
+
 Theoretical: $$\Theta(n)$$ - Practical: $$\Theta(n+1)$$
-* Look for insertion position: O(n/2)
-* Shift indices: O(n/2)
-* Insert new timespan: O(1)
+
+- Look for insertion position: O(n/2)
+- Shift indices: O(n/2)
+- Insert new timespan: O(1)
 
 ##### Best case
-Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(2)$$ 
-* Compare last value and break out of loop: O(1)
-* Add audit to end of array: O(1)
+
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(2)$$
+
+- Compare last value and break out of loop: O(1)
+- Add audit to end of array: O(1)
 
 #### isComplete complexity
 
 ##### Worst case
-Theoretical: $$O(n)$$ - Practical: $$O(n)$$ 
-* Compare all values in array: O(n)
+
+Theoretical: $$O(n)$$ - Practical: $$O(n)$$
+
+- Compare all values in array: O(n)
 
 ##### Average case
-Theoretical: $$\Theta(n)$$ - Practical: $$\Theta(n/2)$$ 
-* Compare half of the values in array: O(n/2)
+
+Theoretical: $$\Theta(n)$$ - Practical: $$\Theta(n/2)$$
+
+- Compare half of the values in array: O(n/2)
 
 ##### Best case
-Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$ 
-* First audit covers given timespan: O(1)
 
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$
+
+- First audit covers given timespan: O(1)
 
 ### Variant 2 - Helper array of audited timespans
 
-![](/assets/helper-array-with-timespans.svg)
+![](/assets/helper-array-with-timespans.png)
 
 An array _timespanAudited_ with (a struct of?) timespanStart and timespanEnd.
 Best case is that only one timespan is in it: From when to when the fund is audited.
@@ -112,51 +127,65 @@ Weaknesses:
 #### add complexity
 
 ##### Worst case
-Theoretical: $$O(n)$$ - Practical: $$O(3n+1)$$ 
-* Shift and insert new timespan: O(2n)
-* Merge all previous timespans: O(n)
-* Add audit to end of array: O(1)
+
+Theoretical: $$O(n)$$ - Practical: $$O(3n+1)$$
+
+- Shift and insert new timespan: O(2n)
+- Merge all previous timespans: O(n)
+- Add audit to end of array: O(1)
 
 ##### Average case
+
 Theoretical: $$\Theta(1)$$ - Practical: $$\Theta(9)$$
-* Look for insertion position with two timespans present: O(2)
-* Shift index of second timespan: O(1)
-* Insert new timespan: O(1)
-* Merge three timespans to one (delete two, change one): O(3)
-* Add audit to end of array: O(1)
+
+- Look for insertion position with two timespans present: O(2)
+- Shift index of second timespan: O(1)
+- Insert new timespan: O(1)
+- Merge three timespans to one (delete two, change one): O(3)
+- Add audit to end of array: O(1)
 
 ##### Best case
+
 Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(5)$$
-* Look for insertion position one timespan present: O(1)
-* Add new timespan to end of timespan array O(1)
-* Merge two timespans (delete one, change one): O(2)
-* Add audit to end of array: O(1)
+
+- Look for insertion position one timespan present: O(1)
+- Add new timespan to end of timespan array O(1)
+- Merge two timespans (delete one, change one): O(2)
+- Add audit to end of array: O(1)
 
 #### isComplete complexity
 
 #### Worst case
+
 Theoretical: $$O(n)$$ - Practical: $$O(n)$$
-* _n_ audits produced _n_ gaps, compare all: O(n)
+
+- _n_ audits produced _n_ gaps, compare all: O(n)
 
 ##### Average case
-Theoretical: $$\Theta(1)$$ - Practical: $$\Theta(2)$$ 
-* One gap, check two timespans: O(2)
+
+Theoretical: $$\Theta(1)$$ - Practical: $$\Theta(2)$$
+
+- One gap, check two timespans: O(2)
 
 ##### Best case
-Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$ 
-* No gaps, check one timespan: O(1)
 
+Theoretical: $$\Omega(1)$$ - Practical: $$\Omega(1)$$
+
+- No gaps, check one timespan: O(1)
 
 ### Variant 3 - Linked List
+
 [Blog post: Linked Lists in Solidity](https://medium.com/coinmonks/linked-lists-in-solidity-cfd967af389b)
 
 Strengths:
-* Low gas cost for special case: _insert audit in between existing audits_
 
-Weaknesses: 
-* Iterating through the linked list is expensive
-* We cannot access audits by index, only if we would create the indexes on the fly
-* _On the fly_ indexes would also change after an insertion
+- Low gas cost for special case: _insert audit in between existing audits_
+
+Weaknesses:
+
+- Iterating through the linked list is expensive
+- We cannot access audits by index, only if we would create the indexes on the fly
+- _On the fly_ indexes would also change after an insertion
 
 As we did not implement a linked list variant in solidity, we will argue about the theoretical complexity of the data structure [compared to the dynamic array variants](https://en.wikipedia.org/wiki/Linked_list#Linked_lists_vs._dynamic_arrays).
 
@@ -165,28 +194,35 @@ The linked list variant could benefit from a separate timespan array like in var
 #### add complexity
 
 ##### Worst case
+
 Theoretical: $$O(n)$$
 
 ##### Average case
+
 Theoretical: $$\Theta(n)$$
 
 ##### Best case
+
 Theoretical: $$\Omega(1)$$
-* Assumption: _head_ of list is known
+
+- Assumption: _head_ of list is known
 
 #### isComplete complexity
 
 ##### Worst case
+
 Theoretical: $$O(n)$$
 
 ##### Average case
+
 Theoretical: $$\Theta(n)$$
 
 ##### Best case
+
 Theoretical: $$\Omega(1)$$
 
-
 ### Variant 4 - Fixed time periods
+
 We could only allow audits to be performed on whole months or other fixed timespans. We could store them very easily in a map.
 
 Mapping could be done with _year => Audit[12]_ or similar.
@@ -198,9 +234,10 @@ Strengths:
 - Indexing is easy
 
 Weaknesses:
-* No flexibility for audit timespans
-* Indexes do not align with _audits done_ when there is a gap. We could get an audit for indices 0 and 2, but not for index 1.
-* isComplete is more expensive than with variant 3
+
+- No flexibility for audit timespans
+- Indexes do not align with _audits done_ when there is a gap. We could get an audit for indices 0 and 2, but not for index 1.
+- isComplete is more expensive than with variant 3
 
 The fixed time periods variant could also benefit from a separate timespan array like in variant 2. This would make the audit completeness check much more efficient, but would not change the fact that time periods are not flexible.
 
@@ -209,42 +246,51 @@ As we did not implement a variant with fixed time periods in solidity, we will a
 #### add complexity
 
 ##### Worst case
+
 Theoretical: $$O(n)$$
 
 ##### Average case
+
 Theoretical: $$\Theta(1)$$
 
 ##### Best case
+
 Theoretical: $$\Omega(1)$$
 
 #### isComplete complexity
 
 ##### Worst case
+
 Theoretical: $$O(n)$$
 
 ##### Average case
+
 Theoretical: $$\Theta(1)$$
 
 ##### Best case
-Theoretical: $$\Omega(1)$$
 
+Theoretical: $$\Omega(1)$$
 
 ### Considering reality
 
 #### Variant 1
+
 The likeliness to compare all values on isComplete is very high (example: check inception to now), which means that the worst case would happen very often.
 
 #### Variant 2
+
 We expect the auditors to add audits in a linear fashion in regard to timespans without introducing a lot of gaps. _Variant 2_ would perform very good on completeness verification.
 
 #### Variant 3
+
 This variant would introduce a new data structure. With this, the contract would be a lot more complex without providing crucial benefits.
 
 #### Variant 4
+
 Flexibility would be very low with this solution. Auditors would be restricted to a period. Also, multiple audits on the same period would not be possible this way.
 
-
 ### Decision
+
 Considering both theoretical and practical aspects, _Variant 2 - Helper array of audited timespans_ is the most flexible, cost efficient and practical implementation.
 
 The benefits of this overweigh the slightly higher complexity on adding an audit.
@@ -252,69 +298,73 @@ The benefits of this overweigh the slightly higher complexity on adding an audit
 As _Variant 1 - Array with shifting indices_ is very similar to _Variant 2_, we implemented both versions. Let us look at the implementation as well as resulting gas costs and method invocation complexity through tests.
 
 ## Implementation
+
 TODO
 
 ## Variant specific tests
 
 ### insertAudit Gas cost
+
 This is the default gas value that a block currently can hold:
 **Block gas limit: 8'000'029** [(Source)](https://ethstats.net/)
 TODO IMG
 (Screenshot from 2018-06-15)
 
 #### Variant 1
+
 Gas cost for adding one audit when **one** audit is present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add to array end" (no index shift) | 201501
-| Gas cost "add to array start" (one index shift) | 256201
-| Extra gas cost for index shift (one shift - no shift) | 54700
+| Case                                                  | Gas cost |
+| ----------------------------------------------------- | -------- |
+| Gas cost "add to array end" (no index shift)          | 201501   |
+| Gas cost "add to array start" (one index shift)       | 256201   |
+| Extra gas cost for index shift (one shift - no shift) | 54700    |
 
 Gas cost for adding one audit when **ten** audits are present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add to array end" (no index shift) | 201573
-| Gas cost "add to array start" (ten index shifts) | 765043
-| Extra gas cost for index shift (ten shifts - no shift / 10) | 56347
+| Case                                                        | Gas cost |
+| ----------------------------------------------------------- | -------- |
+| Gas cost "add to array end" (no index shift)                | 201573   |
+| Gas cost "add to array start" (ten index shifts)            | 765043   |
+| Extra gas cost for index shift (ten shifts - no shift / 10) | 56347    |
 
 Gas cost for adding one audit when **100** audits are present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add to array end" (no index shift) | 201573
-| Gas cost "add to array start" (hundred index shifts) | 5853463
-| Extra gas cost for index shift (hundred shifts - no shift / 100) | 56519
+| Case                                                             | Gas cost |
+| ---------------------------------------------------------------- | -------- |
+| Gas cost "add to array end" (no index shift)                     | 201573   |
+| Gas cost "add to array start" (hundred index shifts)             | 5853463  |
+| Extra gas cost for index shift (hundred shifts - no shift / 100) | 56519    |
 
 Side note: "add to array start" implies that **X** values have to be shifted.
 
 Adding an audit to the start of the array is a potential problem with _Variant 1_ considering the block gas limit, even if the auditors have audited the fund in a linear fashion beforehand (i.e. they did not produce gaps).
 
 #### Variant 2
+
 Gas cost for adding one audit when **one** audit is present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add latest timespan" | 369429 |
-| Gas cost "add earliest timespan" | 394581 |
-| Extra gas cost | 25152 |
+| Case                             | Gas cost |
+| -------------------------------- | -------- |
+| Gas cost "add latest timespan"   | 369429   |
+| Gas cost "add earliest timespan" | 394581   |
+| Extra gas cost                   | 25152    |
 
 Gas cost for adding one audit when **ten** audits are present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add latest timespan" | 369429
-| Gas cost "add earliest timespan" | 394581
-| Extra gas cost | 25152
+| Case                             | Gas cost |
+| -------------------------------- | -------- |
+| Gas cost "add latest timespan"   | 369429   |
+| Gas cost "add earliest timespan" | 394581   |
+| Extra gas cost                   | 25152    |
 
 Gas cost for adding one audit when **100** audits are present:
 
-| Case | Gas cost |
-| ------------------------------- | ----------- |
-| Gas cost "add latest timespan" | 369429 |
-| Gas cost "add earliest timespan" | 394581 |
-| Extra gas cost | 25152 |
+| Case                             | Gas cost |
+| -------------------------------- | -------- |
+| Gas cost "add latest timespan"   | 369429   |
+| Gas cost "add earliest timespan" | 394581   |
+| Extra gas cost                   | 25152    |
 
 With _Variant 2_, adding an audit as the earliest in regards to the timespan is not a gas limit issue.
 

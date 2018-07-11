@@ -1,6 +1,6 @@
 # Deterministic Data Extraction
 
-![](/assets/DataConsolidation.svg?v2)
+![](/assets/DataConsolidation.drawio.png?v2)
 
 ## Explanation
 

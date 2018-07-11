@@ -9,7 +9,7 @@ Please note:
 - The data is not actually stored like this on the blockchain, this is just for better understanding
 - The Audit entity is added by this thesis
 
-![](/assets/Melon-DB-ERM.svg?v3)
+![](/assets/Melon-DB-ERM.drawio.png)
 
 **Quantifiers** (same as regex):
 

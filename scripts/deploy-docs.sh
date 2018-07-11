@@ -1,5 +1,5 @@
 #!/bin/sh
-npm run gitbook build
+yarn gitbook build
 cd _book
 now --public
 now alias
