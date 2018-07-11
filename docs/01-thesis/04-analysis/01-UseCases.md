@@ -1,7 +1,5 @@
 # Use Cases
 
-_Note:_ The following use cases serve as the official project scope agreed upon by the coaches and the client during the prototype presentation meeting on 3rd Mai 2018 in Zug.
-
 ## Use case diagram
 
 ![](/assets/UseCaseDiagram.svg)
@@ -15,95 +13,41 @@ _Note:_ The following use cases serve as the official project scope agreed upon 
 
 ### Investor
 
-- Timespan: Mainly inception to now
-- Comparable and complete fund reports
-- Is a fund regularly audited (also backed by risk modules)
-- Key information:
-  - Share price & history
-  - Assets under management
-  - Tokens & allocation
-  - Audit interval & coverage
-  - Auditors
-  - Manager
-  - Legal entity
-  - Fees
+Investors want a report to be presented to them as quickly as possible.
+They care about the performance of a fund since its inception.
+They are also interested if a fund is regularly audited.
+This information contributes to the decision whether an investor is willing to invest in a fund or not.
+Investors also want to rely on risk modules by having the option to forbid new trades if funds are not regularly or properly audited.
 
 ### Manager
 
-- Timespans:
-  - Inception to now
-  - Monthly, quarterly, yearly, year to date (YTD)
-  - Custom
-- Compare own fund to others
-- Auditing status
-- Key information: All of investor plus:
-  - Participation allocation & history
-  - Detailed trades history and analysis
+Managers may want to analyze funds in a more specific scope so they can adjust their trading approaches.
+They are also interested in comparing their fund to others.
 
 ### Auditor
 
-All of manager plus:
-
-- Inspect & validate data especially trade history
-- Sign & add a report
+Auditors rely heavily on the integrity of the presented data as they are the ones to sign it.
+They want to set an opinion on a specific timespan after revieving the data.
+They are interested in past audits of a fund so they know where additional audits are needed.
 
 ### Regulator
 
-- Check if a fund is regularly audited
-- Perform spot checks of audits
-  - Is the signed data of an audit valid
+Regulators need a way to verify if a fund is regularly audited and the signed data of an audit is valid.
 
 ## Use case description
 
 ### Extract Data
 
-- Extract report data on-chain.
-- When data is extracted with the same arguments, the datahash will always be the same.
-
-Input arguments are:
-
-- Fund (address)
-- Timespan (timestamp to timestamp)
-
-The system extracts following data:
-
-- General: Fund name, share price, policies, etc.
-- Holdings: List of tokens with quantity, price (history), ...
-- Trades: List of trades in the defined timespan
-- Participation: List of invests/redeem in the defined timespan
-- Audits: List of audits in the defined timespan
+Actors can extract report data of a fund on the timespan they provide.
 
 ### View Report
 
-- All actors (Auditor, Manager, Investor, Regulator) can view reports.
-- Create a report out of the fund data and display it to the user.
-- This rendering is complete and comparable.
-  - Complete: All underlying report data is visually represented
-  - Comparable: For different funds with the same timespan the rendered reports look similar.
-
-_Optional_: Make the report printable
+Actors can view a visual representation of the extracted data with a report.
 
 ### Audit Report
 
-When an auditor has reviewed a report, he can create an audit on the blockchain.
-
-Input arguments are:
-
-- Fund (address)
-- Datahash (of report data)
-- Timespan (timestamp to timestamp)
-- Opinion (enum)
-- Comment (string)
-
-### Comment Timespan
-
-A fund manager can add a comment to the fund over a specific timespan.
+Actors can add an audit on a fund over a timespan with a comment in form of an opinion.
 
 ### Verify audit
 
-A regulator can verify an audit.
-This is basically the ability to make a spot check of audits:
-
-- Recreate report according to fund address and timespan
-- Check if datahash matches
-- Validate data. Although if the auditor trusts its report generation algorithm and datahash matches, than the report is considered valid.
+Actors can verify an audit by comparing the hash of the audit and the hash of their created report.
