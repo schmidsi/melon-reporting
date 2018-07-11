@@ -1,1 +1,43 @@
 # Problem statement
+
+## Vision
+
+Creating functionality on top of the Melon protocol that automates reporting/auditing almost completely:
+
+> a) Something that a real fund manager would be able to confidently say: “This solves my reporting issues and makes my life a lot easier”
+
+> b) Something that can be show-cased to FINMA (and other regulators) and show them how: "This will make _their_ life over-seeing a lot easier”
+
+## Hypothesis
+
+It is possible to extract and visualize all relevant data from the Melon protocol on the Ethereum blockchain in a way that could be legally acceptable by regulators. Furthermore, this data can be audited and digitally signed and a track record of these audits can be placed on the blockchain again.
+
+## Boundaries
+
+### Legal
+
+This is a technical thesis and therefore we do not deeply research into the legal aspects of fund management and reporting. But we will find ways how technology can support the legal processes.
+
+### Traditional Auditing
+
+This thesis focuses on the possibilities of auditing of funds running on the blockchain. This also implies the immutability of on-chain data and the blockchain as the single source of truth.
+
+Furthermore do we not include any aspect of other traditional financial auditing such as: Third-party risks, company structure audits, internal control policies, banking reconciliation (not necessary), taxes and others.
+
+That said, an auditor can still perform these audits and place its signed opinion on-chain.
+
+### Technical
+
+#### Melon Fund System
+
+A lot of functionality of funds depends on third party modules: Price feeds, participation, exchanges. In this thesis, we only guarantee the official modules provided by Melonport. If modules outside of this scope could provide important functionality, we document this, but do not implement the necessary bridges.
+
+We try to adapt to the latest Melon smart contracts but fall back to the last known working ones if the latest causing too much problem. Last known working version is [v0.7.0](https://github.com/melonproject/smart-contracts/tree/v0.7.0).
+
+#### On-chain data
+
+We only work actively with data that is available on-chain. Off-chain data could be merged into the reporting system and we document the interfaces to do so as future work.
+
+### Other
+
+We exclude margin-trading in general for this thesis.
