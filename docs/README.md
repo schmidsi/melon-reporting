@@ -15,4 +15,4 @@ Customer: Melonport AG
 
 Brugg, August 16th 2018
 
-![](/assets/fhnw_ht_e_10mm.jpg)
+![](/assets/fhnw_ht_e_10mm.jpg?v1)
