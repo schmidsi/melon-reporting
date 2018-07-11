@@ -7,9 +7,6 @@
 - [Introduction](01-thesis/02-introduction/README.md)
 
   - [Problem Statement](01-thesis/02-introduction/01-problemstatement/README.md)
-    - [Vision](01-thesis/02-introduction/01-problemstatement/01-Vision.md)
-    - [Hypothesis](01-thesis/02-introduction/01-problemstatement/02-Hypothesis.md)
-    - [Boundaries](01-thesis/02-introduction/01-problemstatement/03-Boundaries.md)
   - [Method](01-thesis/02-introduction/02-method/README.md)
   - [Document Organisation](01-thesis/02-introduction/03-documentorganization/README.md)
 

@@ -1,6 +1,6 @@
 # Melon Reporting and Auditing
 
-## tbd
+![](/assets/04_melonport_vertical_black_logo.jpg)
 
 Bachelorthesis by Simon Emanuel Schmid and Benjamin Zumbrunn
 
@@ -15,4 +15,4 @@ Customer: Melonport AG
 
 Brugg, August 16th 2018
 
-TODO: Logo Melonport & FHNW
+![](/assets/fhnw_ht_e_10mm.jpg?v1)
