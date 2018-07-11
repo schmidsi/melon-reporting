@@ -249,13 +249,12 @@ Considering both theoretical and practical aspects, _Variant 2 - Helper array of
 
 The benefits of this overweigh the slightly higher complexity on adding an audit.
 
-As _Variant 1 - Array with shifting indices_ is very similar to _Variant 2_, we implemented both versions. In the next two chapters, we look at the implementation as well as resulting gas costs and method invocation complexity through tests.
+As _Variant 1 - Array with shifting indices_ is very similar to _Variant 2_, we implemented both versions. Let us look at the implementation as well as resulting gas costs and method invocation complexity through tests.
 
 ## Implementation
 TODO
 
-## Tests
-TODO graphs of implemented tests (all the timelines...)
+## Variant specific tests
 
 ### insertAudit Gas cost
 This is the default gas value that a block currently can hold:
