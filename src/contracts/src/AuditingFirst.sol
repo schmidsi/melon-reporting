@@ -107,6 +107,7 @@ contract AuditingFirst is AuditingInterface {
         for (uint256 i = 0; i < audits.length; i++) {
             Audit memory tempAudit = audits[i];
 
+            // probably "if" is better
             while (tempAudit.timespanEnd < _timespanStart) {
                 continue; // skip until in scope
             }

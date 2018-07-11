@@ -17,7 +17,7 @@ _Note:_ The following use cases serve as the official project scope agreed upon 
 
 - Timespan: Mainly inception to now
 - Comparable and complete fund reports
-- Is a fund regularly audited
+- Is a fund regularly audited (also backed by risk modules)
 - Key information:
   - Share price & history
   - Assets under management
@@ -57,7 +57,7 @@ All of manager plus:
 
 ### Extract Data
 
-- Extract report data on-chain & off-chain.
+- Extract report data on-chain.
 - When data is extracted with the same arguments, the datahash will always be the same.
 
 Input arguments are:
@@ -92,6 +92,8 @@ Input arguments are:
 - Fund (address)
 - Datahash (of report data)
 - Timespan (timestamp to timestamp)
+- Opinion (enum)
+- Comment (string)
 
 ### Comment Timespan
 

@@ -4,10 +4,10 @@
 MIP: 1
 Title: Auditing
 Authors: Benjamin Zumbrunn, benzumbrunn@gmail.com; Simon Emanuel Schmid, simon@schmid.io
-Status: Draft
+Status: Final
 Type: MIP
 Created: 2018-04-24
-Reference implementation: https://github.com/melonproject/reporting-thesis/blob/master/packages/contracts/Auditing.sol
+Reference implementation: https://github.com/melonproject/reporting/blob/master/src/contracts/src/Auditing.sol
 ```
 
 ## Abstract
@@ -46,17 +46,54 @@ In order to follow the modularisation approach of the Melon smart-contract syste
  
 * `_timespanStart` and `_timespanEnd` are required to generate the report that was audited.
 
+* An `_opinion` is an integer which represents the result of the audit, e.g. whether the auditor approves the report or not.
+
 ## Transactions
 
 ### add
 
 ```
-function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd) returns (bool)
+function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion) returns (bool)
 ```
 
 **Add a new audit of a melon fund to the blockchain. `msg.sender == auditor`.**
 
 ## Calls
+
+### exists
+```
+exists(address _fundAddress, address _auditor, bytes32 _dataHash) returns (bool)
+```
+
+**Validates that the provided data is mapped to an existing audit.**
+
+### getLength
+
+```
+function getLength(address _fundAddress) constant returns (uint256 index)
+```
+
+**Get the length of the audit array for a specific melon fund. This is needed to iterate through audits with `getByIndex()`.**
+
+### getByIndex
+
+```
+function getByIndex(address _fundAddress, uint256 _index) constant returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion)
+```
+
+**Get the stored information of an audit.**
+
+Requires that `_index` is smaller than the size of the audit array.
+
+### isApprovedAuditor
+
+```
+isApprovedAuditor(address _auditor) returns (bool)
+```
+
+**Checks if the provided address can use the add function on the contract.**
+
+If there are no restrictions on who can audit, this funtion shall always return true.
 
 ### isComplete
 
@@ -71,24 +108,6 @@ For example:
 
 A fund that is audited every month could have the following lookup in risk management: `isComplete(0xfundaddress, fund.inception, now - 30*24*60*60)`
 
-### getLength
-
-```
-function getLength(address _fundAddress) constant returns (uint256 index)
-```
-
-**Get the length of the audit array for a specific melon fund. This is needed to iterate through audits with `getByIndex()`.**
-
-### getByIndex
-
-```
-function getByIndex(address _fundAddress, uint256 _index) constant returns (bytes32 dataHash, address auditor, uint256 timestamp)
-```
-
-**Get the stored information of an audit.**
-
-Requires that `_index` is smaller than the size of the audit array.
-
 ## Events
 
 ### Added
@@ -99,10 +118,26 @@ event Added(address _fundAddress, uint256 _index)
 
 **Triggered when a new audit is stored successfully.**
 
+## Auditing Interface
+[AuditingInterface.sol](https://github.com/melonproject/reporting/blob/master/src/contracts/src/AuditingInterface.sol)
+
 ## Reference Implementation
 
-[Auditing.sol](https://github.com/melonproject/reporting-thesis/blob/master/packages/contracts/Auditing.sol)
+[Auditing.sol](https://github.com/melonproject/reporting/blob/master/src/contracts/src/Auditing.sol)
 
-In the reference implementation, we require that only approved auditors can use the method `add()`. The approved auditors are supplied on contract creation via the constructor.
+In the reference implementation, we require that only approved auditors can use the method `add(...)`. The approved auditors are supplied on contract creation via the constructor.
 
-**NOTE**: The reference implementation is still in development.
+It is possible to validate if an address is an approved (i.e. stored) auditor:
+```
+isApprovedAuditor(address _auditor) returns (bool)
+```
+
+Contract developers are free to use their own enumeration of opinions. In the reference implementation, we use the following values:
+```
+enum Opinion {
+    UnqualifiedOpinion, 
+    QualifiedOpinion, 
+    AdverseOpinion, 
+    DisclaimerOfOpinion 
+}
+```
