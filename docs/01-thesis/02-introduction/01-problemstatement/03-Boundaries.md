@@ -8,7 +8,7 @@ This is a technical thesis and therefore we do not deeply research into the lega
 
 This thesis focuses on the possibilities of auditing of funds running on the blockchain. This also implies the immutability of on-chain data and the blockchain as the single source of truth.
 
-Furthermore do we not include any aspect of other traditional financial auditing such as: Third-party risks, company structure audits, internal control policies, banking reconciliation (not necessary) and others.
+Furthermore do we not include any aspect of other traditional financial auditing such as: Third-party risks, company structure audits, internal control policies, banking reconciliation (not necessary), taxes and others.
 
 That said, an auditor can still perform these audits and place its signed opinion on-chain.
 
