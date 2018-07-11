@@ -1,5 +1,18 @@
 # Problem statement
 
+## Melonport AG
+
+Melonport AG is a company with the mission to build the Melon Protocol until February 2019 and then hand it over to a self governing community.
+
+## Melon Protocol
+
+> Melon is a fully decentralized asset management protocol which allows anyone to set up, manage and/or invest in an investment fund of digital assets in a secure, robust and permissionless manner. In three words: decentralized investment infrastructure.
+
+![](/assets/melon-protocol-diagram.png)
+_Image & text by Melonport AG_
+
+Technically it is a set of Solidity smart contracts running on the Ethereum Blockchain. There also exists a frontend acting as reference implementation on how to interact with these smart contracts.
+
 ## Vision
 
 Creating functionality on top of the Melon protocol that automates reporting/auditing almost completely:
@@ -41,3 +54,7 @@ We only work actively with data that is available on-chain. Off-chain data could
 ### Other
 
 We exclude margin-trading in general for this thesis.
+
+## Approach
+
+Melonport and most blockchain based companies see themselves as innovating startups trying to build a new and better world. Therefore it does not see itself as a service provider and its possible users as customers. The development process is more like an open community where input is very welcome but also critically assessed.
