@@ -1,10 +1,12 @@
-# On-Chain data
+# Data
+
+## On-Chain Data
 
 The following ERM is a representation of the minimalistic data available on the blockchain of a fund to build charts and reports. All data can be derived from this model. It is still a challenge to obtain historical data (price feed history) since we need to search the blockchain for events. But this is subject to another chapter. For research purposes it is sufficient to know that this data is available.
 
 ![](/assets/Melon-DB-ERM.svg)
 
-## Explanation
+### Explanation
 
 * The fund is in the center. Once set up, a fund cannot change its name/address/owner
 * Every fund has one quote asset in which its value is denominated. Usually MLN.
@@ -36,3 +38,11 @@ The following ERM is a representation of the minimalistic data available on the 
   $$
   sp = \frac{aum}{s}
   $$
+
+## Off-Chain Data
+
+The data extractor shall always produce the report on same input arguments. An extractor function must therefore be deterministic. With off-chain data, determinism is not given naturally like with on-chain data.
+
+There might be a way to include off-chain data into the current architecture nontheless, if this will be of need in the future.
+
+One could hash off-chain data and put this hash on the chain as an anchor. This anchor could then be used to resolve the data. 
