@@ -58,3 +58,6 @@ We exclude margin-trading in general for this thesis.
 ## Approach
 
 Melonport and most blockchain based companies see themselves as innovating startups trying to build a new and better world. Therefore it does not see itself as a service provider and its possible users as customers. The development process is more like an open community where input is very welcome but also critically assessed.
+
+> “If I had asked people what they wanted, they would have said faster horses.”
+> _Henry Ford_
