@@ -14,6 +14,7 @@ import dataExtractor from '../api/dataExtractor';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 import Audit from './Audit';
+import hashReport from '../api/hashReport';
 
 const Report = ({ data, debug }) => (
   <div>
@@ -49,6 +50,7 @@ const Report = ({ data, debug }) => (
         Loss: <ColoredNumber>{-123.324}</ColoredNumber>,
         Address: data.meta.fundAddress,
         'Quote Token': data.meta.quoteToken.symbol,
+        'Report Data Hash': hashReport(data),
       }}
     </DescriptionList>
     <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
