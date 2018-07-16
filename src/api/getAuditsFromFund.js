@@ -1,6 +1,6 @@
 import * as R from 'ramda';
-import abi from '../contracts/abi/AuditingContract';
-const auditingContractAddress = '0x263072c3df847F40c979b94ab885e61d34cf2838';
+import abi from '../contracts/abi/Auditing';
+const auditingContractAddress = '0xc3d710342bcd4887990bbcc21b8e0edbd1811736';
 
 const opinionMap = {
   0: 'Unqualified Opinion',
@@ -20,7 +20,7 @@ const getAuditsFromFund = async (environment, { fundAddress }) => {
   const auditPromises = R.range(0, len.toNumber()).map(i =>
     auditingContract.instance.getByIndex
       .call({}, [fundAddress, i])
-      .then(([auditor, dataHash, timespanStart, timespanEnd, opinion]) => ({
+      .then(([auditor, dataHash, timespanStart, timespanEnd, opinion, comment]) => ({
         auditor,
         dataHash: dataHash.reduce(
           (carry, current) => carry + current.toString(16),
@@ -29,6 +29,10 @@ const getAuditsFromFund = async (environment, { fundAddress }) => {
         timespanStart: timespanStart.toNumber(),
         timespanEnd: timespanEnd.toNumber(),
         opinion: opinionMap[opinion],
+        comment: R.takeWhile(c => c !== '\0', comment.reduce( 
+          (carry, current) => carry + String.fromCharCode(current),
+          '',
+        )),
       })),
   );
 
