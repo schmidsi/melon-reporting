@@ -10,7 +10,8 @@ interface AuditingInterface {
         bytes32 _dataHash, 
         uint256 _timespanStart, 
         uint256 _timespanEnd, 
-        uint256 _opinion
+        uint256 _opinion,
+        bytes32 _comment
     ) external;
 
     function exists(
@@ -31,7 +32,8 @@ interface AuditingInterface {
         bytes32 dataHash, 
         uint256 timespanStart, 
         uint256 timespanEnd, 
-        uint256 opinion
+        uint256 opinion,
+        bytes32 comment
     );
 
     function isApprovedAuditor(
