@@ -37,7 +37,6 @@ contract AuditingFirstTest is DSTest {
         assertTrue(auditing.isComplete(fundAddress, 1, 1000));
     }
 
-    /*
     /// Add a simple audit to the test fund.
     function testAddAudit() public {
         uint256 timespanStart = 1;
@@ -90,6 +89,7 @@ contract AuditingFirstTest is DSTest {
         assertTrue(standardAuditIsOnChain(2, 100, 1000));
     }
 
+    /*
     // TODO
     ///
     function testBiggerTimespanSameEnd() public {
