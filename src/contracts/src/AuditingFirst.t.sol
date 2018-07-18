@@ -89,32 +89,16 @@ contract AuditingFirstTest is DSTest {
         assertTrue(standardAuditIsOnChain(2, 100, 1000));
     }
 
-    /*
-    // TODO
-    ///
-    function testBiggerTimespanSameEnd() public {
-        addStandardAudit(100, 1000); // must have index 1
-        addStandardAudit(200, 1000); // must have index 0
-
-        assert(standardAuditIsOnChain(0, 200, 1000));
-        assert(standardAuditIsOnChain(1, 100, 1000));
-    }
-
-    /// 
-    function testBiggerTimespanSameEndMultiple() public {
-        addStandardAudit(100, 1000); // must have index 1
-        addStandardAudit(200, 1000); // must have index 0
-        addStandardAudit(900, 2000); // must have index 3
-        addStandardAudit(1100, 2000); // must have index 2
-
-        assert(standardAuditIsOnChain(0, 200, 1000));
-        assert(standardAuditIsOnChain(1, 100, 1000));
-        assert(standardAuditIsOnChain(2, 1100, 2000));
-        assert(standardAuditIsOnChain(3, 900, 2000));
-    }
-
     /// Test that the isComplete function returns the expected result.
     function testIsComplete() public {
+        addStandardAudit(1, 999);
+        addStandardAudit(1000, 2000);
+
+        assert(auditing.isComplete(fundAddress, 500, 1500));
+    }
+
+    /// Test that the isComplete function returns true on fitting audits.
+    function testIsCompleteFitting() public {
         // TODO
         addStandardAudit(1, 1000);
         //addStandardAudit(1, 999); // should also return true!
@@ -122,9 +106,18 @@ contract AuditingFirstTest is DSTest {
 
         assert(auditing.isComplete(fundAddress, 1, 2000));
     }
-    */
 
-    /// Test that the isComplete function returns when no audits are present.
+    /// Test that the isComplete function returns the expected result.
+    function testIsCompleteEndReached() public {
+        // TODO
+        addStandardAudit(1, 1000);
+        //addStandardAudit(1, 999); // should also return true!
+        addStandardAudit(1000, 2000);
+
+        assert(!auditing.isComplete(fundAddress, 1, 2500));
+    }
+
+    /// Test that the isComplete function returns false when no audits are present.
     function testIsCompleteFalseOnNoAudits() public {
         assertTrue(!auditing.isComplete(fundAddress, 1, 1000));
     }

@@ -98,48 +98,39 @@ contract AuditingFirst is AuditingInterface {
             returns (bool complete) {
         Audit[] memory audits = fundAudits[_fundAddress];
 
-        // easy case: there are no audits at all
-        if (audits.length == 0) { // TODO is this needed?
-            return false;
-        }
-
         // we expect the array to be sorted by enddates,
         // so we use an algorithm that begins to check at the end of the array
         // TODO start by end?
         for (uint256 i = 0; i < audits.length; i++) {
             Audit memory tempAudit = audits[i];
 
-            // probably "if" is better
-            while (tempAudit.timespanEnd < _timespanStart) {
-                continue; // skip until in scope
+            if (tempAudit.timespanEnd < _timespanStart) {
+                // skip until in scope
+                continue; 
             }
 
-            /*
-            if (i + 1 == audits.length) {
-                return false; // end of audits reached, but not end of provided scope
-            }
-            */
-
-            //Audit memory nextAudit = audits[i];
-
-            /*
-            while (nextAudit.timespanEnd <= tempAudit.timespanEnd) {
-                nextAudit = audits[i + 1];
-            }
-            */
-
-            // TODO
-
-            if (tempAudit.timespanStart >= _timespanEnd) {
-                return true; // end of scope is reached, fund is audited up to timestamp
+            if (tempAudit.timespanStart > _timespanEnd) {
+                // end of scope reached, should have returned true by now if fund is complete
+                return false; 
             }
 
-            if (tempAudit.timespanEnd < _timespanStart || i+1 == audits.length) {
-                return false; // gap was found or end of array is reached
+            if (tempAudit.timespanEnd >= _timespanEnd) {
+                // end reached, no gaps found, is complete
+                return true;
+            }
+
+            if (i + 1 >= audits.length) {
+                // end of audits reached, not complete until now
+                return false;
+            }
+            
+            Audit memory nextAudit = audits[i+1];
+            if (tempAudit.timespanEnd+1 < nextAudit.timespanStart) {
+                return false; // gap found
             }
         }
 
-        //return true;
+        return false; // no audits present
     }
 
     function isApprovedAuditor(address _auditor) 
