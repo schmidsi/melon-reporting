@@ -11,7 +11,7 @@ interface AuditingInterface {
         uint256 _timespanStart, 
         uint256 _timespanEnd, 
         uint256 _opinion,
-        bytes32 _comment
+        string _comment
     ) external;
 
     function exists(
@@ -33,7 +33,7 @@ interface AuditingInterface {
         uint256 timespanStart, 
         uint256 timespanEnd, 
         uint256 opinion,
-        bytes32 comment
+        string comment
     );
 
     function isApprovedAuditor(
