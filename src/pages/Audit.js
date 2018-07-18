@@ -30,8 +30,6 @@ class Audit extends React.Component {
             />
 
             <button 
-                title="Comment must be 32 letters or shorter"
-                disabled={ this.state.comment.length > 32 }
                 onClick={() => auditReport(this.data, this.state.opinion, this.state.comment)}>
                 Audit
             </button>
