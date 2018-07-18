@@ -38,6 +38,10 @@
 			{
 				"name": "_opinion",
 				"type": "uint256"
+			},
+			{
+				"name": "_comment",
+				"type": "bytes32"
 			}
 		],
 		"name": "add",
@@ -163,6 +167,10 @@
 			{
 				"name": "opinion",
 				"type": "uint8"
+			},
+			{
+				"name": "comment",
+				"type": "bytes32"
 			}
 		],
 		"payable": false,
@@ -267,6 +275,10 @@
 			{
 				"name": "opinion",
 				"type": "uint256"
+			},
+			{
+				"name": "comment",
+				"type": "bytes32"
 			}
 		],
 		"payable": false,

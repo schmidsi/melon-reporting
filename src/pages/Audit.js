@@ -8,7 +8,8 @@ class Audit extends React.Component {
         this.data = props.data;
 
         this.state = {
-            opinion: "0"
+            opinion: "0",
+            comment: ""
         }
     }
 
@@ -18,10 +19,20 @@ class Audit extends React.Component {
                 <option value="0">Unqualified Opinion</option>
                 <option value="1">Qualified Opinion</option>
                 <option value="2">Adverse Opinion</option>
-                <option value="3">Disclaimer Opinion</option>
+                <option value="3">Disclaimer Of Opinion</option>
             </select>
 
-            <button onClick={() => auditReport(this.data, this.state.opinion)}>
+            <input
+                type="text"
+                name="comment"
+                value={this.state.comment}
+                onChange={(e) => this.setState({ comment: e.target.value })}
+            />
+
+            <button 
+                title="Comment must be 32 letters or shorter"
+                disabled={ this.state.comment.length > 32 }
+                onClick={() => auditReport(this.data, this.state.opinion, this.state.comment)}>
                 Audit
             </button>
         </div>

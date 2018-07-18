@@ -14,6 +14,7 @@ contract AuditingFirst is AuditingInterface {
         uint256 timespanStart; // the start timestamp of the report
         uint256 timespanEnd; // the end timestamp of the report
         Opinion opinion; // the audit class for this timespan
+        bytes32 comment;
     }
 
     enum Opinion { 
@@ -41,12 +42,12 @@ contract AuditingFirst is AuditingInterface {
     /// Creates a new audit on a fund specified with `_fundAddress`,
     /// the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
-    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion) 
+    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion, bytes32 _comment) 
             external {
         // check if the sender is an approved auditor with "require"
         require(this.isApprovedAuditor(msg.sender));
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, Opinion(_opinion));
+        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, Opinion(_opinion), _comment);
         uint256 index = insertAudit(_fundAddress, newAudit);
 
         emit Added(_fundAddress, index);
@@ -79,7 +80,7 @@ contract AuditingFirst is AuditingInterface {
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
             external view
-            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion) {
+            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion, bytes32 comment) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];
@@ -88,6 +89,7 @@ contract AuditingFirst is AuditingInterface {
         timespanStart = audit.timespanStart;
         timespanEnd = audit.timespanEnd;
         opinion = uint256(audit.opinion);
+        comment = audit.comment;
     }
 
     /// Returns true if a fund is completely audited over a specific timespan.
@@ -96,48 +98,39 @@ contract AuditingFirst is AuditingInterface {
             returns (bool complete) {
         Audit[] memory audits = fundAudits[_fundAddress];
 
-        // easy case: there are no audits at all
-        if (audits.length == 0) { // TODO is this needed?
-            return false;
-        }
-
         // we expect the array to be sorted by enddates,
         // so we use an algorithm that begins to check at the end of the array
         // TODO start by end?
         for (uint256 i = 0; i < audits.length; i++) {
             Audit memory tempAudit = audits[i];
 
-            // probably "if" is better
-            while (tempAudit.timespanEnd < _timespanStart) {
-                continue; // skip until in scope
+            if (tempAudit.timespanEnd < _timespanStart) {
+                // skip until in scope
+                continue; 
             }
 
-            /*
-            if (i + 1 == audits.length) {
-                return false; // end of audits reached, but not end of provided scope
-            }
-            */
-
-            //Audit memory nextAudit = audits[i];
-
-            /*
-            while (nextAudit.timespanEnd <= tempAudit.timespanEnd) {
-                nextAudit = audits[i + 1];
-            }
-            */
-
-            // TODO
-
-            if (tempAudit.timespanStart >= _timespanEnd) {
-                return true; // end of scope is reached, fund is audited up to timestamp
+            if (tempAudit.timespanStart > _timespanEnd) {
+                // end of scope reached, should have returned true by now if fund is complete
+                return false; 
             }
 
-            if (tempAudit.timespanEnd < _timespanStart || i+1 == audits.length) {
-                return false; // gap was found or end of array is reached
+            if (tempAudit.timespanEnd >= _timespanEnd) {
+                // end reached, no gaps found, is complete
+                return true;
+            }
+
+            if (i + 1 >= audits.length) {
+                // end of audits reached, not complete until now
+                return false;
+            }
+            
+            Audit memory nextAudit = audits[i+1];
+            if (tempAudit.timespanEnd+1 < nextAudit.timespanStart) {
+                return false; // gap found
             }
         }
 
-        //return true;
+        return false; // no audits present
     }
 
     function isApprovedAuditor(address _auditor) 

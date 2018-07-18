@@ -14,6 +14,7 @@ contract AuditingFirstTest is DSTest {
     address nonAuditor = 0x2;
     address fundAddress = 0x3;
     bytes32 dataHash = "98dgf97d";
+    bytes32 comment = "testcomment";
 
     address[] auditors;
 
@@ -88,33 +89,16 @@ contract AuditingFirstTest is DSTest {
         assertTrue(standardAuditIsOnChain(2, 100, 1000));
     }
 
-    /*
-    // TODO
-    ///
-    function testBiggerTimespanSameEnd() public {
-        addStandardAudit(100, 1000); // must have index 1
-        addStandardAudit(200, 1000); // must have index 0
-
-        assert(standardAuditIsOnChain(0, 200, 1000));
-        assert(standardAuditIsOnChain(1, 100, 1000));
-    }
-
-    /// 
-    function testBiggerTimespanSameEndMultiple() public {
-        addStandardAudit(100, 1000); // must have index 1
-        addStandardAudit(200, 1000); // must have index 0
-        addStandardAudit(900, 2000); // must have index 3
-        addStandardAudit(1100, 2000); // must have index 2
-
-        assert(standardAuditIsOnChain(0, 200, 1000));
-        assert(standardAuditIsOnChain(1, 100, 1000));
-        assert(standardAuditIsOnChain(2, 1100, 2000));
-        assert(standardAuditIsOnChain(3, 900, 2000));
-    }
-    */
-
     /// Test that the isComplete function returns the expected result.
     function testIsComplete() public {
+        addStandardAudit(1, 999);
+        addStandardAudit(1000, 2000);
+
+        assert(auditing.isComplete(fundAddress, 500, 1500));
+    }
+
+    /// Test that the isComplete function returns true on fitting audits.
+    function testIsCompleteFitting() public {
         // TODO
         addStandardAudit(1, 1000);
         //addStandardAudit(1, 999); // should also return true!
@@ -123,14 +107,24 @@ contract AuditingFirstTest is DSTest {
         assert(auditing.isComplete(fundAddress, 1, 2000));
     }
 
-    /// Test that the isComplete function returns when no audits are present.
+    /// Test that the isComplete function returns the expected result.
+    function testIsCompleteEndReached() public {
+        // TODO
+        addStandardAudit(1, 1000);
+        //addStandardAudit(1, 999); // should also return true!
+        addStandardAudit(1000, 2000);
+
+        assert(!auditing.isComplete(fundAddress, 1, 2500));
+    }
+
+    /// Test that the isComplete function returns false when no audits are present.
     function testIsCompleteFalseOnNoAudits() public {
         assertTrue(!auditing.isComplete(fundAddress, 1, 1000));
     }
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
-        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0);
+        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0, comment);
     }
 
     function standardAuditIsOnChain(uint256 index, uint256 timespanStart, uint256 timespanEnd) 
@@ -140,8 +134,9 @@ contract AuditingFirstTest is DSTest {
         uint256 ts;
         uint256 te; 
         uint256 o;
+        bytes32 c;
 
-        (a, d, ts, te, o) = auditing.getByIndex(fundAddress, index);
+        (a, d, ts, te, o, c) = auditing.getByIndex(fundAddress, index);
 
         return (a == auditor1) && (d == dataHash) && (ts == timespanStart) && (te == timespanEnd) && (o == 0);
     }

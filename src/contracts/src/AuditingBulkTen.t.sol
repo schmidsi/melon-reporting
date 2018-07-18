@@ -12,6 +12,7 @@ contract AuditingBulkTestTen is DSTest {
     address fundAddress = 0x10a; // for index shifting version
     address fundAddress2 = 0x10b; // for timespan array version
     bytes32 dataHash = "98dgf97d";
+    bytes32 comment = "testcomment";
 
     address[] auditors;
 
@@ -47,11 +48,11 @@ contract AuditingBulkTestTen is DSTest {
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
-        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0);
+        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0, comment);
     }
 
     function addStandardAudit2(uint timespanStart, uint timespanEnd) private {
-        auditing2.add(fundAddress2, dataHash, timespanStart, timespanEnd, 0);
+        auditing2.add(fundAddress2, dataHash, timespanStart, timespanEnd, 0, comment);
     }
 
 }

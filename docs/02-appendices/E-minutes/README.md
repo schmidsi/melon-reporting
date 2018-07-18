@@ -1,5 +1,30 @@
 # Minutes
 
+## Meeting 2018-07-17
+
+Present:
+
+- Simon Emanuel Schmid
+- Benjamin Zumbrunn
+- Sarah Hauser (FHNW)
+- Markus Knecht (FHNW)
+
+### Agenda
+- Documentation
+
+### Documentation
+2 Examples - 
+
+Move a lot from appendix back to thesis part?
+
+Introduction in each chapter: what will the reader see?
+Images inside the text
+
+Quickstart
+
+
+
+
 ## Meeting 2018-07-05
 
 Present:

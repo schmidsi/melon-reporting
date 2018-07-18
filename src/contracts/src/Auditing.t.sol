@@ -17,6 +17,7 @@ contract AuditingTest is DSTest {
     address nonAuditor = 0x2;
     address fundAddress = 0x3;
     bytes32 dataHash = "98dgf97d";
+    bytes32 comment = "testcomment";
 
     address[] auditors;
 
@@ -389,7 +390,7 @@ contract AuditingTest is DSTest {
 
     /// Helper for adding a simple audit on specific timestamps.
     function addStandardAudit(uint timespanStart, uint timespanEnd) private {
-        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0);
+        auditing.add(fundAddress, dataHash, timespanStart, timespanEnd, 0, comment);
     }
 
     function standardAuditIsOnChain(uint256 index, uint256 timespanStart, uint256 timespanEnd) 
@@ -400,9 +401,10 @@ contract AuditingTest is DSTest {
         uint256 ts;
         uint256 te; 
         uint256 o;
+        bytes32 c;
 
-        (a, d, ts, te, o) = auditing.getByIndex(fundAddress, index);
+        (a, d, ts, te, o, c) = auditing.getByIndex(fundAddress, index);
 
-        return (a == auditor1) && (d == dataHash) && (ts == timespanStart) && (te == timespanEnd) && (o == 0);
+        return (a == auditor1) && (d == dataHash) && (ts == timespanStart) && (te == timespanEnd) && (o == 0) && (c == comment);
     }
 }
