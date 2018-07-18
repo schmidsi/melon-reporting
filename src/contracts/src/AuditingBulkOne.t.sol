@@ -12,7 +12,7 @@ contract AuditingBulkTestOne is DSTest {
     address fundAddress = 0x1a; // for index shifting version
     address fundAddress2 = 0x1b; // for timespan array version
     bytes32 dataHash = "98dgf97d";
-    bytes32 comment = "testcomment";
+    string comment = "testcomment";
 
     address[] auditors;
 

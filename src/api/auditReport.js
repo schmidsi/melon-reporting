@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import auditingabi from '../contracts/abi/Auditing';
 import hashReport from './hashReport';
 
-const auditingContractAddress = "0xc3d710342bcd4887990bbcc21b8e0edbd1811736";
+const auditingContractAddress = '0xeedaaab170b755b0c43efb809a07ea49b0ce836d';
 
 const auditReport = async (data, opinion, comment) => {
   const web3 = new Web3(Web3.givenProvider);

@@ -14,7 +14,7 @@ contract Auditing is AuditingInterface {
         uint256 timespanStart; // the start timestamp of the report
         uint256 timespanEnd; // the end timestamp of the report
         Opinion opinion; // the opinion for this timespan
-        bytes32 comment; // a comment on this timespan
+        string comment; // a comment on this timespan
     }
 
     enum Opinion { 
@@ -67,7 +67,7 @@ contract Auditing is AuditingInterface {
     /// Creates a new audit on a fund specified with `_fundAddress`,
     /// the hashed data in `_dataHash1` and `_dataHash2` and the timespan timestamps 
     /// in `_timespanStart` and `_timespanEnd`.
-    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion, bytes32 _comment) 
+    function add(address _fundAddress, bytes32 _dataHash, uint256 _timespanStart, uint256 _timespanEnd, uint256 _opinion, string _comment) 
             external {
         // check if the sender is an approved auditor with "require"
         require(this.isApprovedAuditor(msg.sender));
@@ -105,7 +105,7 @@ contract Auditing is AuditingInterface {
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
             external view
-            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion, bytes32 comment) {
+            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion, string comment) {
         require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
 
         Audit memory audit = fundAudits[_fundAddress][_index];

@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import abi from '../contracts/abi/Auditing';
-const auditingContractAddress = '0xc3d710342bcd4887990bbcc21b8e0edbd1811736';
+const auditingContractAddress = '0xeedaaab170b755b0c43efb809a07ea49b0ce836d';
 
 const opinionMap = {
   0: 'Unqualified Opinion',
