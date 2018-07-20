@@ -11,3 +11,7 @@
 .DescriptionList {
   border-collapse: collapse;
 }
+
+.emptyRow {
+  height: 1.77777em;
+}

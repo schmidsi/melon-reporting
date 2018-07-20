@@ -4,6 +4,8 @@ import { Title, Subtitle, MainHeader } from '../../design/typography';
 import { Column, Container } from '../../design/layout';
 import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
+import DescriptionList from '../../blocks/DescriptionList';
+import ColoredNumber from '../../blocks/ColoredNumber';
 
 const Report = ({ data }) => (
   <Container>
@@ -19,6 +21,9 @@ const Report = ({ data }) => (
         </Subtitle>
       </MainHeader>
       <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
+      <DescriptionList>
+        {[['Profit', <ColoredNumber>{5.23}</ColoredNumber>], [null]]}
+      </DescriptionList>
     </Column>
   </Container>
 );

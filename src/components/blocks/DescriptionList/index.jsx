@@ -6,12 +6,19 @@ const DescriptionList = ({ children }) => (
   <div>
     <table className={css.DescriptionList}>
       <tbody>
-        {Object.entries(children).map(([key, value]) => (
-          <tr key={key}>
-            <th>{key}:</th>
-            <td>{value}</td>
-          </tr>
-        ))}
+        {children.map(
+          ([key, value]) =>
+            key ? (
+              <tr key={key}>
+                <th>{key}:</th>
+                <td>{value}</td>
+              </tr>
+            ) : (
+              <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
+                <td colSpan={2} />
+              </tr>
+            ),
+        )}
       </tbody>
     </table>
   </div>

@@ -9,7 +9,10 @@ const getClassName = R.cond([
 ]);
 
 const ColoredNumber = ({ children, decimals = 2 }) => (
-  <span className={getClassName(children)}>{children.toFixed(decimals)}</span>
+  <span className={getClassName(children)}>
+    {children > 0 && '+'}
+    {children.toFixed(decimals)}
+  </span>
 );
 
 export default ColoredNumber;
