@@ -8,16 +8,18 @@ import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
 import ColoredNumber from '../../blocks/ColoredNumber';
 
+import hashReport from '../../../api/hashReport';
+
 const Report = ({ data }) => (
   <Container>
     <Column>
       <MainHeader>
-        <Title>{data.meta.fundName}</Title>
+        <Title>{console.log(data) || data.meta.fundName}</Title>
         <Subtitle>
           Report from{' '}
           <TimeSpanPicker
-            start={new Date(data.meta.timespanStart * 1000)}
-            end={new Date(data.meta.timespanEnd * 1000)}
+            start={new Date(data.meta.timeSpanStart * 1000)}
+            end={new Date(data.meta.timeSpanEnd * 1000)}
           />
         </Subtitle>
       </MainHeader>
@@ -25,18 +27,20 @@ const Report = ({ data }) => (
       <DescriptionList>
         {[
           ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
-          [null],
+          [null, null],
           ['Address (ID)', data.meta.fundAddress],
           [
             'Report Span (UTC)',
             `${format(
-              new Date(data.meta.timespanStart * 1000),
+              new Date(data.meta.timeSpanStart * 1000),
               'YYYY-MM-DD HH-mm-ss',
             )} - ${format(
-              new Date(data.meta.timespanEnd * 1000),
+              new Date(data.meta.timeSpanEnd * 1000),
               'YYYY-MM-DD HH-mm-ss',
             )}`,
           ],
+          ['Quote Token', data.meta.quoteToken.symbol],
+          ['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>
     </Column>
