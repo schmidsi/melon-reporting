@@ -4,16 +4,23 @@ import { storiesOf } from '@storybook/react';
 import Report from './';
 
 storiesOf('Pages', module).add('factsheet', () => (
-  <div
-    style={{
-      backgroundImage: 'url(./01-factsheet@2x.png)',
-      backgroundPosition: 'top center',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 1190,
-      height: 1684,
-    }}
-  >
-    <div style={{ mixBlendMode: 'color-burn' }}>
+  <div>
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100%',
+        width: '100%',
+        backgroundImage: 'url(./01-factsheet@2x.png)',
+        backgroundPosition: 'top left',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 1190,
+        height: 1684,
+        opacity: 0.5,
+      }}
+    />
+    <div style={{ mixBlendMode: 'color-burn', margin: '-8px 107px' }}>
       <Report data={{}} />
     </div>
   </div>

@@ -4,7 +4,7 @@ import css from './styles.css';
 
 const DescriptionList = ({ children }) => (
   <div>
-    <table className={css.descriptionList}>
+    <table className={css.DescriptionList}>
       <tbody>
         {Object.entries(children).map(([key, value]) => (
           <tr key={key}>
