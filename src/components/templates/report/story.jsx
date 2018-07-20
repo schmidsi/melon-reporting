@@ -1,9 +1,11 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
+import exampleData from '../../../data/example-report-data.json';
+
 import Report from './';
 
-storiesOf('Pages', module).add('factsheet', () => (
+storiesOf('Templates', module).add('factsheet', () => (
   <div>
     <div
       style={{
@@ -21,7 +23,7 @@ storiesOf('Pages', module).add('factsheet', () => (
       }}
     />
     <div style={{ mixBlendMode: 'color-burn', margin: '-8px 107px' }}>
-      <Report data={{}} />
+      <Report data={exampleData} />
     </div>
   </div>
 ));

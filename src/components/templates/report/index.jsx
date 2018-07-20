@@ -5,16 +5,16 @@ import { Column, Container } from '../../design/layout';
 import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
 
-const Report = () => (
+const Report = ({ data }) => (
   <Container>
     <Column>
       <MainHeader>
-        <Title>Melon Crypto Capital</Title>
+        <Title>{data.meta.fundName}</Title>
         <Subtitle>
           Report from{' '}
           <TimeSpanPicker
-            start={new Date(2018, 0, 1)}
-            end={new Date(2018, 2, 31)}
+            start={new Date(data.meta.timespanStart * 1000)}
+            end={new Date(data.meta.timespanEnd * 1000)}
           />
         </Subtitle>
       </MainHeader>
