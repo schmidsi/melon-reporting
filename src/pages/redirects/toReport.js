@@ -7,7 +7,13 @@ import { default as routes, Router } from '../../routes';
 const Redirecter = () => <div />;
 
 Redirecter.getInitialProps = async ({ query, res }) => {
-  const defaultTimeSpan = await getDefaultTimeSpan(query.fundAddress);
+  const defaultTimeSpan =
+    query.fundAddress === '0xdeadbeef' || query.fundAddress === '0xbada55'
+      ? {
+          timeSpanStart: 1514761200,
+          timeSpanEnd: 1522447200,
+        }
+      : await getDefaultTimeSpan(query.fundAddress);
 
   const merged = R.merge(defaultTimeSpan, query);
 

@@ -10,7 +10,7 @@ import {
   Legend,
 } from 'recharts';
 
-import dataExtractor from '../api/dataExtractor';
+import reportDataGenerator from '../api/reportDataGenerator';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 import Audit from './Audit';
@@ -58,7 +58,7 @@ const Report = ({ data, debug }) => (
 );
 
 Report.getInitialProps = async ({ query }) => {
-  const data = await dataExtractor(
+  const data = await reportDataGenerator(
     query.fundAddress,
     query.timeSpanStart,
     query.timeSpanEnd,

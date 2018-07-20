@@ -28,12 +28,13 @@ const getExchangeName = ofAddress =>
   ) || ['n/a'])[0];
 
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
-  timestamp >= timeSpanStart && timestamp <= timeSpanEnd
+  timestamp >= timeSpanStart && timestamp <= timeSpanEnd;
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const provider = await getParityProvider();
-  const environment = { ...provider,
-    track: 'kovan-demo'
+  const environment = {
+    ...provider,
+    track: 'kovan-demo',
   };
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
@@ -46,9 +47,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   ensure(
     timeSpanStart < timeSpanEnd,
-    'timeSpanStart needs to be bigger than timeSpanEnd', {
+    'timeSpanStart needs to be bigger than timeSpanEnd',
+    {
       timeSpanEnd,
-      timeSpanStart
+      timeSpanStart,
     },
   );
 
@@ -60,7 +62,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     web3.js contract
   */
   //const web3 = new Web3(new Web3.providers.HttpProvider(process.env.HTTPPROVIDER));
-  const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C'));
+  const web3 = new Web3(
+    new Web3.providers.HttpProvider(
+      'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C',
+    ),
+  );
   console.log('' + process.env.HTTPPROVIDER);
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
@@ -81,36 +87,36 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   });
 
   const ordersHistory = await getOrdersHistory(environment, {
-    fundAddress
+    fundAddress,
   });
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
   const requestPromises = R.range(0, lastRequestId.toNumber() + 1).map(
     i => () =>
-    fundContract.instance.requests
-    .call({}, [i])
-    .then(
-      ([
-        participant,
-        status,
-        requestAsset,
-        shareQuantity,
-        giveQuantity,
-        receiveQuantity,
-        timestamp,
-        atUpdateId,
-      ]) => ({
-        participant,
-        status,
-        requestAsset,
-        shareQuantity,
-        giveQuantity,
-        receiveQuantity,
-        timestamp,
-        atUpdateId,
-      }),
-    ),
+      fundContract.instance.requests
+        .call({}, [i])
+        .then(
+          ([
+            participant,
+            status,
+            requestAsset,
+            shareQuantity,
+            giveQuantity,
+            receiveQuantity,
+            timestamp,
+            atUpdateId,
+          ]) => ({
+            participant,
+            status,
+            requestAsset,
+            shareQuantity,
+            giveQuantity,
+            receiveQuantity,
+            timestamp,
+            atUpdateId,
+          }),
+        ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
@@ -149,12 +155,14 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
     fromBlock: 0,
-    toBlock: 'latest'
+    toBlock: 'latest',
   });
 
   const redeems = allRedeems
     // we only need the redeem events that were emitted in the provided report timespan
-    .filter(r => onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd))
+    .filter(r =>
+      onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd),
+    )
     .map(r => ({
       investor: r.returnValues.ofParticipant,
       type: 'redeem',
@@ -191,34 +199,27 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     entry => entry.address.toLowerCase(),
     R.flatten(
       priceHistory
-      .map(([addresses, prices, timestamp]) => ({
-        tokens: addresses.map(({
-          _value
-        }) => ({
-          address: _value,
-          symbol: getSymbol(config, _value),
-        })),
-        prices: prices.map(({
-          _value
-        }) => ({
-          price: _value,
-        })),
-        timestamp,
-      }))
-      .map(({
-          tokens,
-          prices,
-          timestamp
-        }) =>
-        R.zipWith(
-          (token, price) => ({ ...token,
-            ...price,
-            timestamp
-          }),
-          tokens,
-          prices,
+        .map(([addresses, prices, timestamp]) => ({
+          tokens: addresses.map(({ _value }) => ({
+            address: _value,
+            symbol: getSymbol(config, _value),
+          })),
+          prices: prices.map(({ _value }) => ({
+            price: _value,
+          })),
+          timestamp,
+        }))
+        .map(({ tokens, prices, timestamp }) =>
+          R.zipWith(
+            (token, price) => ({
+              ...token,
+              ...price,
+              timestamp,
+            }),
+            tokens,
+            prices,
+          ),
         ),
-      ),
     ),
   );
 
@@ -250,10 +251,15 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       address: getAddress(config, holding.name),
     },
     balance: holding.balance,
+    priceHistory: null,
+    /*
     priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
       toReadable(config, entry.price, holding.name),
     ),
+    */
   }));
+
+  const trades = null;
 
   return {
     data: {
@@ -261,6 +267,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       participations,
       audits,
       holdings,
+      trades,
     },
     debug: {
       lastRequestId,
