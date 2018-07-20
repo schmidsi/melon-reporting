@@ -17,11 +17,18 @@ import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 
 import getAuditsFromFund from './getAuditsFromFund';
 
+// for web3js
+import Web3 from 'web3';
+import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
+
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
     ([name, address]) => address === ofAddress,
   ) || ['n/a'])[0];
+
+const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
+  timestamp >= timeSpanStart && timestamp <= timeSpanEnd
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const environment = await getParityProvider();
@@ -43,6 +50,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const config = await getConfig(environment);
 
   const fundContract = await getFundContract(environment, fundAddress);
+
+  /*
+    web3.js contract
+  */
+  const web3 = new Web3(new Web3.providers.HttpProvider("https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C"));
+  const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
   const calculations = await performCalculations(environment, {
     fundAddress,
@@ -93,8 +106,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const requests = await Promise.all(requestPromises.map(p => p()));
 
-  const participations = requests
+  const invests = requests
     .filter(r => r.status.eq(2))
+    .filter(r => onlyInTimespan(r.timestamp, timeSpanStart, timeSpanEnd))
     .map(
       ({
         requestAsset,
@@ -122,6 +136,29 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         timestamp,
       }),
     );
+
+  const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
+      // we cannot narrow the blocks by timestamp, so we get all events here
+      fromBlock: 0,
+      toBlock: 'latest'
+    });
+
+  const redeems = allRedeems
+    // we only need the redeem events that were emitted in the provided report timespan
+    .filter(r => onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd))
+    .map(r => ({
+        investor: r.returnValues.ofParticipant,
+        type: 'redeem',
+        shares: toReadable(
+          config,
+          r.returnValues.shareQuantity,
+          config.quoteAssetSymbol,
+        ),
+        timestamp: r.returnValues.atTimestamp,
+      })
+    );
+
+  const participations = [ ...invests, ...redeems ];
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
 
