@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 
 import { Title, Subtitle, MainHeader } from '../../design/typography';
 import { Column, Container } from '../../design/layout';
@@ -22,7 +23,21 @@ const Report = ({ data }) => (
       </MainHeader>
       <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
       <DescriptionList>
-        {[['Profit', <ColoredNumber>{5.23}</ColoredNumber>], [null]]}
+        {[
+          ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
+          [null],
+          ['Address (ID)', data.meta.fundAddress],
+          [
+            'Report Span (UTC)',
+            `${format(
+              new Date(data.meta.timespanStart * 1000),
+              'YYYY-MM-DD HH-mm-ss',
+            )} - ${format(
+              new Date(data.meta.timespanEnd * 1000),
+              'YYYY-MM-DD HH-mm-ss',
+            )}`,
+          ],
+        ]}
       </DescriptionList>
     </Column>
   </Container>
