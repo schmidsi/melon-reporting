@@ -3,7 +3,8 @@ import abi from '../contracts/abi/Auditing';
 import Web3 from 'web3';
 const auditingContractAddress = '0xeedaaab170b755b0c43efb809a07ea49b0ce836d';
 
-const web3 = new Web3(new Web3.providers.HttpProvider("https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C"));
+//const web3 = new Web3(new Web3.providers.HttpProvider(process.env.HTTPPROVIDER));
+const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C'));
 
 const opinionMap = {
   0: 'Unqualified Opinion',

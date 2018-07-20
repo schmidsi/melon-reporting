@@ -56,7 +56,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   /*
     web3.js contract
   */
-  const web3 = new Web3(new Web3.providers.HttpProvider("https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C"));
+  //const web3 = new Web3(new Web3.providers.HttpProvider(process.env.HTTPPROVIDER));
+  const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C'));
+  console.log('' + process.env.HTTPPROVIDER);
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
   const calculations = await performCalculations(environment, {
