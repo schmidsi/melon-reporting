@@ -1,3 +1,4 @@
+require('dotenv-extended').load();
 const R = require('ramda');
 const withCSS = require('@zeit/next-css');
 
