@@ -43,8 +43,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   ensure(
     timeSpanStart < timeSpanEnd,
-    'timeSpanStart needs to be bigger than timeSpanEnd',
-    { timeSpanEnd, timeSpanStart },
+    'timeSpanStart needs to be bigger than timeSpanEnd', {
+      timeSpanEnd,
+      timeSpanStart
+    },
   );
 
   const config = await getConfig(environment);
@@ -73,35 +75,37 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
-  const ordersHistory = await getOrdersHistory(environment, { fundAddress });
+  const ordersHistory = await getOrdersHistory(environment, {
+    fundAddress
+  });
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
   const requestPromises = R.range(0, lastRequestId.toNumber() + 1).map(
     i => () =>
-      fundContract.instance.requests
-        .call({}, [i])
-        .then(
-          ([
-            participant,
-            status,
-            requestAsset,
-            shareQuantity,
-            giveQuantity,
-            receiveQuantity,
-            timestamp,
-            atUpdateId,
-          ]) => ({
-            participant,
-            status,
-            requestAsset,
-            shareQuantity,
-            giveQuantity,
-            receiveQuantity,
-            timestamp,
-            atUpdateId,
-          }),
-        ),
+    fundContract.instance.requests
+    .call({}, [i])
+    .then(
+      ([
+        participant,
+        status,
+        requestAsset,
+        shareQuantity,
+        giveQuantity,
+        receiveQuantity,
+        timestamp,
+        atUpdateId,
+      ]) => ({
+        participant,
+        status,
+        requestAsset,
+        shareQuantity,
+        giveQuantity,
+        receiveQuantity,
+        timestamp,
+        atUpdateId,
+      }),
+    ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
@@ -138,27 +142,26 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
-      // we cannot narrow the blocks by timestamp, so we get all events here
-      fromBlock: 0,
-      toBlock: 'latest'
-    });
+    // we cannot narrow the blocks by timestamp, so we get all events here
+    fromBlock: 0,
+    toBlock: 'latest'
+  });
 
   const redeems = allRedeems
     // we only need the redeem events that were emitted in the provided report timespan
     .filter(r => onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd))
     .map(r => ({
-        investor: r.returnValues.ofParticipant,
-        type: 'redeem',
-        shares: toReadable(
-          config,
-          r.returnValues.shareQuantity,
-          config.quoteAssetSymbol,
-        ),
-        timestamp: r.returnValues.atTimestamp,
-      })
-    );
+      investor: r.returnValues.ofParticipant,
+      type: 'redeem',
+      shares: toReadable(
+        config,
+        r.returnValues.shareQuantity,
+        config.quoteAssetSymbol,
+      ),
+      timestamp: r.returnValues.atTimestamp,
+    }));
 
-  const participations = [ ...invests, ...redeems ];
+  const participations = [...invests, ...redeems];
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
 
@@ -183,23 +186,34 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     entry => entry.address.toLowerCase(),
     R.flatten(
       priceHistory
-        .map(([addresses, prices, timestamp]) => ({
-          tokens: addresses.map(({ _value }) => ({
-            address: _value,
-            symbol: getSymbol(config, _value),
-          })),
-          prices: prices.map(({ _value }) => ({
-            price: _value,
-          })),
-          timestamp,
-        }))
-        .map(({ tokens, prices, timestamp }) =>
-          R.zipWith(
-            (token, price) => ({ ...token, ...price, timestamp }),
-            tokens,
-            prices,
-          ),
+      .map(([addresses, prices, timestamp]) => ({
+        tokens: addresses.map(({
+          _value
+        }) => ({
+          address: _value,
+          symbol: getSymbol(config, _value),
+        })),
+        prices: prices.map(({
+          _value
+        }) => ({
+          price: _value,
+        })),
+        timestamp,
+      }))
+      .map(({
+          tokens,
+          prices,
+          timestamp
+        }) =>
+        R.zipWith(
+          (token, price) => ({ ...token,
+            ...price,
+            timestamp
+          }),
+          tokens,
+          prices,
         ),
+      ),
     ),
   );
 
