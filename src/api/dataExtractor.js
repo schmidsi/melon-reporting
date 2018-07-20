@@ -31,7 +31,10 @@ const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
   timestamp >= timeSpanStart && timestamp <= timeSpanEnd
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
-  const environment = await getParityProvider();
+  const provider = await getParityProvider();
+  const environment = { ...provider,
+    track: 'kovan-demo'
+  };
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
