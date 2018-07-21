@@ -54,6 +54,9 @@ const Report = ({ data }) => (
               <HexValue>{data.meta.manager.address}</HexValue>,
             ],
           ],
+          ['Exchanges', data.meta.exchanges.map(e => e.id).join(', ')],
+          [''],
+          ['Legal Entity', data.meta.legalEntity],
           //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>
