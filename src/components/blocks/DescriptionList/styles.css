@@ -11,8 +11,9 @@
 
 .DescriptionList {
   border-collapse: collapse;
+  margin-bottom: 1.77778rem;
 }
 
 .emptyRow {
-  height: 1.77777em;
+  height: 1.77778rem;
 }

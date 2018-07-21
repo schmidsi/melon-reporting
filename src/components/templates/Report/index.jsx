@@ -1,8 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
 
-import { Title, Subtitle, MainHeader } from '../../design/typography';
-import { Column, Container } from '../../design/layout';
+import { Title, Subtitle, MainHeader, H2 } from '../../design/typography';
+import { Column, Container, Spacer } from '../../design/layout';
 import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
@@ -60,6 +60,9 @@ const Report = ({ data }) => (
           //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>
+      <Spacer height={0} />
+      <H2>Strategy</H2>
+      <p>{data.meta.strategy}</p>
     </Column>
   </Container>
 );

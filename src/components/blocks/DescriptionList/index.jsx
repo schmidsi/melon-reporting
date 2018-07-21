@@ -34,11 +34,9 @@ const lineMapper = R.cond([
  * ]
  */
 const DescriptionList = ({ children }) => (
-  <div>
-    <table className={css.DescriptionList}>
-      <tbody>{children.length && children.map(lineMapper)}</tbody>
-    </table>
-  </div>
+  <table className={css.DescriptionList}>
+    <tbody>{children.length && children.map(lineMapper)}</tbody>
+  </table>
 );
 
 export default DescriptionList;
