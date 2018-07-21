@@ -58,7 +58,7 @@ const Report = ({ data, calculations }) => (
             ['Quote Token', data.meta.quoteToken.symbol],
             data.meta.category && ['Category', data.meta.category],
             data.meta.reference && ['Reference', data.meta.reference],
-            [
+            data.meta.manager && [
               'Manager',
               [
                 data.meta.manager.name,
@@ -163,7 +163,7 @@ const Report = ({ data, calculations }) => (
                   'Redeem Fee',
                   `${data.meta.policy.participation.redeemFee * 1000}%`,
                 ],
-                [
+                data.meta.policy.participation.complianceModule && [
                   'Compliance Module',
                   data.meta.policy.participation.complianceModule.name,
                 ],
