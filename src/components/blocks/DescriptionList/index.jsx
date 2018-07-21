@@ -1,4 +1,5 @@
 import React from 'react';
+import * as R from 'ramda';
 
 import css from './styles.css';
 
@@ -9,21 +10,35 @@ const renderLine = ([key, value]) => (
   </tr>
 );
 
-const emptyLine = (
+const emptyLine = () => (
   <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
     <td colSpan={2} />
   </tr>
 );
 
+const lineMapper = R.cond([
+  [
+    line => console.log(line, line && line.length, line && line.length),
+    () => null,
+  ],
+  [line => line && line.length > 1, renderLine],
+  [line => line && line.length === 1, emptyLine],
+  [() => true, () => null],
+]);
+
+/**
+ *
+ * children is an array in the following shape
+ * [
+ *  ["Title", <Content>],
+ *  [""], // Empty row
+ *  null, // Ignored
+ * ]
+ */
 const DescriptionList = ({ children }) => (
   <div>
     <table className={css.DescriptionList}>
-      <tbody>
-        {children.length &&
-          children.map(
-            line => (line && line.length === 2 ? renderLine(line) : emptyLine),
-          )}
-      </tbody>
+      <tbody>{children.length && children.map(lineMapper)}</tbody>
     </table>
   </div>
 );

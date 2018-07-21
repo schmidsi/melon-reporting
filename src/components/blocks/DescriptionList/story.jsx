@@ -7,8 +7,9 @@ storiesOf('DescriptionList', module).add('default', () => (
     <DescriptionList size={7} detailsAlign="right">
       {[
         ['Profit', <span style={{ color: 'green' }}>+50%</span>],
+        [''],
         ['Address', '0xdeadbeef'],
-        [null],
+        null,
         ['Category', 'Manager Traded Fund'],
       ]}
     </DescriptionList>

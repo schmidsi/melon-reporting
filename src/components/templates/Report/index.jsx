@@ -28,7 +28,7 @@ const Report = ({ data }) => (
       <DescriptionList>
         {[
           ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
-          null,
+          [''],
           ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
           [
             'Report Span (UTC)',
@@ -45,8 +45,8 @@ const Report = ({ data }) => (
             format(new Date(data.meta.inception * 1000), 'D.MMM YYYY'),
           ],
           ['Quote Token', data.meta.quoteToken.symbol],
-          ['Category', data.meta.category],
-          ['Reference', data.meta.reference],
+          data.meta.category && ['Category', data.meta.category],
+          data.meta.reference && ['Reference', data.meta.reference],
           //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>
