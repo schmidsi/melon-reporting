@@ -6,6 +6,10 @@
   text-rendering: geometricPrecision;
 }
 
+.MainHeader {
+  margin-bottom: 3em;
+}
+
 .subtitle {
   font-weight: 400;
   font-size: 24px;

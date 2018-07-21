@@ -8,6 +8,7 @@
     "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
   ],
   "scripts": {
+    "clean": "rimraf build node_modules/.cache",
     "deploy:docs": "./scripts/deploy-docs.sh",
     "dev": "node src/server.js",
     "build": "next build src",
@@ -57,7 +58,8 @@
     "babel-loader": "^7.1.4",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
-    "gitbook-plugin-katex": "^1.1.4"
+    "gitbook-plugin-katex": "^1.1.4",
+    "rimraf": "^2.6.2"
   },
   "homepage": "https://github.com/melonproject/reporting#readme"
 }
