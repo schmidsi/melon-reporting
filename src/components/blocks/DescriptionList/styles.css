@@ -1,13 +1,17 @@
-.descriptionList th {
+.DescriptionList th {
   font-weight: 600;
   text-align: left;
   padding: 0 0.5em 0 0;
 }
 
-.descriptionList td {
+.DescriptionList td {
   padding: 0;
 }
 
-.descriptionList {
+.DescriptionList {
   border-collapse: collapse;
+}
+
+.emptyRow {
+  height: 1.77777em;
 }

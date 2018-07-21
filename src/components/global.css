@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Serif+Pro:400,600');
 * {
   box-sizing: border-box;
 }
@@ -11,10 +12,11 @@ body {
 body {
   font-family: "Source Serif Pro", serif;
   font-size: 18px;
-  line-height: 1.75;
+  line-height: 1.7777777;
+  letter-spacing: 0.05px;
   background-color: rgb(255, 253, 244);
-  background-size: 32px 32px;
-  background-image: linear-gradient(to top, lightgrey 1px, transparent 1px);
+  background-size: 32px 32px, 16px 16px;
+  background-image: linear-gradient(to top, lightgrey 1px, transparent 1px), linear-gradient(to top, grey 1px, transparent 1px);
 }
 
 p {

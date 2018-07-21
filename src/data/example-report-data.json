@@ -1,194 +1,188 @@
 {
   "meta": {
-      "fundName": "Melon Crypto Capital",
-      "timespanStart": 1524739023,
-      "timespanEnd": 1525150632,
-      "fundAddress": "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de",
-      "inception": 1523651632,
-      "quoteToken": {
+    "fundName": "Melon Crypto Capital",
+    "timeSpanStart": 1514761200,
+    "timeSpanEnd": 1522447200,
+    "fundAddress": "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de",
+    "inception": 1498168800,
+    "quoteToken": {
+      "symbol": "DAI",
+      "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+    },
+    "manager": "0x54bb6bcbE88e3EcD2788380a686064984de78531",
+    "exchanges": [{
+        "id": "Radar Relay",
+        "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
+      },
+      {
+        "id": "ERC Dex",
+        "address": "0x5d263eb2C080a48F64179689549AAf6056410dfB"
+      }
+    ],
+    "legalEntity": [
+      "Melon Crypto Capital AG",
+      "Herrengasse 18",
+      "FL-9490 Vaduz",
+      "Liechtenstein"
+    ],
+    "strategy": "Melon Crypto Capital focuses on the most promising ...",
+    "policy": {
+      "portfolio": {
+        "maxPositions": 100,
+        "bestPriceTolerance": "0.05",
+        "maxTrades": {
+          "threshold": 50,
+          "timePeriod": "month"
+        },
+        "maxVolume": {
+          "threshold": "10000.0000",
+          "timePeriod": "month"
+        },
+        "volatilityThreshold": "0.25"
+      },
+      "tokens": {
+        "whitelist": [{
+            "symbol": "MLN",
+            "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+          },
+          {
+            "symbol": "ETH",
+            "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+          },
+          {
+            "symbol": "DAI",
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+          }
+        ],
+        "liquidityInDays": 10,
+        "marketCapRange": {
+          "min": 10000000,
+          "max": 10000000000
+        },
+        "volatilityThreshold": "0.35"
+      },
+      "participation": {
+        "name": "Bitcoin Suisse KYC",
+        "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
+      }
+    }
+  },
+  "holdings": [{
+      "token": {
+        "symbol": "MLN",
+        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+      },
+      "quantity": "5.4910000000000",
+      "priceHistory": [
+        "1.000000",
+        "1.506000",
+        "1.406860"
+      ]
+    },
+    {
+      "token": {
+        "symbol": "ETH",
+        "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+      },
+      "quantity": "0.2530000000000",
+      "priceHistory": [
+        "2.100123",
+        "2.306630",
+        "2.206153"
+      ]
+    },
+    {
+      "token": {
+        "symbol": "DAI",
+        "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+      },
+      "quantity": "106.3490000000000",
+      "priceHistory": [
+        "1.51198",
+        "1.69279",
+        "1.76345"
+      ]
+    }
+  ],
+  "trades": [{
+      "buy": {
+        "token": {
+          "symbol": "MLN",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        },
+        "howMuch": "3.982323249"
+      },
+      "sell": {
+        "token": {
           "symbol": "DAI",
           "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+        },
+        "howMuch": "3.982323249"
       },
-      "manager": "0x54bb6bcbE88e3EcD2788380a686064984de78531",
-      "exchanges": [
-          {
-              "id": "Radar Relay",
-              "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
-          },
-          {
-              "id": "ERC Dex",
-              "address": "0x5d263eb2C080a48F64179689549AAf6056410dfB"
-          }
-      ],
-      "legalEntity": [
-          "Melon Crypto Capital AG",
-          "Herrengasse 18",
-          "FL-9490 Vaduz",
-          "Liechtenstein"
-      ],
-      "strategy": "Melon Crypto Capital focuses on the most promising ...",
-      "policy": {
-          "portfolio": {
-              "maxPositions": 100,
-              "bestPriceTolerance": "0.05",
-              "maxTrades": {
-                  "threshold": 50,
-                  "timePeriod": "month"
-              },
-              "maxVolume": {
-                  "threshold": "10000.0000",
-                  "timePeriod": "month"
-              },
-              "volatilityThreshold": "0.25"
-          },
-          "tokens": {
-              "whitelist": [
-                  {
-                      "symbol": "MLN",
-                      "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-                  },
-                  {
-                      "symbol": "ETH",
-                      "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
-                  },
-                  {
-                      "symbol": "DAI",
-                      "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
-                  }
-              ],
-              "liquidityInDays": 10,
-              "marketCapRange": {
-                  "min": 10000000,
-                  "max": 10000000000
-              },
-              "volatilityThreshold": "0.35"
-          },
-          "participation": {
-              "name": "Bitcoin Suisse KYC",
-              "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
-          }
-      }
-  },
-  "holdings": [
-      {
-          "token": {
-              "symbol": "MLN",
-              "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-          },
-          "quantity": "5.4910000000000",
-          "priceHistory": [
-              "1.000000",
-              "1.506000",
-              "1.406860"
-          ]
+      "exchange": {
+        "id": "Radar Relay",
+        "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      {
-          "token": {
-              "symbol": "ETH",
-              "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
-          },
-          "quantity": "0.2530000000000",
-          "priceHistory": [
-              "2.100123",
-              "2.306630",
-              "2.206153"
-          ]
+      "timestamp": 1524739030740,
+      "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
+    },
+    {
+      "buy": {
+        "token": {
+          "symbol": "ETH",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        },
+        "howMuch": "3.982323249"
       },
-      {
-          "token": {
-              "symbol": "DAI",
-              "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
-          },
-          "quantity": "106.3490000000000",
-          "priceHistory": [
-              "1.51198",
-              "1.69279",
-              "1.76345"
-          ]
-      }
+      "sell": {
+        "token": {
+          "symbol": "DAI",
+          "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+        },
+        "howMuch": "2.2939423"
+      },
+      "exchange": {
+        "id": "Radar Relay",
+        "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
+      },
+      "timestamp": 1524739030740,
+      "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
+    }
   ],
-  "trades": [
-      {
-          "buy": {
-              "token": {
-                  "symbol": "MLN",
-                  "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-              },
-              "howMuch": "3.982323249"
-          },
-          "sell": {
-              "token": {
-                  "symbol": "DAI",
-                  "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
-              },
-              "howMuch": "3.982323249"
-          },
-          "exchange": {
-              "id": "Radar Relay",
-              "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
-          },
-          "timestamp": 1524739030740,
-          "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
+  "participations": [{
+      "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
+      "token": {
+        "symbol": "DAI",
+        "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
       },
-      {
-          "buy": {
-              "token": {
-                  "symbol": "ETH",
-                  "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-              },
-              "howMuch": "3.982323249"
-          },
-          "sell": {
-              "token": {
-                  "symbol": "DAI",
-                  "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
-              },
-              "howMuch": "2.2939423"
-          },
-          "exchange": {
-              "id": "Radar Relay",
-              "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
-          },
-          "timestamp": 1524739030740,
-          "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
-      }
+      "type": "invest",
+      "amount": "23478.8230000",
+      "shares": "2387.923990",
+      "timestamp": 1524737164199
+    },
+    {
+      "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
+      "token": {
+        "symbol": "ETH",
+        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+      },
+      "type": "redeem",
+      "amount": "531.208420",
+      "shares": "2028.123080",
+      "timestamp": 1524737174690
+    }
   ],
-  "participations": [
-      {
-          "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
-          "token": {
-              "symbol": "DAI",
-              "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
-          },
-          "type": "invest",
-          "amount": "23478.8230000",
-          "shares": "2387.923990",
-          "timestamp": 1524737164199
-      },
-      {
-          "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
-          "token": {
-              "symbol": "ETH",
-              "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-          },
-          "type": "redeem",
-          "amount": "531.208420",
-          "shares": "2028.123080",
-          "timestamp": 1524737174690
-      }
-  ],
-  "audits": [
-      {
-          "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-          "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
-          "timespanStart": 1524729021140,
-          "timespanEnd": 1524739020045
-      },
-      {
-          "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-          "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
-          "timespanStart": 1524729086440,
-          "timespanEnd": 1524739020999
-      }
+  "audits": [{
+      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
+      "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
+      "timespanStart": 1524729021140,
+      "timespanEnd": 1524739020045
+    },
+    {
+      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
+      "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
+      "timespanStart": 1524729086440,
+      "timespanEnd": 1524739020999
+    }
   ]
 }
