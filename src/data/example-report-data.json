@@ -29,7 +29,7 @@
     "policy": {
       "portfolio": {
         "maxPositions": 100,
-        "bestPriceTolerance": "0.05",
+        "bestPriceTolerance": 0.05,
         "maxTrades": {
           "threshold": 50,
           "timePeriod": "month"
@@ -38,7 +38,7 @@
           "threshold": "10000.0000",
           "timePeriod": "month"
         },
-        "volatilityThreshold": "0.25"
+        "volatilityThreshold": 0.25
       },
       "tokens": {
         "whitelist": [{
@@ -59,7 +59,7 @@
           "min": 10000000,
           "max": 10000000000
         },
-        "volatilityThreshold": "0.35"
+        "volatilityThreshold": 0.35
       },
       "participation": {
         "name": "Bitcoin Suisse KYC",

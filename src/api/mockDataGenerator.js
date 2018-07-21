@@ -43,17 +43,105 @@ const randomEthereumAddress = () => {
   return randomHexaDecimal(40);
 };
 
-const createRandomExchangesArray = () => {
-  exchanges = [];
+const randomExchanges = () => {
+  const exchanges = [];
   const max = 5;
   const min = 1;
   const to = Math.floor(Math.random() * (max - min + 1) + min);
   for (let i = 0; i < to; i++) {
-    exchanges.push({});
+    exchanges.push({
+      id: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',
+      address: randomEthereumAddress(),
+    });
   }
+  return exchanges;
 };
 
-const createRandomMetaData = (fundAddress, timeSpanStart, timeSpanEnd) => {
+const capitalizeFirstLetter = string => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+const randomLegalEntity = () => {
+  const legalEntity = [];
+  legalEntity.push(faker.company.bs() + ' Inc');
+  legalEntity.push(
+    faker.address.streetAddress() + ' ' + faker.address.streetName(),
+  );
+  legalEntity.push(faker.address.zipCode() + ' ' + faker.address.city());
+  legalEntity.push(faker.address.country());
+  return legalEntity;
+};
+
+const randomStrategy = () => {
+  return faker.company.catchPhrase();
+};
+
+const toBigNum = number => {
+  return number + '.000000';
+};
+
+const randomPercentage = (min, max) => {
+  return faker.random.number({ min, max, precision: 0.01 });
+};
+
+const randomTokenObject = () => {
+  return {
+    symbol: faker.finance.currencyCode(),
+    address: randomEthereumAddress(),
+  };
+};
+
+const randomTokenWhitelist = () => {
+  const whitelist = [];
+  const max = 9;
+  const min = 3;
+  const to = Math.floor(Math.random() * (max - min + 1) + min);
+  for (let i = 0; i < to; i++) {
+    whitelist.push(randomTokenObject());
+  }
+  return whitelist;
+};
+
+const randomPolicy = () => {
+  const policy = {};
+  policy.portfolio = {
+    maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
+    bestPrice: faker.random.number({ min: 0.05, max: 0.3, precision: 0.01 }),
+    bestPrice: randomPercentage(0.05, 0.3),
+    maxTrades: {
+      threshold: faker.random.number({ min: 20, max: 120, precision: 1 }),
+      timeperiod: 'month',
+    },
+    maxVolume: {
+      threshold: toBigNum(
+        faker.random.number({ min: 1000, max: 20000, precision: 100 }),
+      ),
+      timeperiod: 'month',
+    },
+    volatilityThreshold: randomPercentage(0.1, 0.5),
+  };
+  policy.tokens = {
+    whitelist: randomTokenWhitelist(),
+    liquidityInDays: faker.random.number(50),
+    marketCapRange: {
+      min: faker.random.number({ min: 100000, max: 1000000, precision: 10000 }),
+      max: faker.random.number({
+        min: 10000000,
+        max: 20000000,
+        precision: 10000,
+      }),
+    },
+    volatilityThreshold: randomPercentage(0.1, 0.5),
+  };
+  policy.participation = {
+    name: faker.commerce.productName() + ' ' + faker.address.country() + ' KYC',
+    address: randomEthereumAddress(),
+  };
+
+  return policy;
+};
+
+const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd) => {
   const meta = {};
   //meta.fundAddress = faker.finance.ethereumAddress();
   meta.fundName = faker.company.companyName();
@@ -63,16 +151,16 @@ const createRandomMetaData = (fundAddress, timeSpanStart, timeSpanEnd) => {
   meta.inception = Math.floor(
     faker.date.past(1, new Date(timeSpanStart * 1000)).getTime() / 1000,
   );
-  console.log(randomEthereumAddress());
-  //console.log(faker.finance.ethereumAddress());
   meta.quoteToken = {
-    symbol: faker.finance.currencyCode(),
+    symbol: 'WETH',
     address: randomEthereumAddress(),
   };
   meta.manager = randomEthereumAddress();
-  meta.exchanges = {};
+  meta.exchanges = randomExchanges();
+  meta.legalEntity = randomLegalEntity();
+  meta.strategy = randomStrategy();
+  meta.policy = randomPolicy();
 
-  console.log(meta);
   return meta;
 };
 
@@ -84,7 +172,7 @@ const mockStaticData = async () => {
 const mockAllData = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   const mockedData = { data: {} };
   const data = mockedData.data;
-  data.meta = createRandomMetaData(fundAddress, timeSpanStart, timeSpanEnd);
+  data.meta = randomMetaData(fundAddress, timeSpanStart, timeSpanEnd);
   return mockedData;
 };
 
