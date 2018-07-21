@@ -11,6 +11,7 @@ storiesOf('DescriptionList', module).add('default', () => (
         ['Address', '0xdeadbeef'],
         null,
         ['Category', 'Manager Traded Fund'],
+        ['Multiline', ['Line 1', 'Line 2']],
       ]}
     </DescriptionList>
   </div>

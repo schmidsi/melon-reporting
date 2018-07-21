@@ -47,6 +47,13 @@ const Report = ({ data }) => (
           ['Quote Token', data.meta.quoteToken.symbol],
           data.meta.category && ['Category', data.meta.category],
           data.meta.reference && ['Reference', data.meta.reference],
+          [
+            'Manager',
+            [
+              data.meta.manager.name,
+              <HexValue>{data.meta.manager.address}</HexValue>,
+            ],
+          ],
           //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>

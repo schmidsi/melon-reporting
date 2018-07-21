@@ -2,6 +2,7 @@
   font-weight: 600;
   text-align: left;
   padding: 0 0.5em 0 0;
+  vertical-align: top;
 }
 
 .DescriptionList td {

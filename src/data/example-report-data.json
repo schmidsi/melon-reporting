@@ -3,7 +3,7 @@
     "fundName": "Melon Crypto Capital",
     "timeSpanStart": 1514761200,
     "timeSpanEnd": 1522447200,
-    "fundAddress": "0x009dd341EaFAeD46DF6B81EE0615bAED441D10de",
+    "fundAddress": "0x44741EAcA12736bc9ADcF92FEED25ad46b4c1fD8",
     "inception": 1498168800,
     "quoteToken": {
       "symbol": "DAI",
@@ -11,7 +11,10 @@
     },
     "category": "Manager Traded Fund",
     "reference": "Average share price weighted by AUM",
-    "manager": "0x54bb6bcbE88e3EcD2788380a686064984de78531",
+    "manager": {
+      "address": "0xAeEc31C192CcC234B1fB3b6E0346278A6343218F",
+      "name": "Marvin Mellon"
+    },
     "exchanges": [{
         "name": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"

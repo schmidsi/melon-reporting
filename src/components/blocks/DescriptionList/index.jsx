@@ -6,7 +6,9 @@ import css from './styles.css';
 const renderLine = ([key, value]) => (
   <tr key={key}>
     <th>{key}:</th>
-    <td>{value}</td>
+    <td>
+      {Array.isArray(value) ? value.map(line => <div>{line}</div>) : value}
+    </td>
   </tr>
 );
 
@@ -17,10 +19,6 @@ const emptyLine = () => (
 );
 
 const lineMapper = R.cond([
-  [
-    line => console.log(line, line && line.length, line && line.length),
-    () => null,
-  ],
   [line => line && line.length > 1, renderLine],
   [line => line && line.length === 1, emptyLine],
   [() => true, () => null],
