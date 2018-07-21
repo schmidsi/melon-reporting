@@ -15,15 +15,22 @@ storiesOf('Templates', module).add('factsheet', () => (
         height: '100%',
         width: '100%',
         backgroundImage: 'url(./01-factsheet@2x.png)',
-        backgroundPosition: 'top left',
+        backgroundPosition: 'center top',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 1190,
         height: 1684,
         opacity: 0.5,
       }}
     />
-    <div style={{ mixBlendMode: 'color-burn', margin: '-8px 107px' }}>
-      <Report data={exampleData} />
+    <div
+      style={{
+        mixBlendMode: 'color-burn',
+        position: 'relative',
+        top: -8,
+        left: -8,
+      }}
+    >
+      <Report data={exampleData} calculations={{ sharePrice: 23.124 }} />
     </div>
   </div>
 ));

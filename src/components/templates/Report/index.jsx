@@ -11,9 +11,9 @@ import HexValue from '../../blocks/HexValue';
 
 import hashReport from '../../../api/hashReport';
 
-const Report = ({ data }) => (
-  <Container>
-    <Column>
+const Report = ({ data, calculations }) => (
+  <div>
+    <Container>
       <MainHeader>
         <Title>{console.log(data) || data.meta.fundName}</Title>
         <Subtitle>
@@ -24,47 +24,67 @@ const Report = ({ data }) => (
           />
         </Subtitle>
       </MainHeader>
-      <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
-      <DescriptionList>
-        {[
-          ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
-          [''],
-          ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
-          [
-            'Report Span (UTC)',
-            `${format(
-              new Date(data.meta.timeSpanStart * 1000),
-              'YYYY-MM-DD HH:mm:ss',
-            )} - ${format(
-              new Date(data.meta.timeSpanEnd * 1000),
-              'YYYY-MM-DD HH:mm:ss',
-            )}`,
-          ],
-          [
-            'Inception',
-            format(new Date(data.meta.inception * 1000), 'D.MMM YYYY'),
-          ],
-          ['Quote Token', data.meta.quoteToken.symbol],
-          data.meta.category && ['Category', data.meta.category],
-          data.meta.reference && ['Reference', data.meta.reference],
-          [
-            'Manager',
+    </Container>
+    <Container>
+      <Column>
+        <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
+        <DescriptionList>
+          {[
+            ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
+            [''],
+            ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
             [
-              data.meta.manager.name,
-              <HexValue>{data.meta.manager.address}</HexValue>,
+              'Report Span (UTC)',
+              `${format(
+                new Date(data.meta.timeSpanStart * 1000),
+                'YYYY-MM-DD HH:mm:ss',
+              )} - ${format(
+                new Date(data.meta.timeSpanEnd * 1000),
+                'YYYY-MM-DD HH:mm:ss',
+              )}`,
             ],
-          ],
-          ['Exchanges', data.meta.exchanges.map(e => e.name).join(', ')],
-          [''],
-          ['Legal Entity', data.meta.legalEntity],
-          //['Report Data Hash', hashReport(data)],
-        ]}
-      </DescriptionList>
-      <Spacer height={0} />
-      <H2>Strategy</H2>
-      <p>{data.meta.strategy}</p>
-    </Column>
-  </Container>
+            [
+              'Inception',
+              format(new Date(data.meta.inception * 1000), 'D.MMM YYYY'),
+            ],
+            ['Quote Token', data.meta.quoteToken.symbol],
+            data.meta.category && ['Category', data.meta.category],
+            data.meta.reference && ['Reference', data.meta.reference],
+            [
+              'Manager',
+              [
+                data.meta.manager.name,
+                <HexValue>{data.meta.manager.address}</HexValue>,
+              ],
+            ],
+            ['Exchanges', data.meta.exchanges.map(e => e.name).join(', ')],
+            [''],
+            ['Legal Entity', data.meta.legalEntity],
+            //['Report Data Hash', hashReport(data)],
+          ]}
+        </DescriptionList>
+        <Spacer height={0} />
+        <H2>Strategy</H2>
+        <p>{data.meta.strategy}</p>
+      </Column>
+      <Column>
+        <DescriptionList detailsAlign="right">
+          {[
+            [
+              `Share Price ${data.meta.quoteToken.symbol}/Share`,
+              calculations.sharePrice,
+            ],
+            ['Total Number of Shares', `× ${data.meta.totalSupply}`],
+            '---',
+            [
+              `Assets Under Management (${data.meta.quoteToken.symbol})`,
+              calculations.sharePrice * data.meta.totalSupply,
+            ],
+          ]}
+        </DescriptionList>
+      </Column>
+    </Container>
+  </div>
 );
 
 export default Report;

@@ -5,9 +5,9 @@ import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 import Audit from './Audit';
 
-const Report = ({ data, debug }) => (
+const Report = ({ data, debug, calculations }) => (
   <div>
-    <ReportTemplate data={data} />
+    <ReportTemplate data={data} calculations={calculations} />
     <Audit data={data} />
     <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
   </div>
@@ -20,7 +20,7 @@ Report.getInitialProps = async ({ query }) => {
     query.timeSpanEnd,
   );
 
-  return data;
+  return { ...data, calculations: { sharePrice: 123 } };
 };
 
 export default Report;

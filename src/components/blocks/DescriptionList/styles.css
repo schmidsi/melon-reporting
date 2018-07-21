@@ -12,8 +12,22 @@
 .DescriptionList {
   border-collapse: collapse;
   margin-bottom: 1.77778rem;
+  width: 100%;
+}
+
+.Details-left {
+  text-align: left;
+}
+
+.Details-right {
+  text-align: right;
 }
 
 .emptyRow {
   height: 1.77778rem;
+}
+
+.horizontalRule {
+  height: 0;
+  border-bottom: 1px solid #979797;
 }
