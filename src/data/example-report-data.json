@@ -30,8 +30,10 @@
       "FL-9490 Vaduz",
       "Liechtenstein"
     ],
-    "strategy": "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user - centric; incentivize web - enabled expedite, tag target, \" podcasts integrated rich-clientAPIs; platforms. ",
+    "strategy": "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user-centric; incentivize web-enabled expedite, tag target,\" podcasts integrated rich-clientAPIs; platforms. ",
     "totalSupply": 53.235,
+    "managementFee": 0.02,
+    "performanceFee": 0.2,
     "policy": {
       "portfolio": {
         "maxPositions": 100,
@@ -58,6 +60,42 @@
           {
             "symbol": "DAI",
             "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+          }, {
+            "symbol": "MKR",
+            "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+          }, {
+            "symbol": "ANT",
+            "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+          }, {
+            "symbol": "ZRX",
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+          }, {
+            "symbol": "BAT",
+            "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+          }, {
+            "symbol": "DGX",
+            "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+          }, {
+            "symbol": "GNO",
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+          }, {
+            "symbol": "OMG",
+            "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+          }, {
+            "symbol": "JNT",
+            "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+          }, {
+            "symbol": "REP",
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+          }, {
+            "symbol": "REQ",
+            "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+          }, {
+            "symbol": "KNC",
+            "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
+          }, {
+            "symbol": "NET",
+            "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
           }
         ],
         "liquidityInDays": 10,
@@ -68,8 +106,12 @@
         "volatilityThreshold": 0.35
       },
       "participation": {
-        "name": "Bitcoin Suisse KYC",
-        "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
+        "complianceModule": {
+          "name": "Bitcoin Suisse KYC",
+          "address": "0x9Ca935A5be2f7eD83e453647dBa2179D2cfDa1D8"
+        },
+        "investmentFee": 0,
+        "redeemFee": 0
       }
     }
   },

@@ -30,7 +30,14 @@ storiesOf('Templates', module).add('factsheet', () => (
         left: -8,
       }}
     >
-      <Report data={exampleData} calculations={{ sharePrice: 23.124 }} />
+      <Report
+        data={exampleData}
+        calculations={{
+          sharePrice: 23.124,
+          transactionFees: 83.214,
+          volatility: 19.5,
+        }}
+      />
     </div>
   </div>
 ));

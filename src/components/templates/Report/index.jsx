@@ -1,7 +1,15 @@
 import React from 'react';
+import * as R from 'ramda';
 import { format } from 'date-fns';
 
-import { Title, Subtitle, MainHeader, H2 } from '../../design/typography';
+import {
+  Title,
+  Subtitle,
+  MainHeader,
+  Heading2,
+  Heading3,
+  Heading4,
+} from '../../design/typography';
 import { Column, Container, Spacer } from '../../design/layout';
 import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
@@ -64,7 +72,7 @@ const Report = ({ data, calculations }) => (
           ]}
         </DescriptionList>
         <Spacer height={0} />
-        <H2>Strategy</H2>
+        <Heading2>Strategy</Heading2>
         <p>{data.meta.strategy}</p>
       </Column>
       <Column>
@@ -80,8 +88,89 @@ const Report = ({ data, calculations }) => (
               `Assets Under Management (${data.meta.quoteToken.symbol})`,
               calculations.sharePrice * data.meta.totalSupply,
             ],
+            [''],
+            ['Mangement Fee', `${data.meta.managementFee * 100}%`],
+            ['Performance Fee', `${data.meta.performanceFee * 100}%`],
+            [''],
+            ['Transaction Fees (Gas + Fees)', calculations.transactionFees],
+            [''],
+            ['Volatility / Risk Indicator', calculations.volatility],
           ]}
         </DescriptionList>
+        <Spacer height={4} />
+        {data.meta.policy && (
+          <div>
+            <Heading2>Policy</Heading2>
+            <Heading3>Portfolio</Heading3>
+            <DescriptionList detailsAlign="right">
+              {[
+                ['Max Positions', data.meta.policy.portfolio.maxPositions],
+                [
+                  'Best Price Tolerance',
+                  `${data.meta.policy.portfolio.bestPriceTolerance * 100}%`,
+                ],
+                [
+                  'Max Trades',
+                  `${data.meta.policy.portfolio.maxTrades.threshold} per ${
+                    data.meta.policy.portfolio.maxTrades.timePeriod
+                  }`,
+                ],
+                [
+                  `Max Volume (${data.meta.quoteToken.symbol})`,
+                  `${data.meta.policy.portfolio.maxVolume.threshold} per ${
+                    data.meta.policy.portfolio.maxVolume.timePeriod
+                  }`,
+                ],
+                [
+                  'Volatility Threshold',
+                  `${data.meta.policy.portfolio.volatilityThreshold * 100}%`,
+                ],
+              ]}
+            </DescriptionList>
+
+            <Heading3>Tokens</Heading3>
+            <Heading4>Whitelist</Heading4>
+            <p>
+              {data.meta.policy.tokens.whitelist.map(t => t.symbol).join(', ')}
+            </p>
+
+            <DescriptionList detailsAlign="right">
+              {[
+                [
+                  'Liquidity',
+                  `${data.meta.policy.tokens.liquidityInDays} days`,
+                ],
+                [
+                  'Market Cap Range',
+                  `${data.meta.policy.tokens.marketCapRange.min} - ${
+                    data.meta.policy.tokens.marketCapRange.max
+                  }`,
+                ],
+                [
+                  'Volatility Threshold',
+                  `${data.meta.policy.tokens.volatilityThreshold * 100}%  `,
+                ],
+              ]}
+            </DescriptionList>
+            <Heading3>Participation</Heading3>
+            <DescriptionList detailsAlign="right">
+              {[
+                [
+                  'Investment Fee',
+                  `${data.meta.policy.participation.investmentFee * 1000}%`,
+                ],
+                [
+                  'Redeem Fee',
+                  `${data.meta.policy.participation.redeemFee * 1000}%`,
+                ],
+                [
+                  'Compliance Module',
+                  data.meta.policy.participation.complianceModule.name,
+                ],
+              ]}
+            </DescriptionList>
+          </div>
+        )}
       </Column>
     </Container>
   </div>

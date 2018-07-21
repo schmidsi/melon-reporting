@@ -16,9 +16,24 @@
   margin-top: -0.9em;
 }
 
-.H2 {
+.Heading2 {
   margin-top: 1em;
   margin-bottom: -3px;
   font-weight: 600;
   font-size: 1.333333rem;
+}
+
+.Heading3 {
+  margin-top: calc(14rem / 9);
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: calc(10rem / 9);
+  text-decoration: underline;
+}
+
+.Heading4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1rem;
 }
