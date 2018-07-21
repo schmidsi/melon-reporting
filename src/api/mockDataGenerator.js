@@ -1,6 +1,7 @@
 import exampleData from '../data/example-report-data.json';
 import faker from 'faker';
 import { differenceInDays } from 'date-fns';
+import * as R from 'ramda';
 
 // helper because faker.random.hexaDecimal() does not work
 const randomHexaDecimal = count => {
@@ -198,7 +199,7 @@ const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd, whitelist) => {
   return meta;
 };
 
-const randomHoldingsData = async (timeSpanStart, timeSpanEnd, whitelist) =>
+const randomHoldings = async (timeSpanStart, timeSpanEnd, whitelist) =>
   Promise.all(
     whitelist.map(async symbol => ({
       token: {
@@ -213,6 +214,25 @@ const randomHoldingsData = async (timeSpanStart, timeSpanEnd, whitelist) =>
       ),
     })),
   );
+
+const randomParticipations = (timeSpanStart, timeSpanEnd) => {
+  const participations = [];
+  R.range(1, Math.floor(Math.random() * 10 + 1)).map(() => {
+    participations.push({
+      investor: randomEthereumAddress(),
+      token: randomTokenObject(),
+      type: 'invest',
+      amount: toBigNum(
+        faker.random.number({ min: 100, max: 10000, precision: 1 }),
+      ),
+      shares: toBigNum(
+        faker.random.number({ min: 100, max: 10000, precision: 1 }),
+      ),
+      timestamp: faker.date.between({ from: timeSpanStart, to: timeSpanEnd }), // TODO
+    });
+  });
+  return participations;
+};
 
 const mockStaticData = async () => {
   const staticData = { data: exampleData };
@@ -231,13 +251,9 @@ const mockAllData = async (fundAddress, timeSpanStart, timeSpanEnd) => {
     timeSpanEnd,
     whitelist,
   );
-  data.holdings = await randomHoldingsData(
-    timeSpanStart,
-    timeSpanEnd,
-    whitelist,
-  );
+  data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
   data.trades = [];
-  data.participations = [];
+  data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
   data.audits = [];
 
   return mockedData;
