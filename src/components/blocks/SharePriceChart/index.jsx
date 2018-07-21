@@ -23,7 +23,7 @@ const SharePriceChart = ({ width = 548, height = 314, data }) => (
       <YAxis width={1} />
       <Tooltip />
       <Line
-        type="monotone"
+        type="linear"
         dataKey={r => parseFloat(r, 10) * 100000}
         stroke="#000000"
         dot={false}

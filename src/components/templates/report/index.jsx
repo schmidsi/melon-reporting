@@ -7,6 +7,7 @@ import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
 import ColoredNumber from '../../blocks/ColoredNumber';
+import HexValue from '../../blocks/HexValue';
 
 import hashReport from '../../../api/hashReport';
 
@@ -27,20 +28,24 @@ const Report = ({ data }) => (
       <DescriptionList>
         {[
           ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
-          [null, null],
-          ['Address (ID)', data.meta.fundAddress],
+          null,
+          ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
           [
             'Report Span (UTC)',
             `${format(
               new Date(data.meta.timeSpanStart * 1000),
-              'YYYY-MM-DD HH-mm-ss',
+              'YYYY-MM-DD HH:mm:ss',
             )} - ${format(
               new Date(data.meta.timeSpanEnd * 1000),
-              'YYYY-MM-DD HH-mm-ss',
+              'YYYY-MM-DD HH:mm:ss',
             )}`,
           ],
+          [
+            'Inception',
+            format(new Date(data.meta.inception * 1000), 'D.MMM YYYY'),
+          ],
           ['Quote Token', data.meta.quoteToken.symbol],
-          ['Report Data Hash', hashReport(data)],
+          //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>
     </Column>

@@ -2,23 +2,27 @@ import React from 'react';
 
 import css from './styles.css';
 
+const renderLine = ([key, value]) => (
+  <tr key={key}>
+    <th>{key}:</th>
+    <td>{value}</td>
+  </tr>
+);
+
+const emptyLine = (
+  <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
+    <td colSpan={2} />
+  </tr>
+);
+
 const DescriptionList = ({ children }) => (
   <div>
     <table className={css.DescriptionList}>
       <tbody>
-        {children.map(
-          ([key, value]) =>
-            key ? (
-              <tr key={key}>
-                <th>{key}:</th>
-                <td>{value}</td>
-              </tr>
-            ) : (
-              <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
-                <td colSpan={2} />
-              </tr>
-            ),
-        )}
+        {children.length &&
+          children.map(
+            line => (line && line.length === 2 ? renderLine(line) : emptyLine),
+          )}
       </tbody>
     </table>
   </div>
