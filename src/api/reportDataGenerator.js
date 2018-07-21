@@ -19,7 +19,11 @@ const reportDataGenerator = async (
     return staticData;
   } else if (fundAddress === '0xbada55') {
     // mock everything
-    const mockedData = await mockAllData();
+    const mockedData = await mockAllData(
+      fundAddress,
+      _timeSpanStart,
+      _timeSpanEnd,
+    );
     return mockedData;
   } else {
     // enhance dataExtractor data with mock where necessary
