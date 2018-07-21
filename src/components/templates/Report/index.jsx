@@ -45,6 +45,8 @@ const Report = ({ data }) => (
             format(new Date(data.meta.inception * 1000), 'D.MMM YYYY'),
           ],
           ['Quote Token', data.meta.quoteToken.symbol],
+          ['Category', data.meta.category],
+          ['Reference', data.meta.reference],
           //['Report Data Hash', hashReport(data)],
         ]}
       </DescriptionList>

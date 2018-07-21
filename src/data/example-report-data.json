@@ -9,6 +9,8 @@
       "symbol": "DAI",
       "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
     },
+    "category": "Manager Traded Fund",
+    "reference": "Average share price weighted by AUM",
     "manager": "0x54bb6bcbE88e3EcD2788380a686064984de78531",
     "exchanges": [{
         "name": "Radar Relay",
