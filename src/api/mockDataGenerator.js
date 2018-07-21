@@ -1,5 +1,6 @@
 import exampleData from '../data/example-report-data.json';
 import faker from 'faker';
+import { differenceInDays } from 'date-fns';
 
 // helper because faker.random.hexaDecimal() does not work
 const randomHexaDecimal = count => {
@@ -50,7 +51,7 @@ const randomExchanges = () => {
   const to = Math.floor(Math.random() * (max - min + 1) + min);
   for (let i = 0; i < to; i++) {
     exchanges.push({
-      id: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',
+      name: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',
       address: randomEthereumAddress(),
     });
   }
@@ -91,7 +92,14 @@ const randomTokenObject = () => {
   };
 };
 
-const randomTokenWhitelist = () => {
+const createTokenWhitelist = whitelist => {
+  return whitelist.map(symbol => {
+    return {
+      symbol,
+      address: randomEthereumAddress(),
+    };
+  });
+  /*
   const whitelist = [];
   const max = 9;
   const min = 3;
@@ -100,9 +108,10 @@ const randomTokenWhitelist = () => {
     whitelist.push(randomTokenObject());
   }
   return whitelist;
+  */
 };
 
-const randomPolicy = () => {
+const randomPolicy = whitelist => {
   const policy = {};
   policy.portfolio = {
     maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
@@ -121,7 +130,7 @@ const randomPolicy = () => {
     volatilityThreshold: randomPercentage(0.1, 0.5),
   };
   policy.tokens = {
-    whitelist: randomTokenWhitelist(),
+    whitelist: createTokenWhitelist(whitelist),
     liquidityInDays: faker.random.number(50),
     marketCapRange: {
       min: faker.random.number({ min: 100000, max: 1000000, precision: 10000 }),
@@ -141,7 +150,32 @@ const randomPolicy = () => {
   return policy;
 };
 
-const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd) => {
+const getPriceHistoryFromCryptoCompare = async (
+  symbol,
+  timeSpanStart,
+  timeSpanEnd,
+  whitelist,
+) => {
+  const numberOfDays = differenceInDays(
+    new Date(timeSpanEnd * 1000),
+    new Date(timeSpanStart * 1000),
+  );
+
+  const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=ETH&limit=${numberOfDays}&toTs=${timeSpanEnd}`;
+
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+    const histoDay = json.Data;
+    const dailyAveragePrices = histoDay.map(day => day.open);
+    console.log(dailyAveragePrices);
+    return dailyAveragePrices;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd, whitelist) => {
   const meta = {};
   //meta.fundAddress = faker.finance.ethereumAddress();
   meta.fundName = faker.company.companyName();
@@ -159,10 +193,26 @@ const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd) => {
   meta.exchanges = randomExchanges();
   meta.legalEntity = randomLegalEntity();
   meta.strategy = randomStrategy();
-  meta.policy = randomPolicy();
+  meta.policy = randomPolicy(whitelist);
 
   return meta;
 };
+
+const randomHoldingsData = async (timeSpanStart, timeSpanEnd, whitelist) =>
+  Promise.all(
+    whitelist.map(async symbol => ({
+      token: {
+        symbol,
+        address: randomEthereumAddress(),
+      },
+      quantity: toBigNum(faker.random.number(100)),
+      priceHistory: await getPriceHistoryFromCryptoCompare(
+        symbol,
+        timeSpanStart,
+        timeSpanEnd,
+      ),
+    })),
+  );
 
 const mockStaticData = async () => {
   const staticData = { data: exampleData };
@@ -172,7 +222,24 @@ const mockStaticData = async () => {
 const mockAllData = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   const mockedData = { data: {} };
   const data = mockedData.data;
-  data.meta = randomMetaData(fundAddress, timeSpanStart, timeSpanEnd);
+
+  const whitelist = ['MLN', 'ANT', 'DGX', 'MKR', 'OMG'];
+
+  data.meta = randomMetaData(
+    fundAddress,
+    timeSpanStart,
+    timeSpanEnd,
+    whitelist,
+  );
+  data.holdings = await randomHoldingsData(
+    timeSpanStart,
+    timeSpanEnd,
+    whitelist,
+  );
+  data.trades = [];
+  data.participations = [];
+  data.audits = [];
+
   return mockedData;
 };
 
