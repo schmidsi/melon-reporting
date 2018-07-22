@@ -1,3 +1,4 @@
+import React from 'react';
 import ReportTemplate from '../components/templates/Report';
 
 import reportDataGenerator from '../api/reportDataGenerator';
