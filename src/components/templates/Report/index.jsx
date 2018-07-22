@@ -23,7 +23,7 @@ const Report = ({ data, calculations }) => (
   <div>
     <Container>
       <MainHeader>
-        <Title>{console.log(data) || data.meta.fundName}</Title>
+        <Title>{data.meta.fundName}</Title>
         <Subtitle>
           Report from{' '}
           <TimeSpanPicker

@@ -1,5 +1,4 @@
-/dist/
-.cache
+/build
 
 # Logs
 logs

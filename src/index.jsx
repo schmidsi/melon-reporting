@@ -11,8 +11,6 @@ const main = async () => {
     },
   });
 
-  console.log({ data, calculations });
-
   ReactDOM.render(
     <Report data={data} calculations={calculations} />,
     document.getElementById('root'),

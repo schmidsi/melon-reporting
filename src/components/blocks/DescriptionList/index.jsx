@@ -5,7 +5,6 @@ import css from './styles.css';
 
 const renderLine = ([key, value], detailsAlign) => (
   <tr key={key}>
-    {console.log(css[`Details-${detailsAlign}`])}
     <th>{key}:</th>
     <td className={css[`Details-${detailsAlign}`]}>
       {Array.isArray(value) ? value.map(line => <div>{line}</div>) : value}
