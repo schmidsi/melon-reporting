@@ -40,6 +40,7 @@
     "dotenv-extended": "^2.0.2",
     "faker": "^4.1.0",
     "node-forge": "^0.7.5",
+    "path-to-regexp": "^2.2.1",
     "ramda": "^0.25.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

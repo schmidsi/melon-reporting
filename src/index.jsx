@@ -4,6 +4,9 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 
 import Report from './pages/Report';
 import Browse from './pages/Browse';
+import RedirectToReport from './pages/RedirectToReport';
+
+import routes from './routes';
 
 const main = async () => {
   // const { data, calculations } = await Report.getInitialProps({
@@ -16,11 +19,14 @@ const main = async () => {
 
   ReactDOM.render(
     <BrowserRouter>
-      <React.Fragment>
+      <Switch>
         <Redirect exact from="/" to="/browse" />
+        <Redirect exact from="/report" to="/browse" />
         <Route path="/browse" component={Browse} />
+        <Route path={routes.redirect} component={RedirectToReport} exact />
+        {/* <Route path={routes.report} component={Report} /> */}
         {/* <Report data={data} calculations={calculations} /> */}
-      </React.Fragment>
+      </Switch>
     </BrowserRouter>,
     document.getElementById('root'),
   );

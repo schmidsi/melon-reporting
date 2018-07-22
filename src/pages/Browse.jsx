@@ -8,9 +8,8 @@ import {
   renderComponent,
 } from 'recompose';
 
+import LoadingIndicator from '../components/blocks/LoadingIndicator';
 import getRanking from '../api/ranking';
-
-const Spinner = () => <div>Loading...</div>;
 
 const Browse = ({ ranking = [] }) => (
   <div>
@@ -28,11 +27,6 @@ const Browse = ({ ranking = [] }) => (
   </div>
 );
 
-Browse.getInitialProps = async () => {
-  const ranking = await getRanking();
-  return { ranking };
-};
-
 const enhance = compose(
   withStateHandlers(
     {
@@ -47,10 +41,9 @@ const enhance = compose(
     async componentDidMount() {
       const ranking = await getRanking();
       this.props.setRanking(ranking);
-      console.log(ranking, this.props);
     },
   }),
-  branch(({ loading }) => loading, renderComponent(Spinner)),
+  branch(({ loading }) => loading, renderComponent(LoadingIndicator)),
 );
 
 export default enhance(Browse);
