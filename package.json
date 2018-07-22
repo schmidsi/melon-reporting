@@ -9,6 +9,7 @@
   "scripts": {
     "clean": "rimraf build node_modules/.cache",
     "dev": "yarn app:dev & yarn storybook:dev && kill $!",
+    "start": "yarn app:dev",
     "deploy": "yarn app:deploy && yarn storybook:deploy",
     "app:build": "parcel build src/index.html --out-dir build/production --cache-dir build/cache/production --detailed-report",
     "app:deploy": "yarn app:build && cd build/production && now && now alias melon-reporting",
