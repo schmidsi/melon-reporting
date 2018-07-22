@@ -18,9 +18,6 @@
     "storybook:build": "build-storybook -c config/storybook -s design/mockups -o build/storybook",
     "storybook:deploy": "yarn storybook:build && cd build/storybook && now && now alias melon-reporting-storybook"
   },
-  "now": {
-    "alias": "melon-reporting.now.sh"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/melonproject/reporting.git"
