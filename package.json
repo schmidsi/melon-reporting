@@ -2,13 +2,13 @@
   "name": "@melonproject/reporting",
   "description": "Melon Fund Reporting",
   "main": "index.js",
-  "private": true,
   "contributors": [
     "Simon Emanuel Schmid <simon@schmid.io>",
     "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
   ],
   "scripts": {
-    "clean": "rimraf build node_modules/.cache",
+    "parcel": "parcel index.html",
+    "clean": "rimraf dist node_modules/.cache .cache",
     "deploy:docs": "./scripts/deploy-docs.sh",
     "dev": "node src/server.js",
     "build": "next build src",
@@ -35,15 +35,10 @@
   "dependencies": {
     "@melonproject/melon.js": "0.8.22",
     "@soldoc/soldoc": "^0.4.3",
-    "@zeit/next-css": "^0.2.0",
-    "@zeit/next-typescript": "^1.1.0",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
     "dotenv-extended": "^2.0.2",
-    "express": "^4.16.3",
     "faker": "^4.1.0",
-    "next": "^6.0.3",
-    "next-routes": "^1.4.2",
     "node-forge": "^0.7.5",
     "ramda": "^0.25.0",
     "react": "^16.4.1",
@@ -55,10 +50,10 @@
     "@storybook/addon-info": "^3.4.8",
     "@storybook/addon-options": "^3.4.8",
     "@storybook/react": "^3.4.8",
-    "babel-loader": "^7.1.4",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
-    "gitbook-plugin-katex": "^1.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "parcel-bundler": "^1.9.7",
     "rimraf": "^2.6.2"
   },
   "homepage": "https://github.com/melonproject/reporting#readme"
