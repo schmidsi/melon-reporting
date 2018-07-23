@@ -4,10 +4,12 @@ import pathToRegexp from 'path-to-regexp';
 import { Redirect } from 'react-router-dom';
 
 import withLoading from './utils/withLoading';
-import getDefaultTimeSpan from '../api/getDefaultTimeSpan';
-import routes from '../routes';
+import getDefaultTimeSpan from '~/api/getDefaultTimeSpan';
+import routes from '~/routes';
 
-const debug = require('debug')('melon-reporting:pages:RedirectToReport');
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
 
 const RedirectToReport = ({ to }) => <Redirect to={to} />;
 

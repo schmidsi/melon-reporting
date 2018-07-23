@@ -7,7 +7,7 @@ import {
   renderComponent,
 } from 'recompose';
 
-import LoadingIndicator from '../../components/blocks/LoadingIndicator';
+import LoadingIndicator from '~/components/blocks/LoadingIndicator';
 
 const withLoading = (loaderFunction, initialState) =>
   compose(

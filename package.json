@@ -1,7 +1,6 @@
 {
   "name": "@melonproject/reporting",
   "description": "Melon Fund Reporting",
-  "main": "index.js",
   "contributors": [
     "Simon Emanuel Schmid <simon@schmid.io>",
     "Benjamin Zumbrunn <benzumbrunn@gmail.com>"

@@ -8,7 +8,13 @@ import RedirectToReport from './pages/RedirectToReport';
 
 import routes from './routes';
 
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
+
 window.localStorage.debug = process.env.DEBUG;
+
+debug('Starting ...');
 
 ReactDOM.render(
   <BrowserRouter>
@@ -22,3 +28,5 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById('root'),
 );
+
+export default { a: 2 };

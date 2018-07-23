@@ -2,12 +2,14 @@ import React from 'react';
 import ReportTemplate from '../components/templates/Report';
 
 import withLoading from './utils/withLoading';
-import reportDataGenerator from '../api/reportDataGenerator';
-import ColoredNumber from '../components/blocks/ColoredNumber';
-import DescriptionList from '../components/blocks/DescriptionList';
+import reportDataGenerator from '~/api/reportDataGenerator';
+import ColoredNumber from '~/components/blocks/ColoredNumber';
+import DescriptionList from '~/components/blocks/DescriptionList';
 import Audit from './Audit';
 
-const debug = require('debug')('melon-reporting:pages:Report');
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
 
 const Report = ({ data, calculations }) => (
   <div>

@@ -1,10 +1,12 @@
 import * as R from 'ramda';
 import React from 'react';
 
+import getRanking from '~/api/ranking';
 import withLoading from './utils/withLoading';
-import getRanking from '../api/ranking';
 
-const debug = require('debug')('melon-reporting:pages:Browse');
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
 
 const Browse = ({ ranking = [] }) => (
   <div>
