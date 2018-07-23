@@ -1,12 +1,40 @@
 import React from 'react';
 import ReportTemplate from '../components/templates/Report';
+import {
+  branch,
+  compose,
+  lifecycle,
+  withStateHandlers,
+  renderComponent,
+} from 'recompose';
 
+import LoadingIndicator from '../components/blocks/LoadingIndicator';
 import reportDataGenerator from '../api/reportDataGenerator';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 import Audit from './Audit';
 
-const Report = ({ data, debug, calculations }) => (
+const withLoading = (loaderFunction, initialState) =>
+  compose(
+    withStateHandlers(
+      {
+        loading: true,
+        ...initialState,
+      },
+      {
+        loaded: () => data => ({ ...data, loading: false }),
+      },
+    ),
+    lifecycle({
+      async componentDidMount() {
+        const data = await loaderFunction(this.props);
+        this.props.loaded(data);
+      },
+    }),
+    branch(({ loading }) => loading, renderComponent(LoadingIndicator)),
+  );
+
+const Report = ({ data, calculations }) => (
   <div>
     <ReportTemplate data={data} calculations={calculations} />
     <Audit data={data} />
@@ -14,14 +42,18 @@ const Report = ({ data, debug, calculations }) => (
   </div>
 );
 
-Report.getInitialProps = async ({ query }) => {
-  const data = await reportDataGenerator(
+const enhance = withLoading(async props => {
+  const query = props.match.params;
+
+  const { data, debug } = await reportDataGenerator(
     query.fundAddress,
     query.timeSpanStart,
     query.timeSpanEnd,
   );
 
-  return { ...data, calculations: { sharePrice: 123 } };
-};
+  console.log({ debug, data });
 
-export default Report;
+  return { data, calculations: { sharePrice: 123 } };
+});
+
+export default enhance(Report);
