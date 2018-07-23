@@ -37,7 +37,6 @@
     "@soldoc/soldoc": "^0.4.3",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
-    "dotenv-extended": "^2.0.2",
     "faker": "^4.1.0",
     "node-forge": "^0.7.5",
     "path-to-regexp": "^2.2.1",

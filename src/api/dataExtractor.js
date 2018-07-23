@@ -31,7 +31,7 @@ const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
   timestamp >= timeSpanStart && timestamp <= timeSpanEnd;
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
-  const provider = await getParityProvider();
+  const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
     ...provider,
     track: 'kovan-demo',
@@ -62,8 +62,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     web3.js contract
   */
   const web3 = new Web3(
-    new Web3.providers.HttpProvider(process.env.HTTPPROVIDER),
+    new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
   );
+
   /*
   const web3 = new Web3(
     new Web3.providers.HttpProvider(
