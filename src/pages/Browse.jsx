@@ -1,14 +1,7 @@
 import * as R from 'ramda';
 import React from 'react';
-import {
-  branch,
-  compose,
-  lifecycle,
-  withStateHandlers,
-  renderComponent,
-} from 'recompose';
 
-import LoadingIndicator from '../components/blocks/LoadingIndicator';
+import withLoading from './utils/withLoading';
 import getRanking from '../api/ranking';
 
 const Browse = ({ ranking = [] }) => (
@@ -27,23 +20,9 @@ const Browse = ({ ranking = [] }) => (
   </div>
 );
 
-const enhance = compose(
-  withStateHandlers(
-    {
-      loading: true,
-      ranking: [],
-    },
-    {
-      setRanking: () => ranking => ({ ranking, loading: false }),
-    },
-  ),
-  lifecycle({
-    async componentDidMount() {
-      const ranking = await getRanking();
-      this.props.setRanking(ranking);
-    },
-  }),
-  branch(({ loading }) => loading, renderComponent(LoadingIndicator)),
-);
+const enhance = withLoading(async props => {
+  const ranking = await getRanking();
+  return { ranking };
+});
 
 export default enhance(Browse);

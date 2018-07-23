@@ -1,38 +1,11 @@
 import React from 'react';
 import ReportTemplate from '../components/templates/Report';
-import {
-  branch,
-  compose,
-  lifecycle,
-  withStateHandlers,
-  renderComponent,
-} from 'recompose';
 
-import LoadingIndicator from '../components/blocks/LoadingIndicator';
+import withLoading from './utils/withLoading';
 import reportDataGenerator from '../api/reportDataGenerator';
 import ColoredNumber from '../components/blocks/ColoredNumber';
 import DescriptionList from '../components/blocks/DescriptionList';
 import Audit from './Audit';
-
-const withLoading = (loaderFunction, initialState) =>
-  compose(
-    withStateHandlers(
-      {
-        loading: true,
-        ...initialState,
-      },
-      {
-        loaded: () => data => ({ ...data, loading: false }),
-      },
-    ),
-    lifecycle({
-      async componentDidMount() {
-        const data = await loaderFunction(this.props);
-        this.props.loaded(data);
-      },
-    }),
-    branch(({ loading }) => loading, renderComponent(LoadingIndicator)),
-  );
 
 const Report = ({ data, calculations }) => (
   <div>
