@@ -7,6 +7,8 @@ import withLoading from './utils/withLoading';
 import getDefaultTimeSpan from '../api/getDefaultTimeSpan';
 import routes from '../routes';
 
+const debug = require('debug')('melon-reporting:pages:RedirectToReport');
+
 const RedirectToReport = ({ to }) => <Redirect to={to} />;
 
 const enhance = withLoading(async props => {
@@ -14,17 +16,24 @@ const enhance = withLoading(async props => {
 
   const toPath = pathToRegexp.compile(routes.report);
 
-  const defaultTimeSpan =
-    query.fundAddress === '0xdeadbeef' || query.fundAddress === '0xbada55'
-      ? {
-          timeSpanStart: 1514761200,
-          timeSpanEnd: 1522447200,
-        }
-      : await getDefaultTimeSpan(query.fundAddress);
+  const isMockData =
+    query.fundAddress === '0xdeadbeef' || query.fundAddress === '0xbada55';
+
+  debug('Calculate redirect target ...', { isMockData, query });
+
+  const defaultTimeSpan = isMockData
+    ? {
+        timeSpanStart: 1514761200,
+        timeSpanEnd: 1522447200,
+      }
+    : await getDefaultTimeSpan(query.fundAddress);
 
   const merged = R.mergeWith((a, b) => a || b, query, defaultTimeSpan);
+  const to = toPath(merged);
 
-  return { to: toPath(merged) };
+  debug('Redirecting to', to);
+
+  return { to };
 });
 
 export default enhance(RedirectToReport);

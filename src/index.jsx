@@ -8,6 +8,8 @@ import RedirectToReport from './pages/RedirectToReport';
 
 import routes from './routes';
 
+window.localStorage.debug = process.env.DEBUG;
+
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
