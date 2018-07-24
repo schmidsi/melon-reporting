@@ -1,22 +1,21 @@
 {
   "name": "@melonproject/reporting",
   "description": "Melon Fund Reporting",
-  "main": "index.js",
-  "private": true,
   "contributors": [
     "Simon Emanuel Schmid <simon@schmid.io>",
     "Benjamin Zumbrunn <benzumbrunn@gmail.com>"
   ],
   "scripts": {
     "clean": "rimraf build node_modules/.cache",
-    "deploy:docs": "./scripts/deploy-docs.sh",
-    "dev": "node src/server.js",
-    "build": "next build src",
-    "start": "NODE_ENV=production node src/server.js",
-    "storybook": "start-storybook -p 3050 -c config/storybook -s design/mockups"
-  },
-  "now": {
-    "alias": "melon-reporting.now.sh"
+    "dev": "yarn app:dev & yarn storybook:dev && kill $!",
+    "start": "yarn app:dev",
+    "deploy": "yarn app:deploy && yarn storybook:deploy",
+    "app:build": "parcel build src/index.html --out-dir build/production --cache-dir build/cache/production --detailed-report",
+    "app:deploy": "yarn app:build && cd build/production && now && now alias melon-reporting",
+    "app:dev": "parcel src/index.html --out-dir build/development --cache-dir build/cache/development --port 3010",
+    "storybook:dev": "start-storybook -p 3050 -c config/storybook -s design/mockups",
+    "storybook:build": "build-storybook -c config/storybook -s design/mockups -o build/storybook",
+    "storybook:deploy": "yarn storybook:build && cd build/storybook && now && now alias melon-reporting-storybook"
   },
   "repository": {
     "type": "git",
@@ -35,30 +34,30 @@
   "dependencies": {
     "@melonproject/melon.js": "0.8.22",
     "@soldoc/soldoc": "^0.4.3",
-    "@zeit/next-css": "^0.2.0",
-    "@zeit/next-typescript": "^1.1.0",
     "classnames": "^2.2.6",
     "date-fns": "^1.29.0",
-    "dotenv-extended": "^2.0.2",
-    "express": "^4.16.3",
+    "debug": "^3.1.0",
     "faker": "^4.1.0",
-    "next": "^6.0.3",
-    "next-routes": "^1.4.2",
     "node-forge": "^0.7.5",
+    "path-to-regexp": "^2.2.1",
     "ramda": "^0.25.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1",
     "recharts": "^1.0.0-beta.10",
+    "recompose": "^0.27.1",
     "web3": "^1.0.0-beta.34"
   },
   "devDependencies": {
     "@storybook/addon-info": "^3.4.8",
     "@storybook/addon-options": "^3.4.8",
     "@storybook/react": "^3.4.8",
-    "babel-loader": "^7.1.4",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-bibtex-indexed-cite": "^1.2.0",
-    "gitbook-plugin-katex": "^1.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "now": "^11.3.1",
+    "parcel-bundler": "^1.9.7",
+    "postcss-modules": "^1.3.0",
     "rimraf": "^2.6.2"
   },
   "homepage": "https://github.com/melonproject/reporting#readme"

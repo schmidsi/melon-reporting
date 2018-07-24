@@ -5,8 +5,17 @@ import * as css from './styles.css';
 
 const TimeSpanPicker = ({ start, end }) => (
   <span>
-    <span className={css.underline}> {format(start, 'D. MMM YYYY')} ▼</span> to{' '}
-    <span className={css.underline}> {format(end, 'D. MMM YYYY')} ▼</span>
+    <span className={css.underline}>
+      {' '}
+      {format(start, 'D. MMM YYYY')}
+      <i>▼</i>
+    </span>{' '}
+    to{' '}
+    <span className={css.underline}>
+      {' '}
+      {format(end, 'D. MMM YYYY')}
+      <i>▼</i>
+    </span>
   </span>
 );
 

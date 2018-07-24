@@ -1,3 +1,19 @@
 .underline {
-  text-decoration: underline;
+  display: inline-block;
+  position: relative;
+}
+
+.underline::after {
+  content: " ";
+  position: absolute;
+  bottom: 11px;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.underline i {
+  font-size: 0.6em;
+  font-style: normal;
+  margin-left: 0.4em;
 }

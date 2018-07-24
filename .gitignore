@@ -1,4 +1,4 @@
-/build/
+/build
 
 # Logs
 logs
@@ -57,7 +57,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+#.env
 
 # Gitbook temp folder
 _book

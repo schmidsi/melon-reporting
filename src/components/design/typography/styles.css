@@ -2,16 +2,38 @@
   margin-top: 88px;
   margin-bottom: 0;
   font-weight: 600;
-  font-size: 48px;
+  font-size: 2.666666667rem;
   text-rendering: geometricPrecision;
 }
 
 .MainHeader {
-  margin-bottom: 3em;
+  margin-bottom: 1.3333333333rem;
 }
 
 .subtitle {
   font-weight: 400;
-  font-size: 24px;
-  margin-top: -23px;
+  font-size: 1.333333rem;
+  margin-top: -0.9em;
+}
+
+.Heading2 {
+  margin-top: 1em;
+  margin-bottom: -3px;
+  font-weight: 600;
+  font-size: 1.333333rem;
+}
+
+.Heading3 {
+  margin-top: calc(14rem / 9);
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: calc(10rem / 9);
+  text-decoration: underline;
+}
+
+.Heading4 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 1rem;
 }

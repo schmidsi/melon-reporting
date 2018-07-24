@@ -1,7 +1,7 @@
 import { getFundInformations, getParityProvider } from '@melonproject/melon.js';
 
 const getDefaultTimeSpan = async fundAddress => {
-  const environment = await getParityProvider();
+  const environment = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const informations = await getFundInformations(environment, {
     fundAddress,
   });

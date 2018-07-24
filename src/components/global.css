@@ -7,13 +7,13 @@ html,
 body {
   height: 100%;
   width: 100%;
-}
-
-body {
   font-family: "Source Serif Pro", serif;
   font-size: 18px;
   line-height: 1.7777777;
-  letter-spacing: 0.05px;
+  letter-spacing: 0.005px;
+}
+
+body {
   background-color: rgb(255, 253, 244);
   background-size: 32px 32px, 16px 16px;
   background-image: linear-gradient(to top, lightgrey 1px, transparent 1px), linear-gradient(to top, grey 1px, transparent 1px);
