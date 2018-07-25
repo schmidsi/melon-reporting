@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = config => {
   config.module.rules.push({
     test: /\.css$/,
@@ -14,6 +16,12 @@ module.exports = config => {
       },
     ],
   });
+
+  config.resolve.alias = {
+    '~/components': path.resolve(__dirname, '../../src/components'),
+  };
+
+  console.log('XXXX', config.resolve, __dirname);
 
   return config;
 };

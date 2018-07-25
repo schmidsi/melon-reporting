@@ -1,0 +1,27 @@
+.Table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.Table td,
+.Table th {
+  padding: 0;
+}
+
+.Table th {
+  font-weight: 600;
+}
+
+.Table i {
+  font-size: 0.6em;
+  font-style: normal;
+  margin-left: 0.4em;
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignRight {
+  text-align: right;
+}
