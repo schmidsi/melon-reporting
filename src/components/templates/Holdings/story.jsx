@@ -5,13 +5,13 @@ import exampleData from '../../../data/example-report-data.json';
 
 import storyCss from './story.css';
 
-import FactSheet from './';
+import Holdings from './';
 
-storiesOf('Templates', module).add('FactSheet', () => (
+storiesOf('Templates', module).add('Holdings', () => (
   <div>
     <div className={storyCss.background} />
     <div className={storyCss.overlay}>
-      <FactSheet
+      <Holdings
         data={exampleData}
         calculations={{
           sharePrice: 23.124,
