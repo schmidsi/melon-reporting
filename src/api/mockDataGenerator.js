@@ -1,50 +1,14 @@
 import exampleData from '../data/example-report-data.json';
 import randomTrader from './randomTrader';
 import faker from 'faker';
-import { differenceInDays } from 'date-fns';
 import * as R from 'ramda';
-
-// helper because faker.random.hexaDecimal() does not work
-const randomHexaDecimal = count => {
-  if (typeof count === 'undefined') {
-    count = 1;
-  }
-
-  var wholeString = '';
-  for (var i = 0; i < count; i++) {
-    wholeString += faker.random.arrayElement([
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
-      'A',
-      'B',
-      'C',
-      'D',
-      'E',
-      'F',
-    ]);
-  }
-
-  return '0x' + wholeString;
-};
-
-// helper because faker.finance.ethereumAddress() does not work
-const randomEthereumAddress = () => {
-  return randomHexaDecimal(40);
-};
+import {
+  randomEthereumAddress,
+  capitalizeFirstLetter,
+  toBigNum,
+  randomPercentage,
+  randomHexaDecimal,
+} from './utils';
 
 const randomExchanges = () => {
   const exchanges = [];
@@ -60,10 +24,6 @@ const randomExchanges = () => {
   return exchanges;
 };
 
-const capitalizeFirstLetter = string => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 const randomLegalEntity = () => {
   const legalEntity = [];
   legalEntity.push(faker.company.bs() + ' Inc');
@@ -77,14 +37,6 @@ const randomLegalEntity = () => {
 
 const randomStrategy = () => {
   return faker.company.catchPhrase();
-};
-
-const toBigNum = number => {
-  return number + '.000000';
-};
-
-const randomPercentage = (min, max) => {
-  return faker.random.number({ min, max, precision: 0.01 });
 };
 
 const randomTokenObject = () => {
@@ -219,6 +171,7 @@ const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
 };
 
+/*
 // deprecated
 const randomParticipations = (timeSpanStart, timeSpanEnd) =>
   R.range(1, randomInt(1, 10)).map(() => {
@@ -237,6 +190,7 @@ const randomParticipations = (timeSpanStart, timeSpanEnd) =>
         .getTime(),
     };
   });
+*/
 
 // deprecated
 /*
@@ -315,7 +269,9 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
   const data = mockedData.data;
 
   const tokenWhitelist = createTokenWhitelist([
-    'MLN, ANT',
+    'ETH',
+    'MLN',
+    'ANT',
     'DGX',
     'MKR',
     'OMG',
@@ -334,6 +290,7 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
     timeSpanStart,
     timeSpanEnd,
     tokenWhitelist,
+    data.meta.exchanges,
   );
   data.trades = tradeData.trades;
   data.participations = tradeData.participations;

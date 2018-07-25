@@ -1,9 +1,6 @@
 import faker from 'faker';
-import { differenceInDays } from 'date-fns';
-
-const toBigNum = number => {
-  return number + '.000000';
-};
+import * as date from 'date-fns';
+import { toBigNum, randomInt } from './utils';
 
 const getPriceHistoryFromCryptoCompare = async (
   symbol,
@@ -11,7 +8,7 @@ const getPriceHistoryFromCryptoCompare = async (
   timeSpanEnd,
   whitelist,
 ) => {
-  const numberOfDays = differenceInDays(
+  const numberOfDays = date.differenceInDays(
     new Date(timeSpanEnd * 1000),
     new Date(timeSpanStart * 1000),
   );
@@ -42,7 +39,12 @@ const randomHoldings = async (timeSpanStart, timeSpanEnd, tokenWhitelist) =>
     })),
   );
 
-const randomTrader = async (timeSpanStart, timeSpanEnd, tokenWhitelist) => {
+const randomTrader = async (
+  timeSpanStart,
+  timeSpanEnd,
+  tokenWhitelist,
+  exchanges,
+) => {
   const trades = [];
   const participations = [];
   const holdings = [];
@@ -52,6 +54,30 @@ const randomTrader = async (timeSpanStart, timeSpanEnd, tokenWhitelist) => {
     timeSpanEnd,
     tokenWhitelist,
   );
+
+  //const oneDayInSeconds = 60 * 60 * 24;
+
+  let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
+
+  for (
+    tempTimeStamp;
+    tempTimeStamp < timeSpanEnd;
+    tempTimeStamp = date.addDays(tempTimeStamp, 1).getTime()
+  ) {
+    trades.push({
+      buy: {
+        token: tokenWhitelist[0],
+        howMuch: '3.982323249',
+      },
+      sell: {
+        token: tokenWhitelist[1],
+        howMuch: '3.982323249',
+      },
+      exchange: exchanges[randomInt(0, exchanges.length)], // a random exchange from the exchanges whitelist
+      timestamp: tempTimeStamp,
+      transaction: '0x76856aF5b24b29C8cDA09D8d27f527211747819c',
+    });
+  }
 
   // TODO also return calculated sharepriceHistory & aumHistory
   // --> call our own functions for calculations

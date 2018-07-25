@@ -1,8 +1,8 @@
 {
   "meta": {
     "fundName": "Melon Crypto Capital",
-    "timeSpanStart": 1514761200,
-    "timeSpanEnd": 1522447200,
+    "timeSpanStart": 1514764800000,
+    "timeSpanEnd": 1522454400000,
     "fundAddress": "0x44741EAcA12736bc9ADcF92FEED25ad46b4c1fD8",
     "inception": 1498168800,
     "quoteToken": {
