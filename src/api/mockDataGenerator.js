@@ -1,4 +1,5 @@
 import exampleData from '../data/example-report-data.json';
+import randomTrader from './randomTrader';
 import faker from 'faker';
 import { differenceInDays } from 'date-fns';
 import * as R from 'ramda';
@@ -93,26 +94,15 @@ const randomTokenObject = () => {
   };
 };
 
-const createTokenWhitelist = whitelist => {
-  return whitelist.map(symbol => {
+const createTokenWhitelist = whitelist =>
+  whitelist.map(symbol => {
     return {
       symbol,
       address: randomEthereumAddress(),
     };
   });
-  /*
-  const whitelist = [];
-  const max = 9;
-  const min = 3;
-  const to = Math.floor(Math.random() * (max - min + 1) + min);
-  for (let i = 0; i < to; i++) {
-    whitelist.push(randomTokenObject());
-  }
-  return whitelist;
-  */
-};
 
-const randomPolicy = whitelist => {
+const randomPolicy = tokenWhitelist => {
   const policy = {};
   policy.portfolio = {
     maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
@@ -131,7 +121,7 @@ const randomPolicy = whitelist => {
     volatilityThreshold: randomPercentage(0.1, 0.5),
   };
   policy.tokens = {
-    whitelist: createTokenWhitelist(whitelist),
+    whitelist: tokenWhitelist,
     liquidityInDays: faker.random.number(50),
     marketCapRange: {
       min: faker.random.number({ min: 100000, max: 1000000, precision: 10000 }),
@@ -151,6 +141,8 @@ const randomPolicy = whitelist => {
   return policy;
 };
 
+/*
+// deprecated
 const getPriceHistoryFromCryptoCompare = async (
   symbol,
   timeSpanStart,
@@ -174,8 +166,14 @@ const getPriceHistoryFromCryptoCompare = async (
     console.error(e);
   }
 };
+*/
 
-const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd, whitelist) => {
+const randomMetaData = (
+  fundAddress,
+  timeSpanStart,
+  timeSpanEnd,
+  tokenWhitelist,
+) => {
   const meta = {};
   //meta.fundAddress = faker.finance.ethereumAddress();
   meta.fundName = faker.company.companyName();
@@ -193,11 +191,13 @@ const randomMetaData = (fundAddress, timeSpanStart, timeSpanEnd, whitelist) => {
   meta.exchanges = randomExchanges();
   meta.legalEntity = randomLegalEntity();
   meta.strategy = randomStrategy();
-  meta.policy = randomPolicy(whitelist);
+  meta.policy = randomPolicy(tokenWhitelist);
 
   return meta;
 };
 
+// deprecated
+/*
 const randomHoldings = async (timeSpanStart, timeSpanEnd, whitelist) =>
   Promise.all(
     whitelist.map(async symbol => ({
@@ -213,11 +213,13 @@ const randomHoldings = async (timeSpanStart, timeSpanEnd, whitelist) =>
       ),
     })),
   );
+*/
 
 const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
 };
 
+// deprecated
 const randomParticipations = (timeSpanStart, timeSpanEnd) =>
   R.range(1, randomInt(1, 10)).map(() => {
     return {
@@ -231,13 +233,45 @@ const randomParticipations = (timeSpanStart, timeSpanEnd) =>
         faker.random.number({ min: 100, max: 10000, precision: 1 }),
       ),
       timestamp: faker.date
-        .between(
-          new Date(parseInt(timeSpanStart)),
-          new Date(parseInt(timeSpanEnd)),
-        )
-        .getTime(), // TODO
+        .between(new Date(timeSpanStart), new Date(timeSpanEnd))
+        .getTime(),
     };
   });
+
+// deprecated
+/*
+const randomTrades = (timeSpanStart, timeSpanEnd, whitelist) => {
+  const trades = [];
+  let currentTimestamp = parseInt(timeSpanStart) + 10000;
+  //R.range(20, randomInt(20, 50)).map(() => {
+  while (currentTimestamp < parseInt(timeSpanEnd)) {
+    trades.push({
+      buy: {
+        token: {
+          symbol: "",
+          address: ""
+        },
+        howMuch: ""
+      },
+      sell: {
+        token: {
+          symbol: "",
+          address: ""
+        },
+        howMuch: ""
+      },
+      exchange: {
+        id: "",
+        address: ""
+      },
+      timestamp: 1524739030740,
+      transaction: "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
+    });
+    currentTimestamp += 10000000; // do a trade every 10000 seconds
+  };
+  return trades;
+};
+*/
 
 const randomOpinion = () => {
   const opinions = [
@@ -252,12 +286,9 @@ const randomOpinion = () => {
 const randomAudits = (timeSpanStart, timeSpanEnd) =>
   R.range(5, randomInt(5, 10)).map(() => {
     const auditStart = faker.date
-      .between(
-        new Date(parseInt(timeSpanStart)),
-        new Date(parseInt(timeSpanEnd)),
-      )
-      .getTime(); // TODO
-    const auditEnd = auditStart + 10000; // TODO
+      .between(new Date(timeSpanStart), new Date(timeSpanEnd))
+      .getTime();
+    const auditEnd = auditStart + 10000;
     return {
       auditor: randomEthereumAddress(),
       dataHash: randomHexaDecimal(64),
@@ -268,26 +299,46 @@ const randomAudits = (timeSpanStart, timeSpanEnd) =>
     };
   });
 
+/// EXPORTED FUNCTIONS
+
 const mockStaticData = async () => {
   const staticData = { data: exampleData };
   return staticData;
 };
 
-const mockAllData = async (fundAddress, timeSpanStart, timeSpanEnd) => {
+const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
+  // timespans are strings, convert to int first
+  const timeSpanStart = parseInt(timeSpanStartStr);
+  const timeSpanEnd = parseInt(timeSpanEndStr);
+
   const mockedData = { data: {} };
   const data = mockedData.data;
 
-  const whitelist = ['MLN', 'ANT', 'DGX', 'MKR', 'OMG'];
+  const tokenWhitelist = createTokenWhitelist([
+    'MLN, ANT',
+    'DGX',
+    'MKR',
+    'OMG',
+  ]);
 
   data.meta = randomMetaData(
     fundAddress,
     timeSpanStart,
     timeSpanEnd,
-    whitelist,
+    tokenWhitelist,
   );
-  data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
-  data.trades = [];
-  data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
+  //data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
+  //data.trades = randomTrades(timeSpanStart, timeSpanEnd, whitelist);
+  //data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
+  const tradeData = await randomTrader(
+    timeSpanStart,
+    timeSpanEnd,
+    tokenWhitelist,
+  );
+  data.trades = tradeData.trades;
+  data.participations = tradeData.participations;
+  data.holdings = tradeData.holdings;
+
   data.audits = randomAudits(timeSpanStart, timeSpanEnd);
 
   return mockedData;
