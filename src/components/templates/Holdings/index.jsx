@@ -18,8 +18,10 @@ const calcPercentage = (start, end) => (100 * (end - start)) / start;
 const Holdings = ({ data, calculations }) => (
   <div>
     <Container>
+      <Heading1>Holdings</Heading1>
+    </Container>
+    <Container>
       <Column>
-        <Heading1>Holdings</Heading1>
         <Table
           columnConfig={{
             token: {
@@ -61,6 +63,22 @@ const Holdings = ({ data, calculations }) => (
             quantity: holding.quantity,
             value: holding.quantity * R.head(holding.priceHistory),
           }))}
+        </Table>
+      </Column>
+      <Column>
+        <Table
+          columnConfig={data.holdings.reduce(
+            (carry, holding) => ({
+              ...carry,
+              [holding.token.symbol]: {
+                headerText: holding.token.symbol,
+                align: 'right',
+              },
+            }),
+            {},
+          )}
+        >
+          {calculations.tokenCorrelation}
         </Table>
       </Column>
     </Container>

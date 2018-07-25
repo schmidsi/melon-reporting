@@ -1,4 +1,5 @@
 import React from 'react';
+import * as R from 'ramda';
 import { storiesOf } from '@storybook/react';
 
 import exampleData from '../../../data/example-report-data.json';
@@ -18,6 +19,32 @@ storiesOf('Templates', module).add('Holdings', () => (
           sharePriceHistory: exampleData.holdings[0].priceHistory,
           transactionFees: 83.214,
           volatility: 19.5,
+          // Nice to have: Refactor with xprod: R.splitEvery(l2.length, R.xprod(l1, l2))
+          tokenCorrelation: exampleData.holdings.map((rowHolding, rowIndex) =>
+            R.mergeAll(
+              exampleData.holdings.map((colHolding, colIndex) =>
+                R.cond([
+                  [
+                    () => colIndex > rowIndex,
+                    () => ({ [colHolding.token.symbol]: '' }),
+                  ],
+                  [
+                    () => colIndex === rowIndex,
+                    () => ({ [colHolding.token.symbol]: '-' }),
+                  ],
+                  [
+                    () => true,
+                    () => ({
+                      [colHolding.token.symbol]: (
+                        Math.random() * 2 -
+                        1
+                      ).toFixed(2),
+                    }),
+                  ],
+                ])(),
+              ),
+            ),
+          ),
         }}
       />
     </div>
