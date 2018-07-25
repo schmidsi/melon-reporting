@@ -168,8 +168,7 @@ const getPriceHistoryFromCryptoCompare = async (
     const response = await fetch(url);
     const json = await response.json();
     const histoDay = json.Data;
-    const dailyAveragePrices = histoDay.map(day => day.open);
-    console.log(dailyAveragePrices);
+    const dailyAveragePrices = histoDay.map(day => day.open); // open price for convenience
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);
@@ -215,10 +214,13 @@ const randomHoldings = async (timeSpanStart, timeSpanEnd, whitelist) =>
     })),
   );
 
-const randomParticipations = (timeSpanStart, timeSpanEnd) => {
-  const participations = [];
-  R.range(1, Math.floor(Math.random() * 10 + 1)).map(() => {
-    participations.push({
+const randomInt = (from, to) => {
+  return Math.floor(Math.random() * to) + from;
+};
+
+const randomParticipations = (timeSpanStart, timeSpanEnd) =>
+  R.range(1, randomInt(1, 10)).map(() => {
+    return {
       investor: randomEthereumAddress(),
       token: randomTokenObject(),
       type: 'invest',
@@ -228,11 +230,43 @@ const randomParticipations = (timeSpanStart, timeSpanEnd) => {
       shares: toBigNum(
         faker.random.number({ min: 100, max: 10000, precision: 1 }),
       ),
-      timestamp: faker.date.between({ from: timeSpanStart, to: timeSpanEnd }), // TODO
-    });
+      timestamp: faker.date
+        .between(
+          new Date(parseInt(timeSpanStart)),
+          new Date(parseInt(timeSpanEnd)),
+        )
+        .getTime(), // TODO
+    };
   });
-  return participations;
+
+const randomOpinion = () => {
+  const opinions = [
+    'Unqualified Opinion',
+    'Qualified Opinion',
+    'Adverse Opinion',
+    'Disclaimer Of Opinion',
+  ];
+  return opinions[randomInt(0, 4)];
 };
+
+const randomAudits = (timeSpanStart, timeSpanEnd) =>
+  R.range(5, randomInt(5, 10)).map(() => {
+    const auditStart = faker.date
+      .between(
+        new Date(parseInt(timeSpanStart)),
+        new Date(parseInt(timeSpanEnd)),
+      )
+      .getTime(); // TODO
+    const auditEnd = auditStart + 10000; // TODO
+    return {
+      auditor: randomEthereumAddress(),
+      dataHash: randomHexaDecimal(64),
+      timeSpanStart: auditStart,
+      timeSpanEnd: auditEnd,
+      opinion: randomOpinion(),
+      comment: faker.hacker.phrase(),
+    };
+  });
 
 const mockStaticData = async () => {
   const staticData = { data: exampleData };
@@ -254,7 +288,7 @@ const mockAllData = async (fundAddress, timeSpanStart, timeSpanEnd) => {
   data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
   data.trades = [];
   data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
-  data.audits = [];
+  data.audits = randomAudits(timeSpanStart, timeSpanEnd);
 
   return mockedData;
 };
