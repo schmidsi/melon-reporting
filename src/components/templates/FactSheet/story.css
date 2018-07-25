@@ -1,0 +1,19 @@
+.background {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 1684px;
+  width: 100%;
+  background-image: url(./01-factsheet@2x.png);
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 1190px;
+  opacity: 0.5;
+}
+
+.overlay {
+  mix-blend-mode: color-burn;
+  position: relative;
+  top: -8px;
+  left: -8px;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReportTemplate from '../components/templates/Report';
+import FactSheet from '../components/templates/FactSheet';
 
 import withLoading from './utils/withLoading';
 import reportDataGenerator from '~/api/reportDataGenerator';
@@ -13,7 +13,7 @@ const debug = getDebug(__filename);
 
 const Report = ({ data, calculations }) => (
   <div>
-    <ReportTemplate data={data} calculations={calculations} />
+    <FactSheet data={data} calculations={calculations} />
     <Audit data={data} />
     <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
   </div>
@@ -31,10 +31,17 @@ const enhance = withLoading(async props => {
   );
 
   const { data } = res;
+  const calculations = {
+    sharePrice: 123,
+    sharePriceHistory: data.holdings[0].priceHistory,
+  };
 
-  debug('Report data loaded', res);
+  debug('Report data loaded', { ...res, calculations });
 
-  return { data, calculations: { sharePrice: 123 } };
+  return {
+    data,
+    calculations,
+  };
 });
 
 export default enhance(Report);

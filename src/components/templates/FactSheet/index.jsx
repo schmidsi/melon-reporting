@@ -19,7 +19,7 @@ import HexValue from '../../blocks/HexValue';
 
 import hashReport from '../../../api/hashReport';
 
-const Report = ({ data, calculations }) => (
+const FactSheet = ({ data, calculations }) => (
   <div>
     <Container>
       <MainHeader>
@@ -35,7 +35,7 @@ const Report = ({ data, calculations }) => (
     </Container>
     <Container>
       <Column>
-        <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
+        <SharePriceChart data={calculations.sharePriceHistory} />
         <DescriptionList>
           {[
             ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
@@ -176,4 +176,4 @@ const Report = ({ data, calculations }) => (
   </div>
 );
 
-export default Report;
+export default FactSheet;
