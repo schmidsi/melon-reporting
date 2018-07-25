@@ -1,25 +1,25 @@
 import React from 'react';
 import * as R from 'ramda';
 
-import css from './styles.css';
+import styles from './styles.css';
 
 const renderLine = ([key, value], detailsAlign) => (
   <tr key={key}>
     <th>{key}:</th>
-    <td className={css[`Details-${detailsAlign}`]}>
+    <td className={styles[`Details-${detailsAlign}`]}>
       {Array.isArray(value) ? value.map(line => <div>{line}</div>) : value}
     </td>
   </tr>
 );
 
 const emptyLine = () => (
-  <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
+  <tr key={`dl-${Math.random()}`} className={styles.emptyRow}>
     <td colSpan={2} />
   </tr>
 );
 
 const horizontalRule = () => (
-  <tr key={`dl-${Math.random()}`} className={css.horizontalRule}>
+  <tr key={`dl-${Math.random()}`} className={styles.horizontalRule}>
     <td colSpan={2} />
   </tr>
 );
@@ -42,7 +42,7 @@ const lineMapper = detailsAlign =>
  * ]
  */
 const DescriptionList = ({ children, detailsAlign = 'left' }) => (
-  <table className={css.DescriptionList}>
+  <table className={styles.DescriptionList}>
     <tbody>{children.length && children.map(lineMapper(detailsAlign))}</tbody>
   </table>
 );

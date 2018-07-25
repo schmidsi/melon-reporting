@@ -9,10 +9,10 @@ import {
   Legend,
 } from 'recharts';
 
-import css from './styles.css';
+import styles from './styles.css';
 
 const SharePriceChart = ({ width = 548, height = 314, data }) => (
-  <div className={css.SharePriceChart}>
+  <div className={styles.SharePriceChart}>
     <LineChart
       width={width}
       height={height}

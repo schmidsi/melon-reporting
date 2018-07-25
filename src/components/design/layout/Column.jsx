@@ -1,9 +1,9 @@
 import React from 'react';
 
-import css from './styles.css';
+import styles from './styles.css';
 
 const Col = ({ children, proportion }) => (
-  <div className={css.col} style={{ flexGrow: proportion }}>
+  <div className={styles.col} style={{ flexGrow: proportion }}>
     {children}
   </div>
 );

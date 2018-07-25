@@ -1,17 +1,17 @@
 import React from 'react';
 import { format } from 'date-fns';
 
-import * as css from './styles.css';
+import styles from './styles.css';
 
 const TimeSpanPicker = ({ start, end }) => (
   <span>
-    <span className={css.underline}>
+    <span className={styles.underline}>
       {' '}
       {format(start, 'D. MMM YYYY')}
       <i>▼</i>
     </span>{' '}
     to{' '}
-    <span className={css.underline}>
+    <span className={styles.underline}>
       {' '}
       {format(end, 'D. MMM YYYY')}
       <i>▼</i>
