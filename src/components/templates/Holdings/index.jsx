@@ -7,12 +7,13 @@ import {
   Heading2,
   Heading3,
   Heading4,
-} from '../../design/typography';
-import { Column, Container, Spacer } from '../../design/layout';
-import ColoredNumber from '../../blocks/ColoredNumber';
-import HexValue from '../../blocks/HexValue';
+} from '~/components/design/typography';
+import { Column, Container, Spacer } from '~/components/design/layout';
+import ColoredNumber from '~/components/blocks/ColoredNumber';
+import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import SumCell from '~/components/blocks/SumCell';
+import HoldingChart from '~/components/blocks/HoldingChart';
 
 const calcPercentage = (start, end) => (100 * (end - start)) / start;
 
@@ -94,6 +95,11 @@ const Holdings = ({ data, calculations }) => (
         >
           {calculations.tokenCorrelation}
         </Table>
+      </Column>
+    </Container>
+    <Container>
+      <Column>
+        <HoldingChart data={calculations.holdingChartData} />
       </Column>
     </Container>
   </div>
