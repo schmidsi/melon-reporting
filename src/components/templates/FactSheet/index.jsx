@@ -38,7 +38,7 @@ const FactSheet = ({ data, calculations }) => (
         <SharePriceChart data={calculations.sharePriceHistory} />
         <DescriptionList>
           {[
-            ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
+            ['Profit', <ColoredNumber>{calculations.profit}</ColoredNumber>],
             [''],
             ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
             [

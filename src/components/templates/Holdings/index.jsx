@@ -12,6 +12,7 @@ import { Column, Container, Spacer } from '../../design/layout';
 import ColoredNumber from '../../blocks/ColoredNumber';
 import HexValue from '../../blocks/HexValue';
 import Table from '~/components/blocks/Table';
+import SumCell from '~/components/blocks/SumCell';
 
 const calcPercentage = (start, end) => (100 * (end - start)) / start;
 
@@ -53,16 +54,29 @@ const Holdings = ({ data, calculations }) => (
             },
           }}
         >
-          {data.holdings.map(holding => ({
-            token: holding.token.symbol,
-            price: R.head(holding.priceHistory),
-            change: calcPercentage(
-              R.head(holding.priceHistory),
-              R.last(holding.priceHistory),
-            ),
-            quantity: holding.quantity,
-            value: holding.quantity * R.head(holding.priceHistory),
-          }))}
+          {[
+            ...data.holdings.map(holding => ({
+              token: holding.token.symbol,
+              price: R.head(holding.priceHistory),
+              change: calcPercentage(
+                R.head(holding.priceHistory),
+                R.last(holding.priceHistory),
+              ),
+              quantity: holding.quantity,
+              value: holding.quantity * R.head(holding.priceHistory),
+            })),
+            {
+              token: 'Fund',
+              price: calculations.sharePrice,
+              change: calculations.profit,
+              quantity: data.meta.totalSupply,
+              value: (
+                <SumCell>
+                  {calculations.sharePrice * data.meta.totalSupply}
+                </SumCell>
+              ),
+            },
+          ]}
         </Table>
       </Column>
       <Column>

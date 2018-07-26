@@ -8,7 +8,7 @@ import storyCss from './story.css';
 
 import Holdings from './';
 
-storiesOf('Templates', module).add('Holdings', () => (
+storiesOf('Templates|Holdings', module).add('default', () => (
   <div>
     <div className={storyCss.background} />
     <div className={storyCss.overlay}>
@@ -19,6 +19,7 @@ storiesOf('Templates', module).add('Holdings', () => (
           sharePriceHistory: exampleData.holdings[0].priceHistory,
           transactionFees: 83.214,
           volatility: 19.5,
+          profit: 5.23,
           // Nice to have: Refactor with xprod: R.splitEvery(l2.length, R.xprod(l1, l2))
           tokenCorrelation: exampleData.holdings.map((rowHolding, rowIndex) =>
             R.mergeAll(

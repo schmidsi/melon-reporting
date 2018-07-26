@@ -7,7 +7,7 @@ import storyCss from './story.css';
 
 import FactSheet from './';
 
-storiesOf('Templates', module).add('FactSheet', () => (
+storiesOf('Templates|FactSheet', module).add('default', () => (
   <div>
     <div className={storyCss.background} />
     <div className={storyCss.overlay}>
@@ -18,6 +18,7 @@ storiesOf('Templates', module).add('FactSheet', () => (
           sharePriceHistory: exampleData.holdings[0].priceHistory,
           transactionFees: 83.214,
           volatility: 19.5,
+          profit: 5.23,
         }}
       />
     </div>
