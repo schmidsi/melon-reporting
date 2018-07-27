@@ -254,7 +254,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       symbol: holding.name,
       address: getAddress(config, holding.name),
     },
-    balance: holding.balance,
+    quantity: holding.balance.toString(),
     priceHistory: [],
     /*
     priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
