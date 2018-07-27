@@ -2,6 +2,7 @@ import React from 'react';
 import * as R from 'ramda';
 
 import calcKey from '~/components/utils/calcKey';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
 
@@ -51,4 +52,4 @@ const DescriptionList = ({ children, detailsAlign = 'left' }) => (
   </table>
 );
 
-export default DescriptionList;
+export default withErrorBoundary(__dirname)(DescriptionList);

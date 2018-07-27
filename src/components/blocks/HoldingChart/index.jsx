@@ -11,6 +11,8 @@ import {
   Tooltip,
 } from 'recharts';
 
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
 import styles from './styles.css';
 
 const HoldingChart = ({ width = 877, height = 494, data }) => (
@@ -52,4 +54,4 @@ const HoldingChart = ({ width = 877, height = 494, data }) => (
   </div>
 );
 
-export default HoldingChart;
+export default withErrorBoundary(__dirname)(HoldingChart);

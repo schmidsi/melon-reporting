@@ -16,6 +16,7 @@ import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
 import ColoredNumber from '../../blocks/ColoredNumber';
 import HexValue from '../../blocks/HexValue';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import hashReport from '../../../api/hashReport';
 
@@ -176,4 +177,4 @@ const FactSheet = ({ data, calculations }) => (
   </div>
 );
 
-export default FactSheet;
+export default withErrorBoundary(__dirname)(FactSheet);

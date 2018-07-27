@@ -9,6 +9,8 @@ import {
   Legend,
 } from 'recharts';
 
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
 import styles from './styles.css';
 
 const SharePriceChart = ({ width = 548, height = 314, data }) => (
@@ -16,7 +18,7 @@ const SharePriceChart = ({ width = 548, height = 314, data }) => (
     <LineChart
       width={width}
       height={height}
-      data={data.map(d => ({ d }))}
+      data={data && data.map(d => ({ d }))}
       margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
     >
       {/* <XAxis dataKey="name" />
@@ -31,4 +33,4 @@ const SharePriceChart = ({ width = 548, height = 314, data }) => (
   </div>
 );
 
-export default SharePriceChart;
+export default withErrorBoundary(__dirname)(SharePriceChart);

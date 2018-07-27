@@ -1,6 +1,8 @@
 import React from 'react';
 import { format } from 'date-fns';
 
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
 import styles from './styles.css';
 
 const TimeSpanPicker = ({ start, end }) => (
@@ -19,4 +21,4 @@ const TimeSpanPicker = ({ start, end }) => (
   </span>
 );
 
-export default TimeSpanPicker;
+export default withErrorBoundary(__dirname)(TimeSpanPicker);

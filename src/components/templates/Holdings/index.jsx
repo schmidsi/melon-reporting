@@ -14,6 +14,7 @@ import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import SumCell from '~/components/blocks/SumCell';
 import HoldingChart from '~/components/blocks/HoldingChart';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 const calcPercentage = (start, end) => (100 * (end - start)) / start;
 
@@ -105,4 +106,4 @@ const Holdings = ({ data, calculations }) => (
   </div>
 );
 
-export default Holdings;
+export default withErrorBoundary(__dirname)(Holdings);
