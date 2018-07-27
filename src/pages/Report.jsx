@@ -7,6 +7,7 @@ import ColoredNumber from '~/components/blocks/ColoredNumber';
 import DescriptionList from '~/components/blocks/DescriptionList';
 import FactSheet from '~/components/templates/FactSheet';
 import Holdings from '~/components/templates/Holdings';
+import Trades from '~/components/templates/Trades';
 import Audit from './Audit';
 
 // TODO: Remove mock data
@@ -20,10 +21,11 @@ const debug = getDebug(__filename);
 const Report = ({ data, calculations }) => (
   <div>
     <FactSheet data={data} calculations={calculations} />
-    <Audit data={data} />
     <Holdings data={data} calculations={calculations} />
+    <Trades data={data} calculations={calculations} />
+    <Audit data={data} />
 
-    <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
+    {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
   </div>
 );
 

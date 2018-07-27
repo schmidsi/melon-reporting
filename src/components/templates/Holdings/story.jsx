@@ -2,13 +2,13 @@ import React from 'react';
 import * as R from 'ramda';
 import { storiesOf } from '@storybook/react';
 
-import exampleData from '~/data/example-report-data.json';
-
-import storyCss from './story.css';
-
-import Holdings from './';
 import holdingChartData from '~/components/blocks/HoldingChart/mockData';
 import getRandomCorrelation from './getRandomCorrelation';
+import exampleData from '~/data/example-report-data.json';
+
+import Holdings from './';
+
+import storyCss from './story.css';
 
 storiesOf('Templates|Holdings', module).add('default', () => (
   <div>

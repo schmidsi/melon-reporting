@@ -263,7 +263,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     */
   }));
 
-  const trades = null;
+  const trades = [];
 
   return {
     data: {

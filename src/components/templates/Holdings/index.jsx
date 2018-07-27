@@ -8,7 +8,7 @@ import {
   Heading3,
   Heading4,
 } from '~/components/design/typography';
-import { Column, Container, Spacer } from '~/components/design/layout';
+import { Column, Container } from '~/components/design/layout';
 import ColoredNumber from '~/components/blocks/ColoredNumber';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
@@ -28,13 +28,10 @@ const Holdings = ({ data, calculations }) => (
         <Table
           columnConfig={{
             token: {
-              headerText: 'Token',
-              headerClass: '',
               headerColumn: true,
               sortable: true,
             },
             price: {
-              headerText: 'Price',
               sortable: true,
               align: 'right',
             },
@@ -50,7 +47,6 @@ const Holdings = ({ data, calculations }) => (
               align: 'right',
             },
             value: {
-              headerText: 'Value',
               sortable: true,
               align: 'right',
             },

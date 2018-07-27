@@ -1,0 +1,20 @@
+.background {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 1684px;
+  width: 100%;
+  /* background-image: url(./03-trades@2x.png); */
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 1190px;
+  opacity: 0.5;
+}
+
+.overlay {
+  mix-blend-mode: color-burn;
+  position: relative;
+  top: -8px;
+  left: -8px;
+  padding-top: 5.45rem;
+}

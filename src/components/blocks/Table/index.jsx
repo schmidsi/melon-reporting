@@ -1,5 +1,6 @@
 import React from 'react';
 import * as R from 'ramda';
+import titleCase from 'title-case';
 
 import calcKey from '~/components/utils/calcKey';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
@@ -36,7 +37,7 @@ const Table = ({ columnConfig, children }) => (
             className={[config.headerClass, getClassName(config)].join(' ')}
             key={key}
           >
-            {config.headerText}
+            {config.headerText || titleCase(key)}
             {config.sortable && <i>▼</i>}
           </th>
         ))}
