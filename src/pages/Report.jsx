@@ -9,6 +9,10 @@ import FactSheet from '~/components/templates/FactSheet';
 import Holdings from '~/components/templates/Holdings';
 import Audit from './Audit';
 
+// TODO: Remove mock data
+import getRandomCorrelation from '~/components/templates/Holdings/getRandomCorrelation';
+import holdingChartData from '~/components/blocks/HoldingChart/mockData';
+
 import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
@@ -40,29 +44,10 @@ const enhance = withLoading(async props => {
     sharePriceHistory: data.holdings[0].priceHistory,
     transactionFees: 83.214,
     volatility: 19.5,
+    profit: 5.23,
     // Nice to have: Refactor with xprod: R.splitEvery(l2.length, R.xprod(l1, l2))
-    tokenCorrelation: data.holdings.map((rowHolding, rowIndex) =>
-      R.mergeAll(
-        data.holdings.map((colHolding, colIndex) =>
-          R.cond([
-            [
-              () => colIndex > rowIndex,
-              () => ({ [colHolding.token.symbol]: '' }),
-            ],
-            [
-              () => colIndex === rowIndex,
-              () => ({ [colHolding.token.symbol]: '-' }),
-            ],
-            [
-              () => true,
-              () => ({
-                [colHolding.token.symbol]: (Math.random() * 2 - 1).toFixed(2),
-              }),
-            ],
-          ])(),
-        ),
-      ),
-    ),
+    tokenCorrelation: getRandomCorrelation(data.holdings),
+    holdingChartData,
   };
 
   debug('Report data loaded', { ...res, calculations });

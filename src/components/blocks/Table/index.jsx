@@ -1,6 +1,8 @@
 import React from 'react';
 import * as R from 'ramda';
 
+import calcKey from '~/components/utils/calcKey';
+
 import styles from './styles.css';
 
 const getClassName = config =>
@@ -29,7 +31,10 @@ const Table = ({ columnConfig, children }) => (
     <thead>
       <tr>
         {Object.entries(columnConfig).map(([key, config]) => (
-          <th className={[config.headerClass, getClassName(config)].join(' ')}>
+          <th
+            className={[config.headerClass, getClassName(config)].join(' ')}
+            key={key}
+          >
             {config.headerText}
             {config.sortable && <i>▼</i>}
           </th>
@@ -38,7 +43,14 @@ const Table = ({ columnConfig, children }) => (
     </thead>
     <tbody>
       {children.map(row => (
-        <tr>
+        <tr key={calcKey(row)}>
+          {(() => {
+            try {
+              console.log(calcKey(row));
+            } catch (e) {
+              console.warn(row, e);
+            }
+          })()}
           {Object.entries(columnConfig).map(([key, config]) =>
             renderCell(row[key], config),
           )}

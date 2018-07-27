@@ -1,25 +1,29 @@
 import React from 'react';
 import * as R from 'ramda';
 
+import calcKey from '~/components/utils/calcKey';
+
 import styles from './styles.css';
 
 const renderLine = ([key, value], detailsAlign) => (
   <tr key={key}>
     <th>{key}:</th>
     <td className={styles[`Details-${detailsAlign}`]}>
-      {Array.isArray(value) ? value.map(line => <div>{line}</div>) : value}
+      {Array.isArray(value)
+        ? value.map(line => <div key={line}>{line}</div>)
+        : value}
     </td>
   </tr>
 );
 
-const emptyLine = () => (
-  <tr key={`dl-${Math.random()}`} className={styles.emptyRow}>
+const emptyLine = (line, index) => (
+  <tr key={`dl-el-${index}`} className={styles.emptyRow}>
     <td colSpan={2} />
   </tr>
 );
 
-const horizontalRule = () => (
-  <tr key={`dl-${Math.random()}`} className={styles.horizontalRule}>
+const horizontalRule = (line, index) => (
+  <tr key={`dl-hr-${index}`} className={styles.horizontalRule}>
     <td colSpan={2} />
   </tr>
 );

@@ -19,9 +19,8 @@ module.exports = config => {
 
   config.resolve.alias = {
     '~/components': path.resolve(__dirname, '../../src/components'),
+    '~/data': path.resolve(__dirname, '../../src/data'),
   };
-
-  console.log('XXXX', config.resolve, __dirname);
 
   return config;
 };
