@@ -162,13 +162,13 @@
     core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
 
-"@melonproject/melon.js@0.8.22":
-  version "0.8.22"
-  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.22.tgz#658b56b64397a3bc5c91a6b895b51f470dba9ad4"
+"@melonproject/melon.js@0.8.21":
+  version "0.8.21"
+  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.21.tgz#28d183fb9c45488aee8114c3530a0270f08252d6"
   dependencies:
     "0x.js" "^0.35.0"
     "@babel/runtime" "7.0.0-beta.42"
-    "@melonproject/smart-contracts" "0.8.0-alpha.34"
+    "@melonproject/smart-contracts" "0.8.0-paros"
     "@parity/api" "^2.1.5"
     bignumber.js "4.1.0"
     bip39 "^2.4.0"
@@ -176,9 +176,9 @@
     ethers-wallet "^2.1.8"
     ramda "^0.25.0"
 
-"@melonproject/smart-contracts@0.8.0-alpha.34":
-  version "0.8.0-alpha.34"
-  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-alpha.34.tgz#ac7a28dc9d9366ecc7efe8deee2aa1219da04649"
+"@melonproject/smart-contracts@0.8.0-paros":
+  version "0.8.0-paros"
+  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-paros.tgz#a38f7e7e42c7ba1b0449d7678ce60d04890aded0"
   dependencies:
     "0x.js" "^0.35.0"
     "@parity/api" "^2.1.20"
