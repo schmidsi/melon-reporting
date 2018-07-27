@@ -1,11 +1,13 @@
 import React from 'react';
 import * as R from 'ramda';
 
-import * as css from './styles.css';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
+import styles from './styles.css';
 
 const getClassName = R.cond([
-  [R.gt(0), R.always(css.loss)],
-  [R.lt(0), R.always(css.profit)],
+  [R.gt(0), R.always(styles.loss)],
+  [R.lt(0), R.always(styles.profit)],
 ]);
 
 const ColoredNumber = ({ children, decimals = 2 }) => (
@@ -15,4 +17,4 @@ const ColoredNumber = ({ children, decimals = 2 }) => (
   </span>
 );
 
-export default ColoredNumber;
+export default withErrorBoundary(__dirname)(ColoredNumber);

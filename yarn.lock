@@ -162,13 +162,13 @@
     core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
 
-"@melonproject/melon.js@0.8.22":
-  version "0.8.22"
-  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.22.tgz#658b56b64397a3bc5c91a6b895b51f470dba9ad4"
+"@melonproject/melon.js@0.8.21":
+  version "0.8.21"
+  resolved "https://registry.yarnpkg.com/@melonproject/melon.js/-/melon.js-0.8.21.tgz#28d183fb9c45488aee8114c3530a0270f08252d6"
   dependencies:
     "0x.js" "^0.35.0"
     "@babel/runtime" "7.0.0-beta.42"
-    "@melonproject/smart-contracts" "0.8.0-alpha.34"
+    "@melonproject/smart-contracts" "0.8.0-paros"
     "@parity/api" "^2.1.5"
     bignumber.js "4.1.0"
     bip39 "^2.4.0"
@@ -176,9 +176,9 @@
     ethers-wallet "^2.1.8"
     ramda "^0.25.0"
 
-"@melonproject/smart-contracts@0.8.0-alpha.34":
-  version "0.8.0-alpha.34"
-  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-alpha.34.tgz#ac7a28dc9d9366ecc7efe8deee2aa1219da04649"
+"@melonproject/smart-contracts@0.8.0-paros":
+  version "0.8.0-paros"
+  resolved "https://registry.yarnpkg.com/@melonproject/smart-contracts/-/smart-contracts-0.8.0-paros.tgz#a38f7e7e42c7ba1b0449d7678ce60d04890aded0"
   dependencies:
     "0x.js" "^0.35.0"
     "@parity/api" "^2.1.20"
@@ -2860,6 +2860,13 @@ d3-interpolate@1, d3-interpolate@^1.1.5:
 d3-path@1:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.5.tgz#241eb1849bd9e9e8021c0d0a799f8a0e8e441764"
+
+d3-scale-chromatic@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/d3-scale-chromatic/-/d3-scale-chromatic-1.3.0.tgz#7ee38ffcaa7ad55cfed83a6a668aac5570c653c4"
+  dependencies:
+    d3-color "1"
+    d3-interpolate "1"
 
 d3-scale@1.0.6:
   version "1.0.6"
@@ -5952,6 +5959,10 @@ object-copy@^0.1.0:
     define-property "^0.2.5"
     kind-of "^3.0.3"
 
+object-hash@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.3.0.tgz#76d9ba6ff113cf8efc0d996102851fe6723963e2"
+
 object-inspect@~1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.4.1.tgz#37ffb10e71adaf3748d05f713b4c9452f402cbc4"
@@ -7324,6 +7335,10 @@ react-router@^4.3.1:
     prop-types "^15.6.1"
     warning "^4.0.1"
 
+react-serialize@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-serialize/-/react-serialize-0.2.0.tgz#9f3c694ae6438c3b17b7e9e2cbc7337921888979"
+
 react-smooth@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-1.0.0.tgz#b29dbebddddb06d21b5b08962167fb9eac1897d8"
@@ -8607,6 +8622,13 @@ tiny-inflate@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/tiny-inflate/-/tiny-inflate-1.0.2.tgz#93d9decffc8805bd57eae4310f0b745e9b6fb3a7"
 
+title-case@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/title-case/-/title-case-2.1.1.tgz#3e127216da58d2bc5becf137ab91dae3a7cd8faa"
+  dependencies:
+    no-case "^2.2.0"
+    upper-case "^1.0.3"
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -8851,7 +8873,7 @@ upath@^1.0.5:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
 
-upper-case@^1.1.1:
+upper-case@^1.0.3, upper-case@^1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/upper-case/-/upper-case-1.1.3.tgz#f6b4501c2ec4cdd26ba78be7222961de77621598"
 

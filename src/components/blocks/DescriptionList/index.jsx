@@ -1,25 +1,30 @@
 import React from 'react';
 import * as R from 'ramda';
 
-import css from './styles.css';
+import calcKey from '~/components/utils/calcKey';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
+import styles from './styles.css';
 
 const renderLine = ([key, value], detailsAlign) => (
   <tr key={key}>
     <th>{key}:</th>
-    <td className={css[`Details-${detailsAlign}`]}>
-      {Array.isArray(value) ? value.map(line => <div>{line}</div>) : value}
+    <td className={styles[`Details-${detailsAlign}`]}>
+      {Array.isArray(value)
+        ? value.map((line, i) => <div key={line || `l-${i}`}>{line}</div>)
+        : value}
     </td>
   </tr>
 );
 
-const emptyLine = () => (
-  <tr key={`dl-${Math.random()}`} className={css.emptyRow}>
+const emptyLine = (line, index) => (
+  <tr key={`dl-el-${index}`} className={styles.emptyRow}>
     <td colSpan={2} />
   </tr>
 );
 
-const horizontalRule = () => (
-  <tr key={`dl-${Math.random()}`} className={css.horizontalRule}>
+const horizontalRule = (line, index) => (
+  <tr key={`dl-hr-${index}`} className={styles.horizontalRule}>
     <td colSpan={2} />
   </tr>
 );
@@ -42,9 +47,9 @@ const lineMapper = detailsAlign =>
  * ]
  */
 const DescriptionList = ({ children, detailsAlign = 'left' }) => (
-  <table className={css.DescriptionList}>
+  <table className={styles.DescriptionList}>
     <tbody>{children.length && children.map(lineMapper(detailsAlign))}</tbody>
   </table>
 );
 
-export default DescriptionList;
+export default withErrorBoundary(__dirname)(DescriptionList);

@@ -16,10 +16,11 @@ import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
 import ColoredNumber from '../../blocks/ColoredNumber';
 import HexValue from '../../blocks/HexValue';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import hashReport from '../../../api/hashReport';
 
-const Report = ({ data, calculations }) => (
+const FactSheet = ({ data, calculations }) => (
   <div>
     <Container>
       <MainHeader>
@@ -35,10 +36,10 @@ const Report = ({ data, calculations }) => (
     </Container>
     <Container>
       <Column>
-        <SharePriceChart data={[1, 2, 3, 2, 1, 2, 3, 4, 3, 2, 1]} />
+        <SharePriceChart data={calculations.sharePriceHistory} />
         <DescriptionList>
           {[
-            ['Profit', <ColoredNumber>{5.23}</ColoredNumber>],
+            ['Profit', <ColoredNumber>{calculations.profit}</ColoredNumber>],
             [''],
             ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
             [
@@ -176,4 +177,4 @@ const Report = ({ data, calculations }) => (
   </div>
 );
 
-export default Report;
+export default withErrorBoundary(__dirname)(FactSheet);

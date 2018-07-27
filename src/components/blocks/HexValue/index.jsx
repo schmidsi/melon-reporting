@@ -1,9 +1,15 @@
 import React from 'react';
 
-import * as css from './styles.css';
+import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-const HexValue = ({ children }) => (
-  <span className={css.HexValue}>{children}</span>
+import styles from './styles.css';
+
+const shortener = string => `${string.slice(0, 6)}…${string.slice(-4)}`;
+
+const HexValue = ({ children, short = false }) => (
+  <span className={styles.HexValue}>
+    {short ? shortener(children) : children}
+  </span>
 );
 
-export default HexValue;
+export default withErrorBoundary(__dirname)(HexValue);

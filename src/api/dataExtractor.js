@@ -246,7 +246,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       address: entry._value,
       name: getExchangeName(entry._value),
     })),
-    totalSupply: calculations.totalSupply,
+    totalSupply: calculations.totalSupply.toString(),
   };
 
   const holdings = holdingsAndPrices.map(holding => ({
@@ -254,8 +254,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       symbol: holding.name,
       address: getAddress(config, holding.name),
     },
-    balance: holding.balance,
-    priceHistory: null,
+    quantity: holding.balance.toString(),
+    priceHistory: [],
     /*
     priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
       toReadable(config, entry.price, holding.name),
@@ -263,7 +263,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     */
   }));
 
-  const trades = null;
+  const trades = [];
 
   return {
     data: {

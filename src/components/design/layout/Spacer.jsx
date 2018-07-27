@@ -1,6 +1,6 @@
 import React from 'react';
 
-import css from './styles.css';
+import styles from './styles.css';
 
 const Spacer = ({ height }) => (
   <div

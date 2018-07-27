@@ -1,0 +1,13 @@
+.SumCell {
+  display: inline-block;
+  position: relative;
+}
+
+.SumCell::before {
+  content: ' ';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid #979797;
+}
