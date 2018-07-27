@@ -29,7 +29,15 @@ const HoldingChart = ({ width = 877, height = 494, data }) => (
       {!!data[0] &&
         R.keys(data[0]).map((key, i) => {
           const color = interpolateGreys((i + 1) / data.length);
-          return <Area dataKey={key} stackId="0" stroke={color} fill={color} />;
+          return (
+            <Area
+              key={key}
+              dataKey={key}
+              stackId="0"
+              stroke={color}
+              fill={color}
+            />
+          );
         })}
 
       {/* <Area

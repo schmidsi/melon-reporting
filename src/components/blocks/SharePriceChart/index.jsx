@@ -16,14 +16,14 @@ const SharePriceChart = ({ width = 548, height = 314, data }) => (
     <LineChart
       width={width}
       height={height}
-      data={data}
+      data={data.map(d => ({ d }))}
       margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
     >
       {/* <XAxis dataKey="name" />
       <YAxis width={1} /> */}
       <Tooltip />
       <Line
-        dataKey={r => parseFloat(r, 10) * 100000}
+        dataKey={({ d }) => parseFloat(d, 10) * 100000}
         stroke="#000000"
         dot={false}
       />

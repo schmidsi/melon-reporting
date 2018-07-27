@@ -10,7 +10,7 @@ const renderLine = ([key, value], detailsAlign) => (
     <th>{key}:</th>
     <td className={styles[`Details-${detailsAlign}`]}>
       {Array.isArray(value)
-        ? value.map(line => <div key={line}>{line}</div>)
+        ? value.map((line, i) => <div key={line || `l-${i}`}>{line}</div>)
         : value}
     </td>
   </tr>

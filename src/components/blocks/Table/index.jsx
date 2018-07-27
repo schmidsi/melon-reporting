@@ -8,18 +8,18 @@ import styles from './styles.css';
 const getClassName = config =>
   config.align === 'right' ? styles.alignRight : styles.alignLeft;
 
-const renderCell = (content, config) => {
+const renderCell = (content, config, key) => {
   const Renderer = config.renderer;
 
   if (config.headerColumn) {
     return (
-      <th className={getClassName(config)}>
+      <th className={getClassName(config)} key={key}>
         {Renderer ? <Renderer>{content}</Renderer> : content}
       </th>
     );
   } else {
     return (
-      <td className={getClassName(config)}>
+      <td className={getClassName(config)} key={key}>
         {Renderer ? <Renderer>{content}</Renderer> : content}
       </td>
     );
@@ -44,15 +44,8 @@ const Table = ({ columnConfig, children }) => (
     <tbody>
       {children.map(row => (
         <tr key={calcKey(row)}>
-          {(() => {
-            try {
-              console.log(calcKey(row));
-            } catch (e) {
-              console.warn(row, e);
-            }
-          })()}
           {Object.entries(columnConfig).map(([key, config]) =>
-            renderCell(row[key], config),
+            renderCell(row[key], config, key),
           )}
         </tr>
       ))}
