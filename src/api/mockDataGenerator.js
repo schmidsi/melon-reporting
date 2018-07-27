@@ -1,5 +1,5 @@
 import exampleData from '../data/example-report-data.json';
-import randomTrader from './randomTrader';
+import melonTrader from './melonTrader';
 import faker from 'faker';
 import * as R from 'ramda';
 import {
@@ -286,7 +286,7 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
   //data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
   //data.trades = randomTrades(timeSpanStart, timeSpanEnd, whitelist);
   //data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
-  const tradeData = await randomTrader(
+  const tradeData = await melonTrader(
     timeSpanStart,
     timeSpanEnd,
     tokenWhitelist,

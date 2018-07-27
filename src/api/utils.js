@@ -4,9 +4,10 @@ export const toBigNum = number => {
   return number + '.000000';
 };
 
-export const randomInt = (from, to) => {
-  return Math.floor(Math.random() * to) + from;
-};
+export const randomInt = (from, to) => Math.floor(Math.random() * to) + from;
+
+export const randomFloat = (from, to) =>
+  parseFloat((Math.random() * (from - to) + to).toFixed(4)); // only keep 4 decimals
 
 // helper because faker.random.hexaDecimal() does not work
 export const randomHexaDecimal = count => {
@@ -50,10 +51,10 @@ export const randomEthereumAddress = () => {
   return randomHexaDecimal(40);
 };
 
-export const capitalizeFirstLetter = string => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
+export const capitalizeFirstLetter = string =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
-export const randomPercentage = (min, max) => {
-  return faker.random.number({ min, max, precision: 0.01 });
-};
+export const randomPercentage = (min, max) =>
+  faker.random.number({ min, max, precision: 0.01 });
+
+//export const getHoldingIndexBySymbol = (holdings, symbol) => symbol;

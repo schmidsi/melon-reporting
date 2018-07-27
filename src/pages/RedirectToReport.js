@@ -22,8 +22,8 @@ const enhance = withLoading(async props => {
 
   const defaultTimeSpan = isMockData
     ? {
-        timeSpanStart: 1514764800000,
-        timeSpanEnd: 1522454400000,
+        timeSpanStart: 1514764800,
+        timeSpanEnd: 1522454400,
       }
     : await getDefaultTimeSpan(query.fundAddress);
 
