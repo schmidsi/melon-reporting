@@ -1,4 +1,4 @@
-import exampleData from '../data/example-report-data.json';
+import exampleData from '../../data/example-report-data.json';
 import melonTrader from './melonTrader';
 import faker from 'faker';
 import * as R from 'ramda';
@@ -93,33 +93,6 @@ const randomPolicy = tokenWhitelist => {
   return policy;
 };
 
-/*
-// deprecated
-const getPriceHistoryFromCryptoCompare = async (
-  symbol,
-  timeSpanStart,
-  timeSpanEnd,
-  whitelist,
-) => {
-  const numberOfDays = differenceInDays(
-    new Date(timeSpanEnd * 1000),
-    new Date(timeSpanStart * 1000),
-  );
-
-  const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=ETH&limit=${numberOfDays}&toTs=${timeSpanEnd}`;
-
-  try {
-    const response = await fetch(url);
-    const json = await response.json();
-    const histoDay = json.Data;
-    const dailyAveragePrices = histoDay.map(day => day.open); // open price for convenience
-    return dailyAveragePrices;
-  } catch (e) {
-    console.error(e);
-  }
-};
-*/
-
 const randomMetaData = (
   fundAddress,
   timeSpanStart,
@@ -148,84 +121,9 @@ const randomMetaData = (
   return meta;
 };
 
-// deprecated
-/*
-const randomHoldings = async (timeSpanStart, timeSpanEnd, whitelist) =>
-  Promise.all(
-    whitelist.map(async symbol => ({
-      token: {
-        symbol,
-        address: randomEthereumAddress(),
-      },
-      quantity: toBigNum(faker.random.number(100)),
-      priceHistory: await getPriceHistoryFromCryptoCompare(
-        symbol,
-        timeSpanStart,
-        timeSpanEnd,
-      ),
-    })),
-  );
-*/
-
 const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
 };
-
-/*
-// deprecated
-const randomParticipations = (timeSpanStart, timeSpanEnd) =>
-  R.range(1, randomInt(1, 10)).map(() => {
-    return {
-      investor: randomEthereumAddress(),
-      token: randomTokenObject(),
-      type: 'invest',
-      amount: toBigNum(
-        faker.random.number({ min: 100, max: 10000, precision: 1 }),
-      ),
-      shares: toBigNum(
-        faker.random.number({ min: 100, max: 10000, precision: 1 }),
-      ),
-      timestamp: faker.date
-        .between(new Date(timeSpanStart), new Date(timeSpanEnd))
-        .getTime(),
-    };
-  });
-*/
-
-// deprecated
-/*
-const randomTrades = (timeSpanStart, timeSpanEnd, whitelist) => {
-  const trades = [];
-  let currentTimestamp = parseInt(timeSpanStart) + 10000;
-  //R.range(20, randomInt(20, 50)).map(() => {
-  while (currentTimestamp < parseInt(timeSpanEnd)) {
-    trades.push({
-      buy: {
-        token: {
-          symbol: "",
-          address: ""
-        },
-        howMuch: ""
-      },
-      sell: {
-        token: {
-          symbol: "",
-          address: ""
-        },
-        howMuch: ""
-      },
-      exchange: {
-        id: "",
-        address: ""
-      },
-      timestamp: 1524739030740,
-      transaction: "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
-    });
-    currentTimestamp += 10000000; // do a trade every 10000 seconds
-  };
-  return trades;
-};
-*/
 
 const randomOpinion = () => {
   const opinions = [

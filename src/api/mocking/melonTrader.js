@@ -65,7 +65,6 @@ const melonTrader = async (
   const trades = [];
   const participations = [];
 
-  console.log(startHoldings);
   let tempHoldings = R.clone(startHoldings);
 
   let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
@@ -128,34 +127,25 @@ const melonTrader = async (
     });
 
     // update holdings
-    //console.log(`1: ${tempHoldings[0].quantity}`);
     tempHoldings = tempHoldings.map(oldHolding => {
       const holding = { ...oldHolding };
       if (holding.token.symbol === buyToken.symbol) {
         holding.quantity = (
           parseInt(currentBuyTokenQuantity) + buyHowMuch
         ).toString();
-        return holding;
       } else if (holding.token.symbol === sellToken.symbol) {
-        //console.log(`1: ${holding.quantity}`);
         holding.quantity = (
           parseInt(currentSellTokenQuantity) - sellHowMuch
         ).toString();
-        return holding;
-        //console.log(`2: ${holding.quantity}`);
       }
-      //return newHolding;
       return holding;
     });
-    //console.log(`2: ${tempHoldings[0].quantity}`);
 
     dayIndex++;
   }
 
   // TODO also return calculated sharepriceHistory & aumHistory
   // --> call our own functions for calculations
-
-  console.log(tempHoldings);
 
   const holdings = tempHoldings;
 
