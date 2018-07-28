@@ -6,7 +6,7 @@ import {
   mockStaticData,
   mockAllData,
   mockMissingData,
-} from './mockDataGenerator';
+} from './mocking/mockDataGenerator';
 
 const reportDataGenerator = async (
   fundAddress,
