@@ -12,9 +12,7 @@ import {
 
 const randomExchanges = () => {
   const exchanges = [];
-  const max = 5;
-  const min = 1;
-  const to = Math.floor(Math.random() * (max - min + 1) + min);
+  const to = randomInt(2, 5);
   for (let i = 0; i < to; i++) {
     exchanges.push({
       name: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',

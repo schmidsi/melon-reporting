@@ -8,6 +8,8 @@ import {
 } from './utils';
 
 import {
+  equals,
+  toBigNumber,
   add,
   subtract,
   multiply,
@@ -16,8 +18,6 @@ import {
 } from '../../utils/functionalBigNumber';
 
 import * as R from 'ramda';
-
-import { calculateAumHistory } from '../calculations';
 
 const getPriceHistoryFromCryptoCompare = async (
   symbol,
@@ -47,14 +47,11 @@ const getPriceHistoryFromCryptoCompare = async (
   }
 };
 
-const randomHoldings = async (timeSpanStart, timeSpanEnd, tokenWhitelist) =>
+const initialHoldings = async (timeSpanStart, timeSpanEnd, tokenWhitelist) =>
   Promise.all(
     tokenWhitelist.map(async token => ({
       token,
-      // TODO maybe change back to bigNum sometime, which would be a string
-      //quantity: toBigNum(faker.random.number(100)),
-      //quantity: faker.random.number(100),
-      quantity: randomInt(50, 100).toString(),
+      quantity: '0',
       priceHistory: await getPriceHistoryFromCryptoCompare(
         token.symbol,
         timeSpanStart,
@@ -91,7 +88,7 @@ const melonTrader = async (
   tokenWhitelist,
   exchanges,
 ) => {
-  const startHoldings = await randomHoldings(
+  const startHoldings = await initialHoldings(
     timeSpanStartInSeconds,
     timeSpanEndInSeconds,
     tokenWhitelist,
@@ -99,67 +96,96 @@ const melonTrader = async (
 
   const timeSpanStart = timeSpanStartInSeconds * 1000;
   const timeSpanEnd = timeSpanEndInSeconds * 1000;
-
-  const trades = [];
-
-  const investors = randomInvestors(6);
-  const participations = randomInitialParticipations(
-    investors,
-    timeSpanStartInSeconds,
-    tokenWhitelist[0],
-  );
-
-  let tempHoldings = R.clone(startHoldings);
-  let dailyHoldings = [];
-
   let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
   let dayIndex = 0;
 
-  // TODO initial shareprice
+  // for calculation
+  const trades = [];
+  let tempSharePrice = 1;
+  const totalSupplyHistory = []; // total number of shares
+  const sharePriceHistory = [];
+  const aumHistory = [];
+
+  const investors = randomInvestors(6);
+
+  const initialInvest = randomBigNumber(200, 2000);
+  const participations = [
+    {
+      investor: investors[0],
+      token: tokenWhitelist[0],
+      type: 'invest',
+      amount: initialInvest,
+      shares: multiply(initialInvest, tempSharePrice),
+      timestamp: tempTimeStamp / 1000,
+    },
+  ];
+
+  let tempAum = initialInvest;
+
+  let tempTotalSupply = multiply(initialInvest, tempSharePrice);
+
+  startHoldings[0].quantity = initialInvest;
+
+  let tempHoldings = R.clone(startHoldings).map(holding => ({
+    ...holding,
+    price: holding.priceHistory[dayIndex],
+    priceHistory: null,
+    fraction: equals(holding.quantity, '0')
+      ? '0'
+      : divide(tempAum, holding.quantity),
+  }));
+
+  const holdingsHistory = [];
+
+  // TODO
+  //const dailySharesPerInvestor = {};
 
   for (
     tempTimeStamp;
     tempTimeStamp < timeSpanEnd;
     tempTimeStamp = date.addDays(tempTimeStamp, 1).getTime()
   ) {
-    const holdingsOfToday = tempHoldings.map(holding => {
-      return {
-        token: holding.token,
-        quantity: holding.quantity,
-        price: holding.priceHistory[dayIndex],
-      };
-    });
+    // total supply (total number of shares)
+    totalSupplyHistory.push(tempTotalSupply);
 
-    dailyHoldings.push(holdingsOfToday);
+    sharePriceHistory.push(tempSharePrice);
+    aumHistory.push(tempAum);
+    holdingsHistory.push(tempHoldings);
 
     // do an invest every 10 days
     if (dayIndex % 10 === 0) {
+      const amount = randomBigNumber(10, 50);
+      const shares = multiply(amount, divide(1, tempSharePrice));
       const invest = {
         investor: getRandomInvestor(investors),
         token: tokenWhitelist[0], // quote token
         type: 'invest',
-        amount: randomBigNumber(1.0, 1000.0), // TODO calc
-        shares: randomBigNumber(1.0, 1000.0), // TODO calc
+        amount,
+        shares,
         timestamp: tempTimeStamp / 1000,
       };
       participations.push(invest);
 
       // add to holdings
       tempHoldings[0].quantity = add(tempHoldings[0].quantity, invest.amount);
+
+      tempTotalSupply = add(tempTotalSupply, shares);
     }
 
     // do a redeem every 17 days
     if (dayIndex % 17 === 0) {
+      const shares = randomBigNumber(10, 50);
+      const amount = multiply(shares, tempSharePrice);
       const redeem = {
         investor: getRandomInvestor(investors),
         token: tokenWhitelist[0], // quote token
         type: 'redeem',
-        amount: randomBigNumber(1.0, 1000.0), // TODO calc
-        shares: randomBigNumber(1.0, 1000.0), // TODO calc
+        amount,
+        shares,
         timestamp: tempTimeStamp / 1000,
       };
 
-      if (greaterThan(tempHoldings[0].quantity, redeem.amount)) {
+      if (greaterThan(tempHoldings[0].quantity, amount)) {
         // only do redeem when enough quoteTokens are there
         participations.push(redeem);
 
@@ -168,6 +194,8 @@ const melonTrader = async (
           tempHoldings[0].quantity,
           redeem.amount,
         );
+
+        tempTotalSupply = subtract(tempTotalSupply, shares);
       }
     }
 
@@ -183,21 +211,23 @@ const melonTrader = async (
       sellToken = tokenWhitelist[0];
     }
 
-    const buyTokenHolding = tempHoldings.find(holding => {
+    const buyTokenHolding = startHoldings.find(holding => {
       return holding.token.symbol === buyToken.symbol;
     });
     const buyTokenDailyPrice = buyTokenHolding.priceHistory[dayIndex];
 
-    const sellTokenHolding = tempHoldings.find(holding => {
+    const sellTokenHolding = startHoldings.find(holding => {
       return holding.token.symbol === sellToken.symbol;
     });
     const sellTokenDailyPrice = sellTokenHolding.priceHistory[dayIndex];
 
+    /*
     if (buyTokenDailyPrice === undefined || sellTokenDailyPrice === undefined) {
       // just skip this day when price is not available for a token from cryptocompare
       dayIndex++;
       continue;
     }
+    */
 
     const currentSellTokenQuantity = sellTokenHolding.quantity;
     const currentBuyTokenQuantity = buyTokenHolding.quantity;
@@ -236,8 +266,19 @@ const melonTrader = async (
       } else if (holding.token.symbol === sellToken.symbol) {
         holding.quantity = subtract(currentSellTokenQuantity, sellHowMuch);
       }
+      holding.fraction = equals(holding.quantity, '0')
+        ? '0'
+        : divide(tempAum, holding.quantity);
       return holding;
     });
+
+    // update aum
+    tempAum = tempHoldings.reduce((aum, holding) => {
+      return add(aum, multiply(holding.quantity, holding.price));
+    }, toBigNumber(0));
+
+    // update shareprice
+    tempSharePrice = divide(tempAum, tempTotalSupply);
 
     dayIndex++;
   }
@@ -245,21 +286,30 @@ const melonTrader = async (
   // TODO also return calculated sharepriceHistory & aumHistory
   // --> call our own functions for calculations
 
-  const holdings = tempHoldings;
+  const holdings = tempHoldings.map(holding => ({
+    ...holding,
+    priceHistory: startHoldings.find(
+      h => h.token.symbol === holding.token.symbol,
+    ).priceHistory,
+  }));
 
-  const aumHistory = calculateAumHistory(dailyHoldings);
-  const totalSupplyHistory = [];
-  const sharePrice = -1;
-  const sharePriceHistory = [];
+  //const aumHistory = //calculateAumHistory(dailyHoldings);
+  const sharePrice = tempSharePrice;
   const sharpeRatio = [];
   const fundVolatility = [];
   const profit = [];
   const transactionFees = [];
   const assetCorrelation = [];
-  const assetPercentageHistory = [];
   const assetPriceChangeHistory = [];
   const profitablilityPerTrade = [{ tradeTxHash: '0x1', profitability: 1.0 }];
   const sharesPerInvestorHistory = [];
+
+  console.log({
+    aumHistory,
+    holdingsHistory,
+    totalSupplyHistory,
+    sharePriceHistory,
+  });
 
   return {
     trades,
@@ -274,7 +324,7 @@ const melonTrader = async (
     profit,
     transactionFees,
     assetCorrelation,
-    assetPercentageHistory,
+    holdingsHistory,
     assetPriceChangeHistory,
     profitablilityPerTrade,
     sharesPerInvestorHistory,
