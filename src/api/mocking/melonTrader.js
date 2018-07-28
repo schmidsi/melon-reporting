@@ -12,6 +12,7 @@ import {
   subtract,
   multiply,
   divide,
+  greaterThan,
 } from '../../utils/functionalBigNumber';
 
 import * as R from 'ramda';
@@ -108,9 +109,7 @@ const melonTrader = async (
     tokenWhitelist[0],
   );
 
-  console.log(startHoldings);
   let tempHoldings = R.clone(startHoldings);
-  console.log(tempHoldings);
   let dailyHoldings = [];
 
   let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
@@ -159,13 +158,17 @@ const melonTrader = async (
         shares: randomBigNumber(1.0, 1000.0), // TODO calc
         timestamp: tempTimeStamp / 1000,
       };
-      participations.push(redeem);
 
-      // subtract from holdings
-      tempHoldings[0].quantity = subtract(
-        tempHoldings[0].quantity,
-        redeem.amount,
-      );
+      if (greaterThan(tempHoldings[0].quantity, redeem.amount)) {
+        // only do redeem when enough quoteTokens are there
+        participations.push(redeem);
+
+        // subtract from holdings
+        tempHoldings[0].quantity = subtract(
+          tempHoldings[0].quantity,
+          redeem.amount,
+        );
+      }
     }
 
     // calc possible trade
