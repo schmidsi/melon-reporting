@@ -163,7 +163,7 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
   const timeSpanStart = parseInt(timeSpanStartStr);
   const timeSpanEnd = parseInt(timeSpanEndStr);
 
-  const mockedData = { data: {} };
+  const mockedData = { data: {}, calculations: {} };
   const data = mockedData.data;
 
   const tokenWhitelist = createTokenWhitelist([
