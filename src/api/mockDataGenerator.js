@@ -136,7 +136,7 @@ const randomMetaData = (
     faker.date.past(1, new Date(timeSpanStart * 1000)).getTime() / 1000,
   );
   meta.quoteToken = {
-    symbol: 'WETH',
+    symbol: 'ETH',
     address: randomEthereumAddress(),
   };
   meta.manager = randomEthereumAddress();
@@ -272,7 +272,7 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
     'ETH',
     'MLN',
     'ANT',
-    'DGX',
+    'GNO',
     'MKR',
     'OMG',
   ]);

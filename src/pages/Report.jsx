@@ -26,6 +26,7 @@ const Report = ({ data, calculations }) => (
     <Audit data={data} />
 
     {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
+    <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre>
   </div>
 );
 

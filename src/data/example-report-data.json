@@ -551,7 +551,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -573,7 +573,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -595,7 +595,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -617,7 +617,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -639,7 +639,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -661,7 +661,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     },
     {
@@ -683,7 +683,7 @@
         "id": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
-      "timestamp": 1524739030740,
+      "timestamp": 1524739030,
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     }
   ],
@@ -696,7 +696,7 @@
       "type": "invest",
       "amount": "23478.8230000",
       "shares": "2387.923990",
-      "timestamp": 1524737164199
+      "timestamp": 1524737164
     },
     {
       "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
@@ -707,22 +707,22 @@
       "type": "redeem",
       "amount": "531.208420",
       "shares": "2028.123080",
-      "timestamp": 1524737174690
+      "timestamp": 1524737174
     }
   ],
   "audits": [{
       "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
       "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
-      "timespanStart": 1524729021140,
-      "timespanEnd": 1524739020045,
+      "timespanStart": 1524729021,
+      "timespanEnd": 1524739020,
       "opinion": "Qualified Opinion",
       "comment": "Something is wrong!"
     },
     {
       "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
       "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
-      "timeSpanStart": 1524729086440,
-      "timeSpanEnd": 1524739020999,
+      "timeSpanStart": 1524729086,
+      "timeSpanEnd": 1524739020,
       "opinion": "Unqualified Opinion",
       "comment": "Everything is fine!"
     }

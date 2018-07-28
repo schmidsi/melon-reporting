@@ -15,7 +15,7 @@ const getPriceHistoryFromCryptoCompare = async (
 
   if (symbol === 'ETH') {
     // price of 0 for quote token
-    return Array.apply(null, Array(numberOfDays)).map(
+    return Array.apply(null, Array(numberOfDays + 1)).map(
       Number.prototype.valueOf,
       1,
     );
@@ -27,7 +27,7 @@ const getPriceHistoryFromCryptoCompare = async (
     const response = await fetch(url);
     const json = await response.json();
     const histoDay = json.Data;
-    const dailyAveragePrices = histoDay.map(day => day.open); // open price for convenience
+    const dailyAveragePrices = histoDay.map(day => day.close); // open price for convenience
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);
@@ -65,9 +65,8 @@ const melonTrader = async (
   const trades = [];
   const participations = [];
 
-  let tempHoldings = startHoldings;
-
-  console.log(tempHoldings);
+  console.log(startHoldings);
+  let tempHoldings = R.clone(startHoldings);
 
   let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
   let dayIndex = 0;
@@ -81,7 +80,7 @@ const melonTrader = async (
 
     let buyToken;
     let sellToken;
-    // one token is always ETH, the other one from the whitelist
+    // one token is always the quote token, the other one from the rest of the whitelist
     if (faker.random.boolean()) {
       buyToken = tokenWhitelist[0];
       sellToken = faker.random.arrayElement(R.tail(tokenWhitelist));
@@ -91,18 +90,17 @@ const melonTrader = async (
     }
 
     const buyTokenHolding = tempHoldings.find(holding => {
-      return holding.token == buyToken;
+      return holding.token.symbol === buyToken.symbol;
     });
     const buyTokenDailyPrice = buyTokenHolding.priceHistory[dayIndex];
 
     const sellTokenHolding = tempHoldings.find(holding => {
-      return holding.token == sellToken;
+      return holding.token.symbol === sellToken.symbol;
     });
     const sellTokenDailyPrice = sellTokenHolding.priceHistory[dayIndex];
 
     if (buyTokenDailyPrice === undefined || sellTokenDailyPrice === undefined) {
       // just skip this day when price is not available for a token from cryptocompare
-      // TODO why are some undefined? research into that
       dayIndex++;
       continue;
     }
@@ -125,39 +123,31 @@ const melonTrader = async (
         howMuch: sellHowMuch.toString(),
       },
       exchange: exchanges[randomInt(0, exchanges.length)], // a random exchange from the exchanges whitelist
-      timestamp: tempTimeStamp,
+      timestamp: tempTimeStamp / 1000,
       transaction: randomHexaDecimal(64),
     });
 
     // update holdings
-    /*
-    tempHoldings = tempHoldings.map(holding => {
-      console.log(newHolding.quantity);
-      let newHolding = holding;
+    //console.log(`1: ${tempHoldings[0].quantity}`);
+    tempHoldings = tempHoldings.map(oldHolding => {
+      const holding = { ...oldHolding };
       if (holding.token.symbol === buyToken.symbol) {
         holding.quantity = (
           parseInt(currentBuyTokenQuantity) + buyHowMuch
         ).toString();
+        return holding;
       } else if (holding.token.symbol === sellToken.symbol) {
-        newHolding.quantity = (
-          parseInt(currentSellTokenQuantity) + sellHowMuch
+        //console.log(`1: ${holding.quantity}`);
+        holding.quantity = (
+          parseInt(currentSellTokenQuantity) - sellHowMuch
         ).toString();
+        return holding;
+        //console.log(`2: ${holding.quantity}`);
       }
-      console.log(newHolding.quantity);
-      return newHolding;
+      //return newHolding;
+      return holding;
     });
-    */
-    var sellHoldingIndex = tempHoldings.indexOf(sellTokenHolding);
-
-    if (sellHoldingIndex !== -1) {
-      let newSellTokenHolding = sellTokenHolding;
-      newSellTokenHolding.quantity = (
-        parseInt(currentSellTokenQuantity) + sellHowMuch
-      ).toString();
-      tempHoldings[sellHoldingIndex] = newSellTokenHolding;
-    }
-
-    var buyHoldingIndex = tempHoldings.indexOf(buyTokenHolding);
+    //console.log(`2: ${tempHoldings[0].quantity}`);
 
     dayIndex++;
   }
