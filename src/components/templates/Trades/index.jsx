@@ -74,7 +74,10 @@ const Trades = ({ data, calculations }) => (
             profit: 0,
             txHash: trade.transaction,
             fee: 'TODO',
-            timestamp: format(new Date(trade.timestamp), 'YYYY-MM-DD HH:mm:ss'),
+            timestamp: format(
+              new Date(trade.timestamp * 1000),
+              'YYYY-MM-DD HH:mm:ss',
+            ),
           };
         })}
       </Table>
