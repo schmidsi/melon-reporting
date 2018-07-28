@@ -1,12 +1,19 @@
 import faker from 'faker';
 import * as date from 'date-fns';
 import {
-  toBigNum,
   randomInt,
-  randomFloat,
+  randomBigNumber,
   randomHexaDecimal,
   randomEthereumAddress,
 } from './utils';
+
+import {
+  add,
+  subtract,
+  multiply,
+  divide,
+} from '../../utils/functionalBigNumber';
+
 import * as R from 'ramda';
 
 import { calculateAumHistory } from '../calculations';
@@ -22,11 +29,8 @@ const getPriceHistoryFromCryptoCompare = async (
   );
 
   if (symbol === 'ETH') {
-    // price of 0 for quote token
-    return Array.apply(null, Array(numberOfDays + 1)).map(
-      Number.prototype.valueOf,
-      1,
-    );
+    // price of 1 for quote token
+    return R.repeat('1', numberOfDays + 1);
   }
 
   const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=ETH&limit=${numberOfDays}&toTs=${timeSpanEnd}`;
@@ -35,7 +39,7 @@ const getPriceHistoryFromCryptoCompare = async (
     const response = await fetch(url);
     const json = await response.json();
     const histoDay = json.Data;
-    const dailyAveragePrices = histoDay.map(day => day.close); // open price for convenience
+    const dailyAveragePrices = histoDay.map(day => day.close.toString()); // open price for convenience
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);
@@ -49,7 +53,7 @@ const randomHoldings = async (timeSpanStart, timeSpanEnd, tokenWhitelist) =>
       // TODO maybe change back to bigNum sometime, which would be a string
       //quantity: toBigNum(faker.random.number(100)),
       //quantity: faker.random.number(100),
-      quantity: randomInt(50, 100),
+      quantity: randomInt(50, 100).toString(),
       priceHistory: await getPriceHistoryFromCryptoCompare(
         token.symbol,
         timeSpanStart,
@@ -58,15 +62,15 @@ const randomHoldings = async (timeSpanStart, timeSpanEnd, tokenWhitelist) =>
     })),
   );
 
-const randomInitialParticipations = (investors, timeStamp, quoteToken) => {
+const randomInitialParticipations = (investors, timestamp, quoteToken) => {
   return investors.map(investor => {
     return {
       investor,
       token: quoteToken,
       type: 'invest',
-      amount: randomFloat(1.0, 1000.0), // TODO calc
-      shares: randomFloat(1.0, 1000.0), // TODO calc
-      timestamp: timeStamp / 1000,
+      amount: randomBigNumber(1.0, 1000.0), // TODO calc
+      shares: randomBigNumber(1.0, 1000.0), // TODO calc
+      timestamp,
     };
   });
 };
@@ -78,7 +82,7 @@ const randomInvestors = numberOfInvestors => {
 };
 
 const getRandomInvestor = investors =>
-  investors[randomInt(0, investors.length)];
+  investors[randomInt(0, investors.length - 1)];
 
 const melonTrader = async (
   timeSpanStartInSeconds,
@@ -104,7 +108,9 @@ const melonTrader = async (
     tokenWhitelist[0],
   );
 
+  console.log(startHoldings);
   let tempHoldings = R.clone(startHoldings);
+  console.log(tempHoldings);
   let dailyHoldings = [];
 
   let tempTimeStamp = date.addDays(timeSpanStart, 1).getTime();
@@ -133,14 +139,14 @@ const melonTrader = async (
         investor: getRandomInvestor(investors),
         token: tokenWhitelist[0], // quote token
         type: 'invest',
-        amount: randomFloat(1.0, 1000.0), // TODO calc
-        shares: randomFloat(1.0, 1000.0), // TODO calc
+        amount: randomBigNumber(1.0, 1000.0), // TODO calc
+        shares: randomBigNumber(1.0, 1000.0), // TODO calc
         timestamp: tempTimeStamp / 1000,
       };
       participations.push(invest);
 
       // add to holdings
-      tempHoldings[0].quantity += invest.amount;
+      tempHoldings[0].quantity = add(tempHoldings[0].quantity, invest.amount);
     }
 
     // do a redeem every 17 days
@@ -149,14 +155,17 @@ const melonTrader = async (
         investor: getRandomInvestor(investors),
         token: tokenWhitelist[0], // quote token
         type: 'redeem',
-        amount: randomFloat(1.0, 1000.0), // TODO calc
-        shares: randomFloat(1.0, 1000.0), // TODO calc
+        amount: randomBigNumber(1.0, 1000.0), // TODO calc
+        shares: randomBigNumber(1.0, 1000.0), // TODO calc
         timestamp: tempTimeStamp / 1000,
       };
       participations.push(redeem);
 
       // subtract from holdings
-      tempHoldings[0].quantity -= redeem.amount;
+      tempHoldings[0].quantity = subtract(
+        tempHoldings[0].quantity,
+        redeem.amount,
+      );
     }
 
     // calc possible trade
@@ -190,9 +199,16 @@ const melonTrader = async (
     const currentSellTokenQuantity = sellTokenHolding.quantity;
     const currentBuyTokenQuantity = buyTokenHolding.quantity;
 
-    // sell between 0.001 and half of the current sell holding
-    const sellHowMuch = randomFloat(0.001, currentSellTokenQuantity / 2);
-    const buyHowMuch = sellHowMuch * (sellTokenDailyPrice / buyTokenDailyPrice);
+    // sell between 0.0 and half of the current sell holding
+    //console.log(currentSellTokenQuantity, toNumber(currentSellTokenQuantity));
+    const sellHowMuch = randomBigNumber(
+      0.0,
+      divide(currentSellTokenQuantity, 2),
+    );
+    const buyHowMuch = multiply(
+      sellHowMuch,
+      divide(sellTokenDailyPrice, buyTokenDailyPrice),
+    );
 
     // add trade
     trades.push({
@@ -204,7 +220,7 @@ const melonTrader = async (
         token: sellToken,
         howMuch: sellHowMuch,
       },
-      exchange: exchanges[randomInt(0, exchanges.length)], // a random exchange from the exchanges whitelist
+      exchange: exchanges[randomInt(0, exchanges.length - 1)], // a random exchange from the exchanges whitelist
       timestamp: tempTimeStamp / 1000,
       transaction: randomHexaDecimal(64),
     });
@@ -213,9 +229,9 @@ const melonTrader = async (
     tempHoldings = tempHoldings.map(oldHolding => {
       const holding = { ...oldHolding };
       if (holding.token.symbol === buyToken.symbol) {
-        holding.quantity = currentBuyTokenQuantity + buyHowMuch;
+        holding.quantity = add(currentBuyTokenQuantity, buyHowMuch);
       } else if (holding.token.symbol === sellToken.symbol) {
-        holding.quantity = currentSellTokenQuantity - sellHowMuch;
+        holding.quantity = subtract(currentSellTokenQuantity, sellHowMuch);
       }
       return holding;
     });

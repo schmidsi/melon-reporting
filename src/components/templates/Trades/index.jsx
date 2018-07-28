@@ -70,7 +70,7 @@ const Trades = ({ data, calculations }) => (
             type,
             price: toFixed(price),
             amount: toFixed(amount),
-            exchange: trade.exchange.id,
+            exchange: trade.exchange.name,
             profit: 0,
             txHash: trade.transaction,
             fee: 'TODO',
