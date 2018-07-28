@@ -10,8 +10,9 @@ import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
 import Audit from './Audit';
 
+import getTokenCorrelation from '~/api/calculations/getTokenCorrelation';
+
 // TODO: Remove mock data
-import getRandomCorrelation from '~/components/templates/Holdings/getRandomCorrelation';
 import holdingChartData from '~/components/blocks/HoldingChart/mockData';
 
 import getDebug from '~/utils/getDebug';
@@ -48,8 +49,8 @@ const enhance = withLoading(async props => {
     transactionFees: 83.214,
     volatility: 19.5,
     profit: 5.23,
-    // Nice to have: Refactor with xprod: R.splitEvery(l2.length, R.xprod(l1, l2))
-    tokenCorrelation: getRandomCorrelation(data.holdings),
+    // TODO: Replace second param with sharePriceHistory
+    tokenCorrelation: getTokenCorrelation(data.holdings, [0]),
     holdingChartData,
   };
 
