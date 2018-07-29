@@ -24,8 +24,8 @@ const initialState = {
     sharePrice: 1,
     aum: 0,
     totalSupply: 0,
-    holdings: [],
-    participation: [],
+    allocation: [],
+    investors: [],
   },
   calculationsHistory: [],
 };
@@ -90,6 +90,49 @@ const calculateSharePrice = () =>
     divide(calculations.aum / calculations.totalSupply),
   );
 
+const calculateAllocation = dayIndex =>
+  setPath(['calculations', 'allocation'], ({ data, calculations }) =>
+    data.holdings.map(holding => ({
+      token: holding.token,
+      price: holding.priceHistory[dayIndex],
+      quantity: holding.quantity,
+      percentage: divide(calculations.aum, holding.quantity),
+    })),
+  );
+
+const updateInvestor = (investor, participation, aum) => {
+  if (investor.address !== participation.investor) return investor;
+
+  const shares = investor.shares || '0';
+  const updatedShares =
+    participation.type === 'invest'
+      ? add(shares, participation.shares)
+      : subtract(investor.shares, participation.shares);
+  const percentage = divide(aum, updatedShares);
+
+  return {
+    ...investor,
+    shares: updatedShares,
+    percentage,
+  };
+};
+
+const calculateInvestors = () =>
+  setPath(['calculations', 'investors'], ({ data, calculations }) =>
+    data.participations.list.reduce(
+      (carry, participation) =>
+        carry.find(investor => investor.address === participation.investor)
+          ? carry.map(investor =>
+              updateInvestor(investor, participation, calculations.aum),
+            )
+          : [
+              ...carry,
+              { address: participation.address, shares: participation.shares },
+            ],
+      data.participations.investors,
+    ),
+  );
+
 const computations = {
   load: (state, action) => ({
     ...initialState,
@@ -100,6 +143,8 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
+      calculateInvestors(),
+      calculateAllocation(action.dayIndex),
       calculateSharePrice(),
       calculateTotalSupply(),
       calculateAum(action.dayIndex),
