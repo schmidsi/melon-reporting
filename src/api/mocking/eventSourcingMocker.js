@@ -1,20 +1,48 @@
 import * as R from 'ramda';
 import { createStore } from 'redux';
-import { multiply, add, subtract, divide } from '~/utils/functionalBigNumber';
+import { shuffle } from 'd3-array';
+
+import {
+  multiply,
+  add,
+  subtract,
+  divide,
+  greaterThan,
+} from '~/utils/functionalBigNumber';
+import { randomBigNumber } from './utils';
 
 import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
 
-const defaultProbabilities = {
+const secondsPerDay = 60 * 60 * 24;
+
+const defaultActionWeights = {
+  // TODO: Ideas for enhancing
   // openPosition: 0.1,
   // closePosition: 0.1,
   // increasePosition: 0.1,
   // decreasePosition: 0.1,
-  invest: 0.1,
-  redeem: 0.1,
-  buy: 0.1,
-  sell: 0.1,
+  invest: 2,
+  redeem: 1,
+  trade: 20,
+  nothing: 3,
+};
+
+const selectRandomWeightedAction = actions => {
+  const list = R.toPairs(actions);
+
+  const accumulator = (carry, [action, weight]) => [
+    carry + weight,
+    [action, carry + weight],
+  ];
+
+  const [total, prepared] = R.mapAccum(accumulator, 0, list);
+
+  const selector = Math.random() * total;
+  const [finalAction] = prepared.find(([action, weight]) => weight >= selector);
+
+  return finalAction;
 };
 
 const initialState = {
@@ -42,7 +70,7 @@ const getRandomInvestor = investors =>
 const setPath = (path, setter) => ({ data, calculations }) =>
   R.assocPath(path, setter({ data, calculations }), { data, calculations });
 
-const addSubscription = (amount, timestamp) =>
+const addInvest = (amount, timestamp) =>
   setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
     ...data.participations.list,
     {
@@ -55,12 +83,35 @@ const addSubscription = (amount, timestamp) =>
     },
   ]);
 
+const addRedeem = (amount, timestamp, investor) =>
+  setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
+    ...data.participations.list,
+    {
+      investor,
+      token: data.meta.quoteToken,
+      type: 'redeem',
+      amount: multiply(calculations.sharePrice, amount),
+      shares: amount,
+      timestamp: timestamp || data.meta.inception,
+    },
+  ]);
+
 const increaseHolding = (amount, token) =>
   setPath(['data', 'holdings'], ({ data, calculations }) =>
     data.holdings.map(holding => ({
       ...holding,
       quantity: isSameToken(holding.token, token || data.meta.quoteToken)
         ? add(holding.quantity, amount)
+        : holding.quantity,
+    })),
+  );
+
+const decreaseHolding = (amount, token) =>
+  setPath(['data', 'holdings'], ({ data, calculations }) =>
+    data.holdings.map(holding => ({
+      ...holding,
+      quantity: isSameToken(holding.token, token || data.meta.quoteToken)
+        ? subtract(holding.quantity, amount)
         : holding.quantity,
     })),
   );
@@ -87,7 +138,7 @@ const calculateTotalSupply = () =>
 
 const calculateSharePrice = () =>
   setPath(['calculations', 'sharePrice'], ({ data, calculations }) =>
-    divide(calculations.aum / calculations.totalSupply),
+    divide(calculations.aum, calculations.totalSupply),
   );
 
 const calculateAllocation = dayIndex =>
@@ -108,7 +159,7 @@ const updateInvestor = (investor, participation, aum) => {
     participation.type === 'invest'
       ? add(shares, participation.shares)
       : subtract(investor.shares, participation.shares);
-  const percentage = divide(aum, updatedShares);
+  const percentage = divide(updatedShares, aum);
 
   return {
     ...investor,
@@ -133,6 +184,9 @@ const calculateInvestors = () =>
     ),
   );
 
+const getTimestamp = (data, dayIndex) =>
+  add(data.meta.timeSpanStart, multiply(dayIndex, secondsPerDay));
+
 const doCalculations = dayIndex =>
   R.compose(
     calculateInvestors(),
@@ -152,9 +206,42 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
+      // calculations
       doCalculations(action.dayIndex),
-      addSubscription(action.amount, action.timestamp),
+
+      // modifications
+      addInvest(action.amount, action.timestamp),
       increaseHolding(action.amount),
+    );
+
+    return {
+      ...updateData({ data, calculations }),
+      calculationsHistory: [...calculationsHistory, calculations],
+      actionHistory: [...actionHistory, action],
+    };
+  },
+  redeem: (state, action) => {
+    const { data, calculations, actionHistory, calculationsHistory } = state;
+
+    const investor = action.investor
+      ? calculations.investors.find(
+          investor => investor.address === action.investor,
+        )
+      : shuffle(
+          calculations.investors.filter(investor =>
+            greaterThan(investor.shares, 0),
+          ),
+        )[0];
+
+    const amount = action.amount || randomBigNumber(0, investor.shares);
+
+    const updateData = R.compose(
+      // calculations
+      doCalculations(action.dayIndex),
+
+      // modifications
+      addRedeem(amount, getTimestamp(data, action.dayIndex), investor.address),
+      decreaseHolding(amount),
     );
 
     return {
@@ -170,6 +257,7 @@ const isType = type => (_, action) => action.type === type;
 const reducer = R.cond([
   [isType('LOAD'), computations.load],
   [isType('INVEST'), computations.invest],
+  [isType('REDEEM'), computations.redeem],
   [R.T, state => state],
 ]);
 
@@ -178,27 +266,7 @@ const reducer = R.cond([
  * If other timespan -> filter/process this fund
  */
 
-/**
- *
- * initialData: Funddata with prices, meta, investors
- */
-const actionGenerator = ({ initialData, probabilities }) => {
-  const p = { ...defaultProbabilities, ...probabilities };
-
-  /**
-   * Loop through the days
-   * For every day: take an action
-   * Apply the action
-   * Update daily history
-   */
-
-  return { data, calculationsHistory, actionHistory };
-};
-
-// calculationsHistory: For every day: holdings with proportion, investors with percentage and holdings, aum, sharePrice, totalSupply,
-// ActionHistory: All actions
-
-const eventSourcingMocker = emptyFund => {
+const eventSourcingMocker = initialData => {
   const store = createStore(
     reducer,
     initialState,
@@ -208,8 +276,59 @@ const eventSourcingMocker = emptyFund => {
 
   // store.subscribe((...args) => console.log('UPDATE', ...args));
 
-  store.dispatch({ type: 'LOAD', data: emptyFund });
+  store.dispatch({ type: 'LOAD', data: initialData });
   store.dispatch({ type: 'INVEST', amount: '100', dayIndex: 0 });
+
+  const reportDays = Math.round(
+    (initialData.meta.timeSpanEnd - initialData.meta.timeSpanStart) /
+      secondsPerDay,
+  );
+
+  R.range(0, reportDays).map(dayIndex => {
+    R.cond([
+      [
+        R.equals('invest'),
+        () =>
+          store.dispatch({
+            type: 'INVEST',
+            amount: randomBigNumber(1, 100),
+            dayIndex,
+          }),
+      ],
+      [
+        R.equals('redeem'),
+        () =>
+          store.dispatch({
+            type: 'REDEEM',
+            dayIndex,
+          }),
+      ],
+      [
+        R.equals('trade'),
+        () =>
+          store.dispatch({
+            type: 'TRADE',
+            amount: randomBigNumber(1, 100),
+            dayIndex,
+          }),
+      ],
+      [
+        R.equals('nothing'),
+        () =>
+          store.dispatch({
+            type: 'NOTHING',
+            amount: randomBigNumber(1, 100),
+            dayIndex,
+          }),
+      ],
+    ])(selectRandomWeightedAction(defaultActionWeights));
+  });
+
+  console.log(
+    initialData.meta.timeSpanEnd,
+    initialData.meta.timeSpanStart,
+    reportDays,
+  );
 
   const finalState = store.getState();
 

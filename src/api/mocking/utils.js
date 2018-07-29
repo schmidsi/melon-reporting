@@ -1,5 +1,10 @@
 import faker from 'faker';
-import { add, subtract, multiply } from '../../utils/functionalBigNumber';
+import {
+  add,
+  subtract,
+  multiply,
+  toFixed,
+} from '../../utils/functionalBigNumber';
 
 export const toBigNum = number => {
   return number + '.000000';
@@ -9,7 +14,10 @@ export const randomInt = (from, to) =>
   Math.floor(Math.random() * (to - from + 1)) + from;
 
 export const randomBigNumber = (from, to) => {
-  return add(multiply(Math.random().toFixed(15), subtract(to, from)), from);
+  return toFixed(
+    add(multiply(Math.random().toFixed(6), subtract(to, from)), from),
+    6,
+  );
 };
 
 // helper because faker.random.hexaDecimal() does not work
