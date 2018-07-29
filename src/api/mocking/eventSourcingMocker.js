@@ -9,7 +9,7 @@ import {
   divide,
   greaterThan,
 } from '~/utils/functionalBigNumber';
-import { randomBigNumber } from './utils';
+import { randomBigNumber, randomHexaDecimal } from './utils';
 
 import getDebug from '~/utils/getDebug';
 
@@ -66,6 +66,20 @@ const randomInt = (from, to) => {
 
 const getRandomInvestor = investors =>
   investors[randomInt(0, investors.length - 1)].address;
+
+const getHolding = (calculations, token) =>
+  calculations.allocation.find(holding => isSameToken(holding.token, token))
+    .quantity;
+
+const getPrice = (calculations, token) =>
+  calculations.allocation.find(holding => isSameToken(holding.token, token))
+    .price;
+
+const getOrthogonalPrice = (calculations, buyToken, sellToken) => {
+  const buyTokenPrice = getPrice(calculations, buyToken);
+  const sellTokenPrice = getPrice(calculations, sellToken);
+  return divide(sellTokenPrice, buyTokenPrice);
+};
 
 const setPath = (path, setter) => ({ data, calculations }) =>
   R.assocPath(path, setter({ data, calculations }), { data, calculations });
@@ -147,7 +161,7 @@ const calculateAllocation = dayIndex =>
       token: holding.token,
       price: holding.priceHistory[dayIndex],
       quantity: holding.quantity,
-      percentage: divide(calculations.aum, holding.quantity),
+      percentage: divide(holding.quantity, calculations.aum),
     })),
   );
 
@@ -194,6 +208,50 @@ const doCalculations = dayIndex =>
     calculateSharePrice(),
     calculateTotalSupply(),
     calculateAum(dayIndex),
+  );
+
+const addTrade = ({
+  buyToken,
+  buyHowMuch,
+  sellToken,
+  sellHowMuch,
+  exchange,
+  timestamp,
+  transaction = randomHexaDecimal(64),
+}) =>
+  setPath(['data', 'trades'], ({ data, calculations }) => [
+    ...data.trades,
+    {
+      buy: {
+        token: buyToken,
+        howMuch: buyHowMuch,
+      },
+      sell: {
+        token: sellToken,
+        howMuch: sellHowMuch,
+      },
+      exchange: exchange || shuffle(data.meta.exchanges)[0],
+      timestamp,
+      transaction,
+    },
+  ]);
+
+const updateHoldings = ({ buyToken, buyHowMuch, sellToken, sellHowMuch }) =>
+  setPath(['data', 'holdings'], ({ data, calculations }) =>
+    data.holdings.map(holding => ({
+      ...holding,
+      quantity: R.cond([
+        [
+          ({ buyToken }) => isSameToken(buyToken, holding.token),
+          ({ buyHowMuch }) => add(holding.quantity, buyHowMuch),
+        ],
+        [
+          ({ sellToken }) => isSameToken(sellToken, holding.token),
+          ({ sellHowMuch }) => subtract(holding.quantity, sellHowMuch),
+        ],
+        [R.T, () => holding.quantity],
+      ])({ buyToken, buyHowMuch, sellToken, sellHowMuch }),
+    })),
   );
 
 const computations = {
@@ -250,6 +308,66 @@ const computations = {
       actionHistory: [...actionHistory, action],
     };
   },
+  trade: (state, action) => {
+    const { data, calculations, actionHistory, calculationsHistory } = state;
+
+    const sellToken =
+      action.token || Math.random() >= 0.5
+        ? data.meta.quoteToken
+        : shuffle(
+            data.holdings.filter(holding => greaterThan(holding.quantity, 0)),
+          )[0].token;
+
+    const buyToken = isSameToken(sellToken, data.meta.quoteToken)
+      ? shuffle(
+          data.holdings.filter(
+            holding => !isSameToken(sellToken, holding.token),
+          ),
+        )[0].token
+      : data.meta.quoteToken;
+
+    const type = isSameToken(sellToken, data.meta.quoteToken) ? 'buy' : 'sell';
+
+    const orthogonalPrice = getOrthogonalPrice(
+      calculations,
+      buyToken,
+      sellToken,
+    );
+
+    // Only sell up to 50% of quote token
+    const sellHowMuch =
+      action.sellHowMuch || type === 'buy'
+        ? randomBigNumber(0, divide(getHolding(calculations, sellToken), 2))
+        : randomBigNumber(0, getHolding(calculations, sellToken));
+
+    const buyHowMuch = multiply(sellHowMuch, orthogonalPrice);
+
+    const updateData = R.compose(
+      // calculations
+      doCalculations(action.dayIndex),
+
+      // modifications
+      addTrade({
+        buyToken,
+        buyHowMuch,
+        sellToken,
+        sellHowMuch,
+        timestamp: getTimestamp(data, action.dayIndex),
+      }),
+      updateHoldings({
+        buyToken,
+        buyHowMuch,
+        sellToken,
+        sellHowMuch,
+      }),
+    );
+
+    return {
+      ...updateData({ data, calculations }),
+      calculationsHistory: [...calculationsHistory, calculations],
+      actionHistory: [...actionHistory, action],
+    };
+  },
 };
 
 const isType = type => (_, action) => action.type === type;
@@ -258,6 +376,7 @@ const reducer = R.cond([
   [isType('LOAD'), computations.load],
   [isType('INVEST'), computations.invest],
   [isType('REDEEM'), computations.redeem],
+  [isType('TRADE'), computations.trade],
   [R.T, state => state],
 ]);
 
@@ -308,7 +427,6 @@ const eventSourcingMocker = initialData => {
         () =>
           store.dispatch({
             type: 'TRADE',
-            amount: randomBigNumber(1, 100),
             dayIndex,
           }),
       ],
@@ -317,7 +435,6 @@ const eventSourcingMocker = initialData => {
         () =>
           store.dispatch({
             type: 'NOTHING',
-            amount: randomBigNumber(1, 100),
             dayIndex,
           }),
       ],
