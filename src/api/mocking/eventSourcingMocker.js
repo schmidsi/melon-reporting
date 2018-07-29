@@ -133,6 +133,15 @@ const calculateInvestors = () =>
     ),
   );
 
+const doCalculations = dayIndex =>
+  R.compose(
+    calculateInvestors(),
+    calculateAllocation(dayIndex),
+    calculateSharePrice(),
+    calculateTotalSupply(),
+    calculateAum(dayIndex),
+  );
+
 const computations = {
   load: (state, action) => ({
     ...initialState,
@@ -143,11 +152,7 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
-      calculateInvestors(),
-      calculateAllocation(action.dayIndex),
-      calculateSharePrice(),
-      calculateTotalSupply(),
-      calculateAum(action.dayIndex),
+      doCalculations(action.dayIndex),
       addSubscription(action.amount, action.timestamp),
       increaseHolding(action.amount),
     );
