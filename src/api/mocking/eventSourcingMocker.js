@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { createStore } from 'redux';
-import { multiply, add } from '~/utils/functionalBigNumber';
+import { multiply, add, subtract } from '~/utils/functionalBigNumber';
 
 import getDebug from '~/utils/getDebug';
 
@@ -79,6 +79,19 @@ const calculateAum = dayIndex => ({ data, calculations }) =>
     { data, calculations },
   );
 
+const calculateTotalSupply = () => ({ data, calculations }) =>
+  R.assocPath(
+    ['calculations', 'totalSupply'],
+    data.participations.list.reduce(
+      (carry, participation) =>
+        participation.type === 'invest'
+          ? add(carry, participation.shares)
+          : subtract(carry, participation.shares),
+      '0',
+    ),
+    { data, calculations },
+  );
+
 const computations = {
   load: (state, action) => ({
     ...initialState,
@@ -89,6 +102,7 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
+      calculateTotalSupply(),
       calculateAum(action.dayIndex),
       addSubscription(action.amount, action.timestamp),
       increaseHolding(action.amount),
