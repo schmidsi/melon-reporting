@@ -15,7 +15,8 @@
       "address": "0xAeEc31C192CcC234B1fB3b6E0346278A6343218F",
       "name": "Marvin Mellon"
     },
-    "exchanges": [{
+    "exchanges": [
+      {
         "name": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
@@ -30,7 +31,8 @@
       "FL-9490 Vaduz",
       "Liechtenstein"
     ],
-    "strategy": "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user-centric; incentivize web-enabled expedite, tag target,\" podcasts integrated rich-clientAPIs; platforms. ",
+    "strategy":
+      "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user-centric; incentivize web-enabled expedite, tag target,\" podcasts integrated rich-clientAPIs; platforms. ",
     "totalSupply": 53.235,
     "managementFee": 0.02,
     "performanceFee": 0.2,
@@ -49,7 +51,8 @@
         "volatilityThreshold": 0.25
       },
       "tokens": {
-        "whitelist": [{
+        "whitelist": [
+          {
             "symbol": "MLN",
             "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
           },
@@ -127,7 +130,8 @@
       }
     }
   },
-  "holdings": [{
+  "holdings": [
+    {
       "token": {
         "symbol": "MLN",
         "address": "0x3A1fBEccCD91cdA8afbAFcADAe5AFcFBCb0adceA"
@@ -532,7 +536,8 @@
       ]
     }
   ],
-  "trades": [{
+  "trades": [
+    {
       "buy": {
         "token": {
           "symbol": "MLN",
@@ -687,32 +692,48 @@
       "transaction": "0x76856aF5b24b29C8cDA09D8d27f527211747819c"
     }
   ],
-  "participations": [{
-      "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
-      "token": {
-        "symbol": "DAI",
-        "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+  "participations": {
+    "investors": [
+      {
+        "address": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
+        "kyc": "green",
+        "name": "Marvin Mellon"
       },
-      "type": "invest",
-      "amount": "23478.8230000",
-      "shares": "2387.923990",
-      "timestamp": 1524737164
-    },
+      {
+        "address": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
+        "kyc": "orange"
+      }
+    ],
+    "list": [
+      {
+        "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
+        "token": {
+          "symbol": "DAI",
+          "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
+        },
+        "type": "invest",
+        "amount": "23478.8230000",
+        "shares": "2387.923990",
+        "timestamp": 1524737164
+      },
+      {
+        "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
+        "token": {
+          "symbol": "ETH",
+          "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
+        },
+        "type": "redeem",
+        "amount": "531.208420",
+        "shares": "2028.123080",
+        "timestamp": 1524737174
+      }
+    ]
+  },
+  "audits": [
     {
-      "investor": "0xd1324AEd96fC94e219c3663A665c6e398D8634Db",
-      "token": {
-        "symbol": "ETH",
-        "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
-      },
-      "type": "redeem",
-      "amount": "531.208420",
-      "shares": "2028.123080",
-      "timestamp": 1524737174
-    }
-  ],
-  "audits": [{
       "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-      "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
+      "dataHash":
+        "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
       "timespanStart": 1524729021,
       "timespanEnd": 1524739020,
       "opinion": "Qualified Opinion",
@@ -720,7 +741,8 @@
     },
     {
       "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-      "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
+      "dataHash":
+        "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
       "timeSpanStart": 1524729086,
       "timeSpanEnd": 1524739020,
       "opinion": "Unqualified Opinion",
