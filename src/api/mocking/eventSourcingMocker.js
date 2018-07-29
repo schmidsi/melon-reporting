@@ -20,7 +20,13 @@ const defaultProbabilities = {
 const initialState = {
   data: {},
   actionHistory: [],
-  calculations: { sharePrice: 1 },
+  calculations: {
+    sharePrice: 1,
+    aum: 0,
+    totalSupply: 0,
+    holdingsPercentage: [],
+    participationPercentage: [],
+  },
   calculationsHistory: [],
 };
 
@@ -62,6 +68,17 @@ const increaseHolding = (amount, token) => ({ data, calculations }) =>
     { data, calculations },
   );
 
+const calculateAum = dayIndex => ({ data, calculations }) =>
+  R.assocPath(
+    ['calculations', 'aum'],
+    data.holdings.reduce(
+      (carry, holding) =>
+        add(carry, multiply(holding.quantity, holding.priceHistory[dayIndex])),
+      '0',
+    ),
+    { data, calculations },
+  );
+
 const computations = {
   load: (state, action) => ({
     ...initialState,
@@ -72,6 +89,7 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
+      calculateAum(action.dayIndex),
       addSubscription(action.amount, action.timestamp),
       increaseHolding(action.amount),
     );
@@ -128,7 +146,7 @@ const eventSourcingMocker = emptyFund => {
   // store.subscribe((...args) => console.log('UPDATE', ...args));
 
   store.dispatch({ type: 'LOAD', data: emptyFund });
-  store.dispatch({ type: 'INVEST', amount: '100' });
+  store.dispatch({ type: 'INVEST', amount: '100', dayIndex: 0 });
 
   const finalState = store.getState();
 
