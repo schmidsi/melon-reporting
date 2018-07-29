@@ -40,7 +40,7 @@ const getPriceHistoryFromCryptoCompare = async (
     const response = await fetch(url);
     const json = await response.json();
     const histoDay = json.Data;
-    const dailyAveragePrices = histoDay.map(day => day.close.toString()); // open price for convenience
+    const dailyAveragePrices = histoDay.map(day => day.close.toString()); // Note: Close price is the only one without errors
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);

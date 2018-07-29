@@ -1,8 +1,10 @@
 import actionGenerator from './eventSourcingMocker';
+import { mockRandomEmptyFund } from './mockDataGenerator';
 
 test('Smoke test', async () => {
-  const result = await actionGenerator();
+  const fund = await mockRandomEmptyFund();
+  // const result = await actionGenerator();
 
-  console.log(actionGenerator());
-  expect(sum(1, 2)).toBe(3);
+  console.log(JSON.stringify(fund, null, 4));
+  expect(3).toBe(3);
 });

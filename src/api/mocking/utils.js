@@ -60,4 +60,6 @@ export const capitalizeFirstLetter = string =>
 export const randomPercentage = (min, max) =>
   faker.random.number({ min, max, precision: 0.01 });
 
+export const toTimestampSeconds = date => parseInt(date / 1000);
+
 //export const getHoldingIndexBySymbol = (holdings, symbol) => symbol;
