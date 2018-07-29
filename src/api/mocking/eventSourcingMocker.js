@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { createStore } from 'redux';
-import { multiply, add, subtract } from '~/utils/functionalBigNumber';
+import { multiply, add, subtract, divide } from '~/utils/functionalBigNumber';
 
 import getDebug from '~/utils/getDebug';
 
@@ -24,8 +24,8 @@ const initialState = {
     sharePrice: 1,
     aum: 0,
     totalSupply: 0,
-    holdingsPercentage: [],
-    participationPercentage: [],
+    holdings: [],
+    participation: [],
   },
   calculationsHistory: [],
 };
@@ -39,49 +39,43 @@ const randomInt = (from, to) => {
 const getRandomInvestor = investors =>
   investors[randomInt(0, investors.length - 1)].address;
 
-const addSubscription = (amount, timestamp) => ({ data, calculations }) =>
-  R.assocPath(
-    ['data', 'participations', 'list'],
-    [
-      ...data.participations.list,
-      {
-        investor: getRandomInvestor(data.participations.investors),
-        token: data.meta.quoteToken,
-        type: 'invest',
-        amount,
-        shares: multiply(calculations.sharePrice, amount),
-        timestamp: timestamp || data.meta.inception,
-      },
-    ],
-    { data, calculations },
-  );
+const setPath = (path, setter) => ({ data, calculations }) =>
+  R.assocPath(path, setter({ data, calculations }), { data, calculations });
 
-const increaseHolding = (amount, token) => ({ data, calculations }) =>
-  R.assocPath(
-    ['data', 'holdings'],
+const addSubscription = (amount, timestamp) =>
+  setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
+    ...data.participations.list,
+    {
+      investor: getRandomInvestor(data.participations.investors),
+      token: data.meta.quoteToken,
+      type: 'invest',
+      amount,
+      shares: multiply(calculations.sharePrice, amount),
+      timestamp: timestamp || data.meta.inception,
+    },
+  ]);
+
+const increaseHolding = (amount, token) =>
+  setPath(['data', 'holdings'], ({ data, calculations }) =>
     data.holdings.map(holding => ({
       ...holding,
       quantity: isSameToken(holding.token, token || data.meta.quoteToken)
         ? add(holding.quantity, amount)
         : holding.quantity,
     })),
-    { data, calculations },
   );
 
-const calculateAum = dayIndex => ({ data, calculations }) =>
-  R.assocPath(
-    ['calculations', 'aum'],
+const calculateAum = dayIndex =>
+  setPath(['calculations', 'aum'], ({ data, calculations }) =>
     data.holdings.reduce(
       (carry, holding) =>
         add(carry, multiply(holding.quantity, holding.priceHistory[dayIndex])),
       '0',
     ),
-    { data, calculations },
   );
 
-const calculateTotalSupply = () => ({ data, calculations }) =>
-  R.assocPath(
-    ['calculations', 'totalSupply'],
+const calculateTotalSupply = () =>
+  setPath(['calculations', 'totalSupply'], ({ data, calculations }) =>
     data.participations.list.reduce(
       (carry, participation) =>
         participation.type === 'invest'
@@ -89,7 +83,11 @@ const calculateTotalSupply = () => ({ data, calculations }) =>
           : subtract(carry, participation.shares),
       '0',
     ),
-    { data, calculations },
+  );
+
+const calculateSharePrice = () =>
+  setPath(['calculations', 'sharePrice'], ({ data, calculations }) =>
+    divide(calculations.aum / calculations.totalSupply),
   );
 
 const computations = {
@@ -102,6 +100,7 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const updateData = R.compose(
+      calculateSharePrice(),
       calculateTotalSupply(),
       calculateAum(action.dayIndex),
       addSubscription(action.amount, action.timestamp),
