@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { createStore } from 'redux';
-import { multiply } from '~/utils/functionalBigNumber';
+import { multiply, add } from '~/utils/functionalBigNumber';
 
 import getDebug from '~/utils/getDebug';
 
@@ -18,11 +18,13 @@ const defaultProbabilities = {
 };
 
 const initialState = {
-  reportData: {},
+  data: {},
   actionHistory: [],
   calculations: { sharePrice: 1 },
   calculationsHistory: [],
 };
+
+const isSameToken = (a, b) => a.symbol === b.symbol && a.address === b.address;
 
 const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
@@ -31,43 +33,51 @@ const randomInt = (from, to) => {
 const getRandomInvestor = investors =>
   investors[randomInt(0, investors.length - 1)].address;
 
+const addSubscription = (amount, timestamp) => ({ data, calculations }) =>
+  R.assocPath(
+    ['data', 'participations', 'list'],
+    [
+      ...data.participations.list,
+      {
+        investor: getRandomInvestor(data.participations.investors),
+        token: data.meta.quoteToken,
+        type: 'invest',
+        amount,
+        shares: multiply(calculations.sharePrice, amount),
+        timestamp: timestamp || data.meta.inception,
+      },
+    ],
+    { data, calculations },
+  );
+
+const increaseHolding = (amount, token) => ({ data, calculations }) =>
+  R.assocPath(
+    ['data', 'holdings'],
+    data.holdings.map(holding => ({
+      ...holding,
+      quantity: isSameToken(holding.token, token || data.meta.quoteToken)
+        ? add(holding.quantity, amount)
+        : holding.quantity,
+    })),
+    { data, calculations },
+  );
+
 const computations = {
   load: (state, action) => ({
     ...initialState,
-    reportData: action.reportData,
+    data: action.data,
     actionHistory: [action],
   }),
   invest: (state, action) => {
-    const {
-      reportData,
-      calculations,
-      actionHistory,
-      calculationsHistory,
-    } = state;
+    const { data, calculations, actionHistory, calculationsHistory } = state;
 
-    // Add to participations.list
-    const updatedReportData = R.assocPath(
-      ['participations', 'list'],
-      [
-        ...reportData.participations.list,
-        {
-          investor: getRandomInvestor(reportData.participations.investors),
-          token: reportData.meta.quoteToken,
-          type: 'invest',
-          amount: action.amount,
-          shares: multiply(calculations.sharePrice, action.amount),
-          timestamp: action.timestamp || reportData.meta.inception,
-        },
-      ],
-      reportData,
+    const updateData = R.compose(
+      addSubscription(action.amount, action.timestamp),
+      increaseHolding(action.amount),
     );
 
-    // Update holding
-    // TODO
-
     return {
-      reportData: updatedReportData,
-      calculations,
+      ...updateData({ data, calculations }),
       calculationsHistory: [...calculationsHistory, calculations],
       actionHistory: [...actionHistory, action],
     };
@@ -89,7 +99,7 @@ const reducer = R.cond([
 
 /**
  *
- * initialData: FundReportData with prices, meta, investors
+ * initialData: Funddata with prices, meta, investors
  */
 const actionGenerator = ({ initialData, probabilities }) => {
   const p = { ...defaultProbabilities, ...probabilities };
@@ -117,7 +127,7 @@ const eventSourcingMocker = emptyFund => {
 
   // store.subscribe((...args) => console.log('UPDATE', ...args));
 
-  store.dispatch({ type: 'LOAD', reportData: emptyFund });
+  store.dispatch({ type: 'LOAD', data: emptyFund });
   store.dispatch({ type: 'INVEST', amount: '100' });
 
   const finalState = store.getState();

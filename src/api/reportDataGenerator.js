@@ -27,9 +27,7 @@ const reportDataGenerator = async (
     // _timeSpanStart,
     // _timeSpanEnd,
 
-    const { reportData } = eventSourcingMocker(emptyFund);
-
-    return { data: reportData };
+    return eventSourcingMocker(emptyFund);
   } else {
     // enhance dataExtractor data with mock where necessary
     // get data from dataExtractor first
