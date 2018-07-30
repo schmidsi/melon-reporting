@@ -157,12 +157,18 @@ const calculateSharePrice = () =>
 
 const calculateAllocation = dayIndex =>
   setPath(['calculations', 'allocation'], ({ data, calculations }) =>
-    data.holdings.map(holding => ({
-      token: holding.token,
-      price: holding.priceHistory[dayIndex],
-      quantity: holding.quantity,
-      percentage: divide(holding.quantity, calculations.aum),
-    })),
+    data.holdings.map(holding => {
+      const price = holding.priceHistory[dayIndex];
+      const value = multiply(holding.quantity, price);
+
+      return {
+        token: holding.token,
+        price,
+        quantity: holding.quantity,
+        value,
+        percentage: divide(value, calculations.aum),
+      };
+    }),
   );
 
 const updateInvestor = (investor, participation, aum) => {
@@ -440,12 +446,6 @@ const eventSourcingMocker = initialData => {
       ],
     ])(selectRandomWeightedAction(defaultActionWeights));
   });
-
-  console.log(
-    initialData.meta.timeSpanEnd,
-    initialData.meta.timeSpanStart,
-    reportDays,
-  );
 
   const finalState = store.getState();
 
