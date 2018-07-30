@@ -11,6 +11,15 @@ import {
 } from '~/utils/functionalBigNumber';
 import { randomBigNumber, randomHexaDecimal } from './utils';
 
+import doHistoricCalculations from '~/api/calculations/doHistoricCalculations';
+import addInvest from '~/api/modifications/addInvest';
+import addRedeem from '~/api/modifications/addRedeem';
+import addTrade from '~/api/modifications/addTrade';
+import increaseHolding from '~/api/modifications/increaseHolding';
+import decreaseHolding from '~/api/modifications/decreaseHolding';
+import updateHoldings from '~/api/modifications/updateHoldings';
+import isSameToken from '~/api/queries/isSameToken';
+
 import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
@@ -58,8 +67,6 @@ const initialState = {
   calculationsHistory: [],
 };
 
-const isSameToken = (a, b) => a.symbol === b.symbol && a.address === b.address;
-
 const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
 };
@@ -81,184 +88,8 @@ const getOrthogonalPrice = (calculations, buyToken, sellToken) => {
   return divide(sellTokenPrice, buyTokenPrice);
 };
 
-const setPath = (path, setter) => ({ data, calculations }) =>
-  R.assocPath(path, setter({ data, calculations }), { data, calculations });
-
-const addInvest = (amount, timestamp) =>
-  setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
-    ...data.participations.list,
-    {
-      investor: getRandomInvestor(data.participations.investors),
-      token: data.meta.quoteToken,
-      type: 'invest',
-      amount,
-      shares: multiply(calculations.sharePrice, amount),
-      timestamp: timestamp || data.meta.inception,
-    },
-  ]);
-
-const addRedeem = (amount, timestamp, investor) =>
-  setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
-    ...data.participations.list,
-    {
-      investor,
-      token: data.meta.quoteToken,
-      type: 'redeem',
-      amount: multiply(calculations.sharePrice, amount),
-      shares: amount,
-      timestamp: timestamp || data.meta.inception,
-    },
-  ]);
-
-const increaseHolding = (amount, token) =>
-  setPath(['data', 'holdings'], ({ data, calculations }) =>
-    data.holdings.map(holding => ({
-      ...holding,
-      quantity: isSameToken(holding.token, token || data.meta.quoteToken)
-        ? add(holding.quantity, amount)
-        : holding.quantity,
-    })),
-  );
-
-const decreaseHolding = (amount, token) =>
-  setPath(['data', 'holdings'], ({ data, calculations }) =>
-    data.holdings.map(holding => ({
-      ...holding,
-      quantity: isSameToken(holding.token, token || data.meta.quoteToken)
-        ? subtract(holding.quantity, amount)
-        : holding.quantity,
-    })),
-  );
-
-const calculateAum = dayIndex =>
-  setPath(['calculations', 'aum'], ({ data, calculations }) =>
-    data.holdings.reduce(
-      (carry, holding) =>
-        add(carry, multiply(holding.quantity, holding.priceHistory[dayIndex])),
-      '0',
-    ),
-  );
-
-const calculateTotalSupply = () =>
-  setPath(['calculations', 'totalSupply'], ({ data, calculations }) =>
-    data.participations.list.reduce(
-      (carry, participation) =>
-        participation.type === 'invest'
-          ? add(carry, participation.shares)
-          : subtract(carry, participation.shares),
-      '0',
-    ),
-  );
-
-const calculateSharePrice = () =>
-  setPath(['calculations', 'sharePrice'], ({ data, calculations }) =>
-    divide(calculations.aum, calculations.totalSupply),
-  );
-
-const calculateAllocation = dayIndex =>
-  setPath(['calculations', 'allocation'], ({ data, calculations }) =>
-    data.holdings.map(holding => {
-      const price = holding.priceHistory[dayIndex];
-      const value = multiply(holding.quantity, price);
-
-      return {
-        token: holding.token,
-        price,
-        quantity: holding.quantity,
-        value,
-        percentage: divide(value, calculations.aum),
-      };
-    }),
-  );
-
-const updateInvestor = (investor, participation, aum) => {
-  if (investor.address !== participation.investor) return investor;
-
-  const shares = investor.shares || '0';
-  const updatedShares =
-    participation.type === 'invest'
-      ? add(shares, participation.shares)
-      : subtract(investor.shares, participation.shares);
-  const percentage = divide(updatedShares, aum);
-
-  return {
-    ...investor,
-    shares: updatedShares,
-    percentage,
-  };
-};
-
-const calculateInvestors = () =>
-  setPath(['calculations', 'investors'], ({ data, calculations }) =>
-    data.participations.list.reduce(
-      (carry, participation) =>
-        carry.find(investor => investor.address === participation.investor)
-          ? carry.map(investor =>
-              updateInvestor(investor, participation, calculations.aum),
-            )
-          : [
-              ...carry,
-              { address: participation.address, shares: participation.shares },
-            ],
-      data.participations.investors,
-    ),
-  );
-
 const getTimestamp = (data, dayIndex) =>
   add(data.meta.timeSpanStart, multiply(dayIndex, secondsPerDay));
-
-const doCalculations = dayIndex =>
-  R.compose(
-    calculateInvestors(),
-    calculateAllocation(dayIndex),
-    calculateSharePrice(),
-    calculateTotalSupply(),
-    calculateAum(dayIndex),
-  );
-
-const addTrade = ({
-  buyToken,
-  buyHowMuch,
-  sellToken,
-  sellHowMuch,
-  exchange,
-  timestamp,
-  transaction = randomHexaDecimal(64),
-}) =>
-  setPath(['data', 'trades'], ({ data, calculations }) => [
-    ...data.trades,
-    {
-      buy: {
-        token: buyToken,
-        howMuch: buyHowMuch,
-      },
-      sell: {
-        token: sellToken,
-        howMuch: sellHowMuch,
-      },
-      exchange: exchange || shuffle(data.meta.exchanges)[0],
-      timestamp,
-      transaction,
-    },
-  ]);
-
-const updateHoldings = ({ buyToken, buyHowMuch, sellToken, sellHowMuch }) =>
-  setPath(['data', 'holdings'], ({ data, calculations }) =>
-    data.holdings.map(holding => ({
-      ...holding,
-      quantity: R.cond([
-        [
-          ({ buyToken }) => isSameToken(buyToken, holding.token),
-          ({ buyHowMuch }) => add(holding.quantity, buyHowMuch),
-        ],
-        [
-          ({ sellToken }) => isSameToken(sellToken, holding.token),
-          ({ sellHowMuch }) => subtract(holding.quantity, sellHowMuch),
-        ],
-        [R.T, () => holding.quantity],
-      ])({ buyToken, buyHowMuch, sellToken, sellHowMuch }),
-    })),
-  );
 
 const computations = {
   load: (state, action) => ({
@@ -271,10 +102,14 @@ const computations = {
 
     const updateData = R.compose(
       // calculations
-      doCalculations(action.dayIndex),
+      doHistoricCalculations(action.dayIndex),
 
       // modifications
-      addInvest(action.amount, action.timestamp),
+      addInvest({
+        amount: action.amount,
+        timestamp: action.timestamp,
+        investor: getRandomInvestor(data.participations.investors),
+      }),
       increaseHolding(action.amount),
     );
 
@@ -301,7 +136,7 @@ const computations = {
 
     const updateData = R.compose(
       // calculations
-      doCalculations(action.dayIndex),
+      doHistoricCalculations(action.dayIndex),
 
       // modifications
       addRedeem(amount, getTimestamp(data, action.dayIndex), investor.address),
@@ -350,7 +185,7 @@ const computations = {
 
     const updateData = R.compose(
       // calculations
-      doCalculations(action.dayIndex),
+      doHistoricCalculations(action.dayIndex),
 
       // modifications
       addTrade({
@@ -359,6 +194,8 @@ const computations = {
         sellToken,
         sellHowMuch,
         timestamp: getTimestamp(data, action.dayIndex),
+        exchange: shuffle(data.meta.exchanges)[0],
+        transaction: randomHexaDecimal(64),
       }),
       updateHoldings({
         buyToken,
@@ -410,7 +247,7 @@ const eventSourcingMocker = initialData => {
   );
 
   R.range(0, reportDays).map(dayIndex => {
-    R.cond([
+    const dispatchAction = R.cond([
       [
         R.equals('invest'),
         () =>
@@ -444,7 +281,8 @@ const eventSourcingMocker = initialData => {
             dayIndex,
           }),
       ],
-    ])(selectRandomWeightedAction(defaultActionWeights));
+    ]);
+    dispatchAction(selectRandomWeightedAction(defaultActionWeights));
   });
 
   const finalState = store.getState();
