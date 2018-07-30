@@ -8,13 +8,13 @@ import {
   toBigNum,
   randomPercentage,
   randomHexaDecimal,
+  toTimestampSeconds,
 } from './utils';
+import getPriceHistoryFromCryptoCompare from './utils/getPriceHistoryFromCryptoCompare';
 
 const randomExchanges = () => {
   const exchanges = [];
-  const max = 5;
-  const min = 1;
-  const to = Math.floor(Math.random() * (max - min + 1) + min);
+  const to = randomInt(2, 5);
   for (let i = 0; i < to; i++) {
     exchanges.push({
       name: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',
@@ -98,28 +98,22 @@ const randomMetaData = (
   timeSpanStart,
   timeSpanEnd,
   tokenWhitelist,
-) => {
-  const meta = {};
-  //meta.fundAddress = faker.finance.ethereumAddress();
-  meta.fundName = faker.company.companyName();
-  meta.fundAddress = fundAddress;
-  meta.timeSpanStart = timeSpanStart;
-  meta.timeSpanEnd = timeSpanEnd;
-  meta.inception = Math.floor(
-    faker.date.past(1, new Date(timeSpanStart * 1000)).getTime() / 1000,
-  );
-  meta.quoteToken = {
-    symbol: 'ETH',
+) => ({
+  fundName: faker.company.companyName(),
+  fundAddress: fundAddress,
+  timeSpanStart: timeSpanStart,
+  timeSpanEnd: timeSpanEnd,
+  inception: timeSpanStart,
+  quoteToken: tokenWhitelist[0],
+  manager: {
     address: randomEthereumAddress(),
-  };
-  meta.manager = randomEthereumAddress();
-  meta.exchanges = randomExchanges();
-  meta.legalEntity = randomLegalEntity();
-  meta.strategy = randomStrategy();
-  meta.policy = randomPolicy(tokenWhitelist);
-
-  return meta;
-};
+    name: faker.name.findName(),
+  },
+  exchanges: randomExchanges(),
+  legalEntity: randomLegalEntity(),
+  strategy: randomStrategy(),
+  policy: randomPolicy(tokenWhitelist),
+});
 
 const randomInt = (from, to) => {
   return Math.floor(Math.random() * to) + from;
@@ -133,6 +127,13 @@ const randomOpinion = () => {
     'Disclaimer Of Opinion',
   ];
   return opinions[randomInt(0, 4)];
+};
+
+const randomInvestors = numberOfInvestors => {
+  return Array.apply(null, { length: numberOfInvestors }).map(() => ({
+    address: randomEthereumAddress(),
+    name: faker.name.findName(),
+  }));
 };
 
 const randomAudits = (timeSpanStart, timeSpanEnd) =>
@@ -163,7 +164,7 @@ const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
   const timeSpanStart = parseInt(timeSpanStartStr);
   const timeSpanEnd = parseInt(timeSpanEndStr);
 
-  const mockedData = { data: {} };
+  const mockedData = { data: {}, calculations: {} };
   const data = mockedData.data;
 
   const tokenWhitelist = createTokenWhitelist([
@@ -204,4 +205,40 @@ const mockMissingData = async data => {
   return data;
 };
 
-export { mockStaticData, mockAllData, mockMissingData };
+const mockRandomEmptyFund = async ({
+  inception = 1514764800,
+  now = toTimestampSeconds(new Date()),
+  tokenWhiteList = ['ETH', 'MLN', 'ANT', 'GNO', 'MKR', 'OMG'],
+} = {}) => {
+  const meta = randomMetaData(
+    randomEthereumAddress(),
+    inception,
+    now,
+    createTokenWhitelist(tokenWhiteList),
+  );
+
+  const holdings = await Promise.all(
+    meta.policy.tokens.whitelist.map(async token => ({
+      token,
+      quantity: '0',
+      priceHistory: await getPriceHistoryFromCryptoCompare(
+        token.symbol,
+        meta.timeSpanStart,
+        meta.timeSpanEnd,
+      ),
+    })),
+  );
+
+  return {
+    meta,
+    trades: [],
+    participations: {
+      investors: [meta.manager, ...randomInvestors(randomInt(1, 10))],
+      list: [],
+    },
+    holdings,
+    audits: randomAudits(meta.timeSpanStart, meta.timeSpanEnd),
+  };
+};
+
+export { mockStaticData, mockAllData, mockMissingData, mockRandomEmptyFund };

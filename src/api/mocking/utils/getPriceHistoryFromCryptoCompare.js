@@ -1,0 +1,32 @@
+import axios from 'axios';
+import * as R from 'ramda';
+import { differenceInDays } from 'date-fns';
+
+const getPriceHistoryFromCryptoCompare = async (
+  symbol,
+  timeSpanStart,
+  timeSpanEnd,
+) => {
+  const numberOfDays = differenceInDays(
+    new Date(timeSpanEnd * 1000),
+    new Date(timeSpanStart * 1000),
+  );
+
+  if (symbol === 'ETH') {
+    // price of 1 for quote token
+    return R.repeat('1', numberOfDays + 1);
+  }
+
+  const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=ETH&limit=${numberOfDays}&toTs=${timeSpanEnd}`;
+
+  try {
+    const response = await axios.get(url);
+    const histoDay = response.data.Data;
+    const dailyAveragePrices = histoDay.map(day => day.close.toString()); // Note: Close price is the only one without errors
+    return dailyAveragePrices;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export default getPriceHistoryFromCryptoCompare;

@@ -2,10 +2,13 @@ import * as R from 'ramda';
 
 import dataExtractor from './dataExtractor';
 
+import eventSourcingMocker from './mocking/eventSourcingMocker';
+
 import {
   mockStaticData,
   mockAllData,
   mockMissingData,
+  mockRandomEmptyFund,
 } from './mocking/mockDataGenerator';
 
 const reportDataGenerator = async (
@@ -19,12 +22,12 @@ const reportDataGenerator = async (
     return staticData;
   } else if (fundAddress === '0xbada55') {
     // mock everything
-    const mockedData = await mockAllData(
-      fundAddress,
-      _timeSpanStart,
-      _timeSpanEnd,
-    );
-    return mockedData;
+    const emptyFund = await mockRandomEmptyFund();
+    // fundAddress,
+    // _timeSpanStart,
+    // _timeSpanEnd,
+
+    return eventSourcingMocker(emptyFund);
   } else {
     // enhance dataExtractor data with mock where necessary
     // get data from dataExtractor first

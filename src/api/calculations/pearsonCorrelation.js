@@ -15,8 +15,11 @@
 
 import * as R from 'ramda';
 import * as math from 'mathjs';
+import { toNumber } from '../../utils/functionalBigNumber';
 
-const pearsonCorrelation = (x, y) => {
+const pearsonCorrelation = (bigNumX, bigNumY) => {
+  const x = bigNumX.map(toNumber);
+  const y = bigNumY.map(toNumber);
   const zip = R.zip(x, y);
   const length = R.length(zip);
   const stdX = math.std(x);

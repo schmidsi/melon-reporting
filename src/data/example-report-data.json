@@ -748,5 +748,15 @@
       "opinion": "Unqualified Opinion",
       "comment": "Everything is fine!"
     }
+  ],
+  "aumHistory": [
+    100.0,
+    150.0,
+    120.0,
+    140.0,
+    110.0,
+    140.0,
+    145.0,
+    80.0
   ]
 }
