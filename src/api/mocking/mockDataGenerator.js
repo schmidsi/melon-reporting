@@ -39,7 +39,7 @@ const randomLegalEntity = () => {
   return legalEntity;
 };
 
-const randomStrategy = () => faker.company.catchPhrase();
+const randomStrategy = () => R.times(faker.company.bs, 10).join(' ');
 
 const randomTokenObject = () => ({
   symbol: faker.finance.currencyCode(),
