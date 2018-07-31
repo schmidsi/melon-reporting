@@ -6,7 +6,6 @@ import eventSourcingMocker from './mocking/eventSourcingMocker';
 
 import {
   mockStaticData,
-  mockAllData,
   mockMissingData,
   mockRandomEmptyFund,
 } from './mocking/mockDataGenerator';
@@ -32,9 +31,7 @@ const reportDataGenerator = async (
     // enhance dataExtractor data with mock where necessary
     // get data from dataExtractor first
     const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
-    // enhance data
-    // ...
-    const enhancedData = await mockMissingData(data);
+
     return data;
   }
 };

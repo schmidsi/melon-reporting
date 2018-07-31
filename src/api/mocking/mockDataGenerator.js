@@ -1,7 +1,7 @@
 import exampleData from '../../data/example-report-data.json';
-import melonTrader from './melonTrader';
 import faker from 'faker';
 import * as R from 'ramda';
+
 import {
   randomEthereumAddress,
   capitalizeFirstLetter,
@@ -159,52 +159,6 @@ const mockStaticData = async () => {
   return staticData;
 };
 
-const mockAllData = async (fundAddress, timeSpanStartStr, timeSpanEndStr) => {
-  // timespans are strings, convert to int first
-  const timeSpanStart = parseInt(timeSpanStartStr);
-  const timeSpanEnd = parseInt(timeSpanEndStr);
-
-  const mockedData = { data: {}, calculations: {} };
-  const data = mockedData.data;
-
-  const tokenWhitelist = createTokenWhitelist([
-    'ETH',
-    'MLN',
-    'ANT',
-    'GNO',
-    'MKR',
-    'OMG',
-  ]);
-
-  data.meta = randomMetaData(
-    fundAddress,
-    timeSpanStart,
-    timeSpanEnd,
-    tokenWhitelist,
-  );
-  //data.holdings = await randomHoldings(timeSpanStart, timeSpanEnd, whitelist);
-  //data.trades = randomTrades(timeSpanStart, timeSpanEnd, whitelist);
-  //data.participations = randomParticipations(timeSpanStart, timeSpanEnd);
-  const tradeData = await melonTrader(
-    timeSpanStart,
-    timeSpanEnd,
-    tokenWhitelist,
-    data.meta.exchanges,
-  );
-  data.trades = tradeData.trades;
-  data.participations = tradeData.participations;
-  data.holdings = tradeData.holdings;
-
-  data.audits = randomAudits(timeSpanStart, timeSpanEnd);
-
-  return mockedData;
-};
-
-const mockMissingData = async data => {
-  // TODO
-  return data;
-};
-
 const mockRandomEmptyFund = async ({
   inception = 1514764800,
   now = toTimestampSeconds(new Date()),
@@ -241,4 +195,4 @@ const mockRandomEmptyFund = async ({
   };
 };
 
-export { mockStaticData, mockAllData, mockMissingData, mockRandomEmptyFund };
+export { mockStaticData, mockRandomEmptyFund };
