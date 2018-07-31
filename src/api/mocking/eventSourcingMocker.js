@@ -5,7 +5,6 @@ import { shuffle } from 'd3-array';
 import {
   multiply,
   add,
-  subtract,
   divide,
   greaterThan,
 } from '~/utils/functionalBigNumber';
@@ -121,14 +120,12 @@ const computations = {
     const { data, calculations, actionHistory, calculationsHistory } = state;
 
     const investor = action.investor
-      ? calculations.investors.find(
-          investor => investor.address === action.investor,
-        )
+      ? calculations.investors.find(i => i.address === action.investor)
       : shuffle(
-          calculations.investors.filter(investor =>
-            greaterThan(investor.shares, 0),
-          ),
+          calculations.investors.filter(i => greaterThan(i.shares, 0)),
         )[0];
+
+    console.log(investor);
 
     const amount = action.amount || randomBigNumber(0, investor.shares);
 
@@ -209,6 +206,14 @@ const computations = {
       actionHistory: [...actionHistory, action],
     };
   },
+  nothing: (
+    { data, calculations, actionHistory, calculationsHistory },
+    action,
+  ) => ({
+    ...doHistoricCalculations(action.dayIndex)({ data, calculations }),
+    calculationsHistory: [...calculationsHistory, calculations],
+    actionHistory: [...actionHistory, action],
+  }),
 };
 
 const isType = type => (_, action) => action.type === type;
@@ -218,6 +223,7 @@ const reducer = R.cond([
   [isType('INVEST'), computations.invest],
   [isType('REDEEM'), computations.redeem],
   [isType('TRADE'), computations.trade],
+  [isType('NOTHING'), computations.nothing],
   [R.T, state => state],
 ]);
 

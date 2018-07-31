@@ -53,7 +53,7 @@ const randomPolicy = tokenWhitelist => {
   policy.portfolio = {
     maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
     bestPrice: faker.random.number({ min: 0.05, max: 0.3, precision: 0.01 }),
-    bestPrice: randomPercentage(0.05, 0.3),
+    // bestPrice: randomPercentage(0.05, 0.3),
     maxTrades: {
       threshold: faker.random.number({ min: 20, max: 120, precision: 1 }),
       timeperiod: 'month',
@@ -122,7 +122,7 @@ const randomOpinion = () => {
 };
 
 const randomInvestors = numberOfInvestors =>
-  Array(...{ length: numberOfInvestors }).map(() => ({
+  Array({ length: numberOfInvestors }).map(() => ({
     address: randomEthereumAddress(),
     name: faker.name.findName(),
   }));
