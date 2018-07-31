@@ -125,21 +125,31 @@ const computations = {
           calculations.investors.filter(i => greaterThan(i.shares, 0)),
         )[0];
 
-    console.log(investor);
+    if (investor) {
+      const amount = action.amount || randomBigNumber(0, investor.shares);
 
-    const amount = action.amount || randomBigNumber(0, investor.shares);
+      const updateData = R.compose(
+        // calculations
+        doHistoricCalculations(action.dayIndex),
 
-    const updateData = R.compose(
-      // calculations
-      doHistoricCalculations(action.dayIndex),
+        // modifications
+        addRedeem(
+          amount,
+          getTimestamp(data, action.dayIndex),
+          investor.address,
+        ),
+        decreaseHolding(amount),
+      );
 
-      // modifications
-      addRedeem(amount, getTimestamp(data, action.dayIndex), investor.address),
-      decreaseHolding(amount),
-    );
+      return {
+        ...updateData({ data, calculations }),
+        calculationsHistory: [...calculationsHistory, calculations],
+        actionHistory: [...actionHistory, action],
+      };
+    }
 
     return {
-      ...updateData({ data, calculations }),
+      ...doHistoricCalculations(action.dayIndex)({ data, calculations }),
       calculationsHistory: [...calculationsHistory, calculations],
       actionHistory: [...actionHistory, action],
     };

@@ -1,10 +1,7 @@
 import React from 'react';
-import * as R from 'ramda';
 
 import withLoading from './utils/withLoading';
 import reportDataGenerator from '~/api/reportDataGenerator';
-import ColoredNumber from '~/components/blocks/ColoredNumber';
-import DescriptionList from '~/components/blocks/DescriptionList';
 import FactSheet from '~/components/templates/FactSheet';
 import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
@@ -19,9 +16,13 @@ import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
 
-const Report = ({ data, calculations }) => (
+const Report = ({ data, calculations, calculationsHistory }) => (
   <div>
-    <FactSheet data={data} calculations={calculations} />
+    <FactSheet
+      data={data}
+      calculations={calculations}
+      calculationsHistory={calculationsHistory}
+    />
     <Holdings data={data} calculations={calculations} />
     <Trades data={data} calculations={calculations} />
     <Audit data={data} />
@@ -42,23 +43,25 @@ const enhance = withLoading(async props => {
     query.timeSpanEnd,
   );
 
-  const { data } = res;
-  const calculations = {
-    sharePrice: 123,
-    sharePriceHistory: data.holdings[0].priceHistory,
-    transactionFees: 83.214,
-    volatility: 19.5,
-    profit: 5.23,
-    // TODO: Replace second param with sharePriceHistory
-    tokenCorrelation: getTokenCorrelation(data.holdings, [0]),
-    holdingChartData,
-  };
+  const { data, calculations, calculationsHistory } = res;
 
-  debug('Report data loaded', { ...res, calculations });
+  // const calculations = {
+  //   sharePrice: 123,
+  //   sharePriceHistory: data.holdings[0].priceHistory,
+  //   transactionFees: 83.214,
+  //   volatility: 19.5,
+  //   profit: 5.23,
+  //   // TODO: Replace second param with sharePriceHistory
+  //   tokenCorrelation: getTokenCorrelation(data.holdings, [0]),
+  //   holdingChartData,
+  // };
+
+  debug('Report data loaded', res);
 
   return {
     data,
     calculations,
+    calculationsHistory,
   };
 });
 

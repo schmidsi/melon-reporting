@@ -18,9 +18,7 @@ import ColoredNumber from '../../blocks/ColoredNumber';
 import HexValue from '../../blocks/HexValue';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-import hashReport from '../../../api/hashReport';
-
-const FactSheet = ({ data, calculations }) => (
+const FactSheet = ({ data, calculations, calculationsHistory }) => (
   <div>
     <Container>
       <MainHeader>
@@ -36,7 +34,7 @@ const FactSheet = ({ data, calculations }) => (
     </Container>
     <Container>
       <Column>
-        <SharePriceChart data={calculations.sharePriceHistory} />
+        <SharePriceChart data={calculationsHistory} />
         <DescriptionList>
           {[
             ['Profit', <ColoredNumber>{calculations.profit}</ColoredNumber>],
