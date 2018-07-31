@@ -28,9 +28,9 @@ const HoldingChart = ({ width = 877, height = 494, data }) => (
     <YAxis /> */}
       <Tooltip />
 
-      {!!data[0] &&
-        R.keys(data[0]).map((key, i) => {
-          const color = interpolateGreys((i + 1) / data.length);
+      {!!data[1] &&
+        R.keys(data[1]).map((key, i, tokens) => {
+          const color = interpolateGreys((i + 1) / tokens.length);
           return (
             <Area
               key={key}

@@ -25,4 +25,6 @@ const holdingChartData = R.toPairs(effective).reduce(
   labelArray('sharePrice', sharePrice),
 );
 
+console.log(holdingChartData);
+
 export default holdingChartData;

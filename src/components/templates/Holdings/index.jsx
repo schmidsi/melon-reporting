@@ -101,7 +101,7 @@ const Holdings = ({ data, calculations }) => (
     </Container>
     <Container>
       <Column>
-        <HoldingChart data={calculations.holdingChartData} />
+        <HoldingChart data={calculations.holdingsChart} />
       </Column>
     </Container>
   </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Heading1 } from '~/components/design/typography';
-import { Column, Container } from '~/components/design/layout';
+import { Container } from '~/components/design/layout';
 import Table from '~/components/blocks/Table';
 import HexValue from '~/components/blocks/HexValue';
 
@@ -34,7 +34,7 @@ const columnConfig = {
 };
 
 const prepareInvestorTable = ({ data, calculations }) =>
-  data.participations.investors.map(investor => {});
+  data.participations.investors.map(investor => { });
 
 const Participations = ({ data, calculations }) => (
   <div>
