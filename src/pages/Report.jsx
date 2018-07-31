@@ -7,11 +7,6 @@ import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
 import Audit from './Audit';
 
-import getTokenCorrelation from '~/api/calculations/getTokenCorrelation';
-
-// TODO: Remove mock data
-import holdingChartData from '~/components/blocks/HoldingChart/mockData';
-
 import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
@@ -32,15 +27,13 @@ const Report = ({ data, calculations, calculationsHistory }) => (
   </div>
 );
 
-const enhance = withLoading(async props => {
-  const query = props.match.params;
-
+const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');
 
   const res = await reportDataGenerator(
-    query.fundAddress,
-    query.timeSpanStart,
-    query.timeSpanEnd,
+    params.fundAddress,
+    params.timeSpanStart,
+    params.timeSpanEnd,
   );
 
   const { data, calculations, calculationsHistory } = res;
@@ -52,7 +45,6 @@ const enhance = withLoading(async props => {
   //   volatility: 19.5,
   //   profit: 5.23,
   //   // TODO: Replace second param with sharePriceHistory
-  //   tokenCorrelation: getTokenCorrelation(data.holdings, [0]),
   //   holdingChartData,
   // };
 
