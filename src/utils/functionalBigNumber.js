@@ -13,7 +13,7 @@ export const multiply = (base, ...args) =>
 
 export const add = (base, ...args) =>
   args
-    .reduce((acc, current) => acc.add(toBigNumber(current)), toBigNumber(base))
+    .reduce((acc, current) => acc.plus(toBigNumber(current)), toBigNumber(base))
     .toString();
 
 export const subtract = (base, ...args) =>
