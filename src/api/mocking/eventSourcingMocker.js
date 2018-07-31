@@ -67,9 +67,7 @@ const initialState = {
   calculationsHistory: [],
 };
 
-const randomInt = (from, to) => {
-  return Math.floor(Math.random() * to) + from;
-};
+const randomInt = (from, to) => Math.floor(Math.random() * to) + from;
 
 const getRandomInvestor = investors =>
   investors[randomInt(0, investors.length - 1)].address;

@@ -1,6 +1,6 @@
-import exampleData from '../../data/example-report-data.json';
 import faker from 'faker';
 import * as R from 'ramda';
+import exampleData from '../../data/example-report-data.json';
 
 import {
   randomEthereumAddress,
@@ -17,7 +17,7 @@ const randomExchanges = () => {
   const to = randomInt(2, 5);
   for (let i = 0; i < to; i++) {
     exchanges.push({
-      name: capitalizeFirstLetter(faker.lorem.word()) + ' Exchange',
+      name: `${capitalizeFirstLetter(faker.lorem.word())} Exchange`,
       address: randomEthereumAddress(),
     });
   }
@@ -26,33 +26,27 @@ const randomExchanges = () => {
 
 const randomLegalEntity = () => {
   const legalEntity = [];
-  legalEntity.push(faker.company.bs() + ' Inc');
+  legalEntity.push(`${faker.company.bs()} Inc`);
   legalEntity.push(
-    faker.address.streetAddress() + ' ' + faker.address.streetName(),
+    `${faker.address.streetAddress()} ${faker.address.streetName()}`,
   );
-  legalEntity.push(faker.address.zipCode() + ' ' + faker.address.city());
+  legalEntity.push(`${faker.address.zipCode()} ${faker.address.city()}`);
   legalEntity.push(faker.address.country());
   return legalEntity;
 };
 
-const randomStrategy = () => {
-  return faker.company.catchPhrase();
-};
+const randomStrategy = () => faker.company.catchPhrase();
 
-const randomTokenObject = () => {
-  return {
-    symbol: faker.finance.currencyCode(),
-    address: randomEthereumAddress(),
-  };
-};
+const randomTokenObject = () => ({
+  symbol: faker.finance.currencyCode(),
+  address: randomEthereumAddress(),
+});
 
 const createTokenWhitelist = whitelist =>
-  whitelist.map(symbol => {
-    return {
-      symbol,
-      address: randomEthereumAddress(),
-    };
-  });
+  whitelist.map(symbol => ({
+    symbol,
+    address: randomEthereumAddress(),
+  }));
 
 const randomPolicy = tokenWhitelist => {
   const policy = {};
@@ -86,7 +80,7 @@ const randomPolicy = tokenWhitelist => {
     volatilityThreshold: randomPercentage(0.1, 0.5),
   };
   policy.participation = {
-    name: faker.commerce.productName() + ' ' + faker.address.country() + ' KYC',
+    name: `${faker.commerce.productName()} ${faker.address.country()} KYC`,
     address: randomEthereumAddress(),
   };
 
@@ -100,9 +94,9 @@ const randomMetaData = (
   tokenWhitelist,
 ) => ({
   fundName: faker.company.companyName(),
-  fundAddress: fundAddress,
-  timeSpanStart: timeSpanStart,
-  timeSpanEnd: timeSpanEnd,
+  fundAddress,
+  timeSpanStart,
+  timeSpanEnd,
   inception: timeSpanStart,
   quoteToken: tokenWhitelist[0],
   manager: {
@@ -115,9 +109,7 @@ const randomMetaData = (
   policy: randomPolicy(tokenWhitelist),
 });
 
-const randomInt = (from, to) => {
-  return Math.floor(Math.random() * to) + from;
-};
+const randomInt = (from, to) => Math.floor(Math.random() * to) + from;
 
 const randomOpinion = () => {
   const opinions = [
@@ -129,12 +121,11 @@ const randomOpinion = () => {
   return opinions[randomInt(0, 4)];
 };
 
-const randomInvestors = numberOfInvestors => {
-  return Array.apply(null, { length: numberOfInvestors }).map(() => ({
+const randomInvestors = numberOfInvestors =>
+  Array(...{ length: numberOfInvestors }).map(() => ({
     address: randomEthereumAddress(),
     name: faker.name.findName(),
   }));
-};
 
 const randomAudits = (timeSpanStart, timeSpanEnd) =>
   R.range(5, randomInt(5, 10)).map(() => {
@@ -152,7 +143,7 @@ const randomAudits = (timeSpanStart, timeSpanEnd) =>
     };
   });
 
-/// EXPORTED FUNCTIONS
+// / EXPORTED FUNCTIONS
 
 const mockStaticData = async () => {
   const staticData = { data: exampleData };

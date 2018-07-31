@@ -1,7 +1,7 @@
-import { md as _md } from "node-forge";
+import { md as _md } from 'node-forge';
 
 export function hashReport(report) {
-  var md = _md.sha256.create();
+  const md = _md.sha256.create();
   md.update(report);
-  return "0x" + md.digest().toHex();
+  return `0x${md.digest().toHex()}`;
 }

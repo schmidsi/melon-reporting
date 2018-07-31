@@ -19,7 +19,8 @@ const reportDataGenerator = async (
     // all static data
     const staticData = await mockStaticData();
     return staticData;
-  } else if (fundAddress === '0xbada55') {
+  }
+  if (fundAddress === '0xbada55') {
     // mock everything
     const emptyFund = await mockRandomEmptyFund();
     // fundAddress,
@@ -27,13 +28,12 @@ const reportDataGenerator = async (
     // _timeSpanEnd,
 
     return eventSourcingMocker(emptyFund);
-  } else {
-    // enhance dataExtractor data with mock where necessary
-    // get data from dataExtractor first
-    const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
-
-    return data;
   }
+  // enhance dataExtractor data with mock where necessary
+  // get data from dataExtractor first
+  const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
+
+  return data;
 };
 
 export default reportDataGenerator;

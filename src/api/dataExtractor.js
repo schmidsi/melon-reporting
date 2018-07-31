@@ -15,11 +15,10 @@ import {
 } from '@melonproject/melon.js';
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 
-import getAuditsFromFund from './getAuditsFromFund';
-
 // for web3js
 import Web3 from 'web3';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
+import getAuditsFromFund from './getAuditsFromFund';
 
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
