@@ -1,5 +1,16 @@
 import BigNumber from 'bignumber.js';
 
+BigNumber.config({
+  FORMAT: {
+    decimalSeparator: '.',
+    groupSeparator: ' ',
+    groupSize: 3,
+    secondaryGroupSize: 0,
+    fractionGroupSeparator: ' ',
+    fractionGroupSize: 3,
+  },
+});
+
 export const toBigNumber = value =>
   new BigNumber(value === '...' ? 0 : value || 0);
 
@@ -45,3 +56,8 @@ export const toFixed = (number, decimals = 3) =>
   toBigNumber(number).toFixed(decimals);
 
 export const toNumber = bigNumber => toBigNumber(bigNumber).toNumber();
+
+export const format = (number, decimals = 3) =>
+  toBigNumber(number).toFormat(decimals);
+
+export const displayPercent = number => `${format(multiply(number, 100), 2)}%`;

@@ -1,4 +1,5 @@
 import faker from 'faker';
+import titleCase from 'title-case';
 import * as R from 'ramda';
 import exampleData from '../../data/example-report-data.json';
 
@@ -9,6 +10,7 @@ import {
   randomPercentage,
   randomHexaDecimal,
   toTimestampSeconds,
+  randomBigNumber,
 } from './utils';
 import getPriceHistoryFromCryptoCompare from './utils/getPriceHistoryFromCryptoCompare';
 
@@ -26,7 +28,9 @@ const randomExchanges = () => {
 
 const randomLegalEntity = () => {
   const legalEntity = [];
-  legalEntity.push(`${faker.company.bs()} Inc`);
+  legalEntity.push(
+    `${titleCase(faker.company.bs())} ${faker.company.companySuffix()}`,
+  );
   legalEntity.push(
     `${faker.address.streetAddress()} ${faker.address.streetName()}`,
   );
@@ -80,25 +84,31 @@ const randomPolicy = tokenWhitelist => {
     volatilityThreshold: randomPercentage(0.1, 0.5),
   };
   policy.participation = {
-    name: `${faker.commerce.productName()} ${faker.address.country()} KYC`,
-    address: randomEthereumAddress(),
+    complianceModule: {
+      name: `${faker.company.companyName()} KYC`,
+      address: randomEthereumAddress(),
+    },
+    investmentFee: randomBigNumber(0, 0.1),
+    redeemFee: randomBigNumber(0, 0.1),
   };
 
   return policy;
 };
 
-const randomMetaData = (
+const randomMetaData = ({
   fundAddress,
   timeSpanStart,
   timeSpanEnd,
   tokenWhitelist,
-) => ({
+}) => ({
   fundName: faker.company.companyName(),
   fundAddress,
   timeSpanStart,
   timeSpanEnd,
   inception: timeSpanStart,
   quoteToken: tokenWhitelist[0],
+  managementFee: randomBigNumber(0, 0.1),
+  performanceFee: randomBigNumber(0, 0.7),
   manager: {
     address: randomEthereumAddress(),
     name: faker.name.findName(),
@@ -155,12 +165,12 @@ const mockRandomEmptyFund = async ({
   now = toTimestampSeconds(new Date()),
   tokenWhiteList = ['ETH', 'MLN', 'ANT', 'GNO', 'MKR', 'OMG'],
 } = {}) => {
-  const meta = randomMetaData(
-    randomEthereumAddress(),
-    inception,
-    now,
-    createTokenWhitelist(tokenWhiteList),
-  );
+  const meta = randomMetaData({
+    fundAddress: randomEthereumAddress(),
+    timeSpanStart: inception,
+    timeSpanEnd: now,
+    tokenWhitelist: createTokenWhitelist(tokenWhiteList),
+  });
 
   const holdings = await Promise.all(
     meta.policy.tokens.whitelist.map(async token => ({

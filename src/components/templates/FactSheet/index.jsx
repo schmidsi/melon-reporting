@@ -1,6 +1,11 @@
 import React from 'react';
-import * as R from 'ramda';
 import { format } from 'date-fns';
+
+import {
+  format as formatBigNumber,
+  multiply,
+  displayPercent,
+} from '~/utils/functionalBigNumber';
 
 import {
   Title,
@@ -67,11 +72,11 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
             ['Exchanges', data.meta.exchanges.map(e => e.name).join(', ')],
             [''],
             ['Legal Entity', data.meta.legalEntity],
-            //['Report Data Hash', hashReport(data)],
+            // ['Report Data Hash', hashReport(data)],
           ]}
         </DescriptionList>
         <Spacer height={0} />
-        <Heading2>Strategy</Heading2>
+        <Heading2>Strategy </Heading2>
         <p>{data.meta.strategy}</p>
       </Column>
       <Column>
@@ -79,17 +84,20 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
           {[
             [
               `Share Price ${data.meta.quoteToken.symbol}/Share`,
-              calculations.sharePrice,
+              formatBigNumber(calculations.sharePrice),
             ],
-            ['Total Number of Shares', `× ${data.meta.totalSupply}`],
+            [
+              'Total Number of Shares',
+              `× ${formatBigNumber(calculations.totalSupply)}`,
+            ],
             '---',
             [
               `Assets Under Management (${data.meta.quoteToken.symbol})`,
-              calculations.sharePrice * data.meta.totalSupply,
+              formatBigNumber(calculations.aum),
             ],
             [''],
-            ['Mangement Fee', `${data.meta.managementFee * 100}%`],
-            ['Performance Fee', `${data.meta.performanceFee * 100}%`],
+            ['Mangement Fee', displayPercent(data.meta.managementFee)],
+            ['Performance Fee', displayPercent(data.meta.performanceFee)],
             [''],
             ['Transaction Fees (Gas + Fees)', calculations.transactionFees],
             [''],
@@ -99,14 +107,14 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
         <Spacer height={4} />
         {data.meta.policy && (
           <div>
-            <Heading2>Policy</Heading2>
-            <Heading3>Portfolio</Heading3>
+            <Heading2>Policy </Heading2>
+            <Heading3>Portfolio </Heading3>
             <DescriptionList detailsAlign="right">
               {[
                 ['Max Positions', data.meta.policy.portfolio.maxPositions],
                 [
                   'Best Price Tolerance',
-                  `${data.meta.policy.portfolio.bestPriceTolerance * 100}%`,
+                  displayPercent(data.meta.policy.portfolio.bestPriceTolerance),
                 ],
                 [
                   'Max Trades',
@@ -122,13 +130,15 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
                 ],
                 [
                   'Volatility Threshold',
-                  `${data.meta.policy.portfolio.volatilityThreshold * 100}%`,
+                  displayPercent(
+                    data.meta.policy.portfolio.volatilityThreshold,
+                  ),
                 ],
               ]}
             </DescriptionList>
 
-            <Heading3>Tokens</Heading3>
-            <Heading4>Whitelist</Heading4>
+            <Heading3>Tokens </Heading3>
+            <Heading4>Whitelist </Heading4>
             <p>
               {data.meta.policy.tokens.whitelist.map(t => t.symbol).join(', ')}
             </p>
@@ -147,20 +157,20 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
                 ],
                 [
                   'Volatility Threshold',
-                  `${data.meta.policy.tokens.volatilityThreshold * 100}%  `,
+                  displayPercent(data.meta.policy.tokens.volatilityThreshold),
                 ],
               ]}
             </DescriptionList>
-            <Heading3>Participation</Heading3>
+            <Heading3>Participation </Heading3>
             <DescriptionList detailsAlign="right">
               {[
                 [
                   'Investment Fee',
-                  `${data.meta.policy.participation.investmentFee * 1000}%`,
+                  displayPercent(data.meta.policy.participation.investmentFee),
                 ],
                 [
                   'Redeem Fee',
-                  `${data.meta.policy.participation.redeemFee * 1000}%`,
+                  displayPercent(data.meta.policy.participation.redeemFee),
                 ],
                 data.meta.policy.participation.complianceModule && [
                   'Compliance Module',
