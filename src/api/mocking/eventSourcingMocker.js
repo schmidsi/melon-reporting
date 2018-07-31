@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import { shuffle } from 'd3-array';
 
 import {
@@ -26,13 +26,8 @@ const debug = getDebug(__filename);
 const secondsPerDay = 60 * 60 * 24;
 
 const defaultActionWeights = {
-  // TODO: Ideas for enhancing
-  // openPosition: 0.1,
-  // closePosition: 0.1,
-  // increasePosition: 0.1,
-  // decreasePosition: 0.1,
   invest: 2,
-  redeem: 1,
+  redeem: 0,
   trade: 20,
   nothing: 3,
 };
@@ -122,8 +117,8 @@ const computations = {
     const investor = action.investor
       ? calculations.investors.find(i => i.address === action.investor)
       : shuffle(
-          calculations.investors.filter(i => greaterThan(i.shares, 0)),
-        )[0];
+        calculations.investors.filter(i => greaterThan(i.shares, 0)),
+      )[0];
 
     if (investor) {
       const amount = action.amount || randomBigNumber(0, investor.shares);
@@ -161,15 +156,15 @@ const computations = {
       action.token || Math.random() >= 0.5
         ? data.meta.quoteToken
         : shuffle(
-            data.holdings.filter(holding => greaterThan(holding.quantity, 0)),
-          )[0].token;
+          data.holdings.filter(holding => greaterThan(holding.quantity, 0)),
+        )[0].token;
 
     const buyToken = isSameToken(sellToken, data.meta.quoteToken)
       ? shuffle(
-          data.holdings.filter(
-            holding => !isSameToken(sellToken, holding.token),
-          ),
-        )[0].token
+        data.holdings.filter(
+          holding => !isSameToken(sellToken, holding.token),
+        ),
+      )[0].token
       : data.meta.quoteToken;
 
     const type = isSameToken(sellToken, data.meta.quoteToken) ? 'buy' : 'sell';
@@ -237,27 +232,31 @@ const reducer = R.cond([
   [R.T, state => state],
 ]);
 
-/**
- * First create fund from inception to now with all history
- * If other timespan -> filter/process this fund
- */
+const testMiddleware = store => next => action => {
+  // console.log(store, next, action);
+
+  return next(action);
+};
 
 const eventSourcingMocker = initialData => {
   const store = createStore(
     reducer,
     initialState,
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION__(),
+    compose(
+      applyMiddleware(testMiddleware),
+      /* eslint-disable no-underscore-dangle */
+      global.__REDUX_DEVTOOLS_EXTENSION__ &&
+      global.__REDUX_DEVTOOLS_EXTENSION__(),
+      /* eslint-enable */
+    ),
   );
-
-  // store.subscribe((...args) => console.log('UPDATE', ...args));
 
   store.dispatch({ type: 'LOAD', data: initialData });
   store.dispatch({ type: 'INVEST', amount: '100', dayIndex: 0 });
 
   const reportDays = Math.round(
     (initialData.meta.timeSpanEnd - initialData.meta.timeSpanStart) /
-      secondsPerDay,
+    secondsPerDay,
   );
 
   R.range(0, reportDays).map(dayIndex => {
