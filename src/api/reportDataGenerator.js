@@ -6,7 +6,6 @@ import eventSourcingMocker from './mocking/eventSourcingMocker';
 
 import {
   mockStaticData,
-  mockAllData,
   mockMissingData,
   mockRandomEmptyFund,
 } from './mocking/mockDataGenerator';
@@ -20,7 +19,8 @@ const reportDataGenerator = async (
     // all static data
     const staticData = await mockStaticData();
     return staticData;
-  } else if (fundAddress === '0xbada55') {
+  }
+  if (fundAddress === '0xbada55') {
     // mock everything
     const emptyFund = await mockRandomEmptyFund();
     // fundAddress,
@@ -28,15 +28,12 @@ const reportDataGenerator = async (
     // _timeSpanEnd,
 
     return eventSourcingMocker(emptyFund);
-  } else {
-    // enhance dataExtractor data with mock where necessary
-    // get data from dataExtractor first
-    const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
-    // enhance data
-    // ...
-    const enhancedData = await mockMissingData(data);
-    return data;
   }
+  // enhance dataExtractor data with mock where necessary
+  // get data from dataExtractor first
+  const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
+
+  return data;
 };
 
 export default reportDataGenerator;

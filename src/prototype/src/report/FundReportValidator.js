@@ -1,7 +1,8 @@
-import schema from "./FundReportSchema.json";
+import schema from './FundReportSchema.json';
 
-var Validator = require('jsonschema').Validator;
-var v = new Validator();
+const Validator = require('jsonschema').Validator;
+
+const v = new Validator();
 
 export function validateReport(data) {
   return v.validate(data, schema);

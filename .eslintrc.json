@@ -1,0 +1,29 @@
+{
+  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "rules": {
+    "max-params": ["warn", 3],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["~/api", "./src/api"],
+          ["~/components", "./src/components"],
+          ["~/data", "./src/data"],
+          ["~/utils", "./src/utils"]
+        ],
+        "extensions": [".js", ".jsx", ".json", ".css"]
+      }
+    }
+  }
+}
