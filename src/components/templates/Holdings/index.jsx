@@ -84,6 +84,7 @@ const Holdings = ({ data, calculations }) => (
       </Column>
       <Column>
         <Table
+          design="small"
           columnConfig={data.holdings.reduce(
             (carry, holding) => ({
               ...carry,
