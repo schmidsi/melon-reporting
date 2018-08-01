@@ -163,7 +163,24 @@ const mockStaticData = async () => {
 const mockRandomEmptyFund = async ({
   inception = 1514764800,
   now = toTimestampSeconds(new Date()),
-  tokenWhiteList = ['ETH', 'MLN', 'ANT', 'GNO', 'MKR', 'OMG'],
+  tokenWhiteList = [
+    'ETH',
+    'DAI',
+    'MKR',
+    'DGD',
+    'REP',
+    'MLN',
+    'BAT',
+    'ZRX',
+    'KNC',
+    'JNT',
+    'OMG',
+    'ANT',
+    'GNO',
+    'REQ',
+    'NMR',
+    // 'DGX',
+  ],
 } = {}) => {
   const meta = randomMetaData({
     fundAddress: randomEthereumAddress(),

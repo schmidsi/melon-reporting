@@ -2,6 +2,10 @@ import axios from 'axios';
 import * as R from 'ramda';
 import { differenceInDays } from 'date-fns';
 
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
+
 const getPriceHistoryFromCryptoCompare = async (
   symbol,
   timeSpanStart,
@@ -21,6 +25,13 @@ const getPriceHistoryFromCryptoCompare = async (
 
   try {
     const response = await axios.get(url);
+    debug(
+      'Got price from cryptocompare',
+      symbol,
+      response.data.Response,
+      url,
+      response,
+    );
     const histoDay = response.data.Data;
     const dailyAveragePrices = histoDay.map(day => day.close.toString()); // Note: Close price is the only one without errors
     return dailyAveragePrices;
