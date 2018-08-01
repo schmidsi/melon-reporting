@@ -15,13 +15,13 @@ import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
 
-const HoldingChart = ({ width = 877, height = 494, data }) => (
+const HoldingChart = ({ width = 960, height = 494, data }) => (
   <div className={styles.HoldingChart}>
     <AreaChart
       width={width}
       height={height}
       data={data}
-      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+      margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
     >
       {/* <CartesianGrid strokeDasharray="3 3" /> */}
       {/* <XAxis dataKey="name" />
@@ -38,6 +38,7 @@ const HoldingChart = ({ width = 877, height = 494, data }) => (
               stackId="0"
               stroke={color}
               fill={color}
+              type="stepBefore"
             />
           );
         })}

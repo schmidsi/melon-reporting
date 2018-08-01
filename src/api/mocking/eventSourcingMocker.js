@@ -15,7 +15,7 @@ import addInvest from '~/api/modifications/addInvest';
 import addRedeem from '~/api/modifications/addRedeem';
 import addTrade from '~/api/modifications/addTrade';
 import increaseHolding from '~/api/modifications/increaseHolding';
-import decreaseHolding from '~/api/modifications/decreaseHolding';
+import decreaseHoldings from '~/api/modifications/decreaseHoldings';
 import updateHoldings from '~/api/modifications/updateHoldings';
 import isSameToken from '~/api/queries/isSameToken';
 
@@ -27,9 +27,9 @@ const secondsPerDay = 60 * 60 * 24;
 
 const defaultActionWeights = {
   invest: 2,
-  redeem: 0,
-  trade: 20,
-  nothing: 3,
+  redeem: 1,
+  trade: 3,
+  nothing: 60,
 };
 
 const selectRandomWeightedAction = actions => {
@@ -117,11 +117,11 @@ const computations = {
     const investor = action.investor
       ? calculations.investors.find(i => i.address === action.investor)
       : shuffle(
-        calculations.investors.filter(i => greaterThan(i.shares, 0)),
-      )[0];
+          calculations.investors.filter(i => greaterThan(i.shares, 0)),
+        )[0];
 
     if (investor) {
-      const amount = action.amount || randomBigNumber(0, investor.shares);
+      const shares = action.shares || randomBigNumber(0, investor.shares);
 
       const updateData = R.compose(
         // calculations
@@ -129,11 +129,11 @@ const computations = {
 
         // modifications
         addRedeem(
-          amount,
+          shares,
           getTimestamp(data, action.dayIndex),
           investor.address,
         ),
-        decreaseHolding(amount),
+        decreaseHoldings(shares),
       );
 
       return {
@@ -156,15 +156,15 @@ const computations = {
       action.token || Math.random() >= 0.5
         ? data.meta.quoteToken
         : shuffle(
-          data.holdings.filter(holding => greaterThan(holding.quantity, 0)),
-        )[0].token;
+            data.holdings.filter(holding => greaterThan(holding.quantity, 0)),
+          )[0].token;
 
     const buyToken = isSameToken(sellToken, data.meta.quoteToken)
       ? shuffle(
-        data.holdings.filter(
-          holding => !isSameToken(sellToken, holding.token),
-        ),
-      )[0].token
+          data.holdings.filter(
+            holding => !isSameToken(sellToken, holding.token),
+          ),
+        )[0].token
       : data.meta.quoteToken;
 
     const type = isSameToken(sellToken, data.meta.quoteToken) ? 'buy' : 'sell';
@@ -232,11 +232,9 @@ const reducer = R.cond([
   [R.T, state => state],
 ]);
 
-const testMiddleware = store => next => action => {
+const testMiddleware = store => next => action =>
   // console.log(store, next, action);
-
-  return next(action);
-};
+  next(action);
 
 const eventSourcingMocker = initialData => {
   const store = createStore(
@@ -246,7 +244,7 @@ const eventSourcingMocker = initialData => {
       applyMiddleware(testMiddleware),
       /* eslint-disable no-underscore-dangle */
       global.__REDUX_DEVTOOLS_EXTENSION__ &&
-      global.__REDUX_DEVTOOLS_EXTENSION__(),
+        global.__REDUX_DEVTOOLS_EXTENSION__(),
       /* eslint-enable */
     ),
   );
@@ -256,7 +254,7 @@ const eventSourcingMocker = initialData => {
 
   const reportDays = Math.round(
     (initialData.meta.timeSpanEnd - initialData.meta.timeSpanStart) /
-    secondsPerDay,
+      secondsPerDay,
   );
 
   R.range(0, reportDays).map(dayIndex => {
