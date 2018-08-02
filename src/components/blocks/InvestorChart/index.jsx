@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ComposedChart, Area, Line, Tooltip } from 'recharts';
 
-import { toNumber, multiply } from '~/utils/functionalBigNumber';
+import { toNumber } from '~/utils/functionalBigNumber';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 import rezipGrayscale from '~/components/utils/rezipGrayscale';
 
@@ -36,13 +36,10 @@ const InvestorChart = ({
 
         {data.participations.investors.map((investor, i) => {
           const color = rezippedGrayscale[i];
-          console.log(i, data.participations.investors[i]);
           return (
             <Area
               key={investor.address}
-              dataKey={k =>
-                toNumber(multiply(k.investors[i].percentage, k.aum))
-              }
+              dataKey={k => k.investors[i] && toNumber(k.investors[i].value)}
               stackId="0"
               stroke={color}
               fill={color}

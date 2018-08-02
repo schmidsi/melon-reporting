@@ -9,7 +9,16 @@ const rezipGrayscale = arr => {
     greys,
   );
 
+  const last = R.last(firstGreys);
+
   const rearrangedGreys = R.flatten(R.zip(firstGreys, lastGreys));
+
+  // R.zip discards the elements of the longer array so we need to add it
+  // manually
+  if (arr.length % 2) {
+    return [...rearrangedGreys, last];
+  }
+
   return rearrangedGreys;
 };
 

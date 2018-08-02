@@ -21,7 +21,11 @@ const Report = ({ data, calculations, calculationsHistory }) => (
     />
     <Holdings data={data} calculations={calculations} />
     <Trades data={data} calculations={calculations} />
-    <Participations data={data} calculations={calculations} />
+    <Participations
+      data={data}
+      calculations={calculations}
+      calculationsHistory={calculationsHistory}
+    />
     <Audit data={data} />
 
     {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}

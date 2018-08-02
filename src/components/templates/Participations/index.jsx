@@ -9,6 +9,7 @@ import { Container } from '~/components/design/layout';
 import Table from '~/components/blocks/Table';
 import HexValue from '~/components/blocks/HexValue';
 import ColorCondition from '~/components/blocks/ColorCondition';
+import InvestorChart from '~/components/blocks/InvestorChart';
 
 const investorsConfig = {
   address: {
@@ -58,7 +59,7 @@ const prepareInvestorTable = ({ data, calculations }) =>
     }),
   );
 
-const Participations = ({ data, calculations }) => (
+const Participations = ({ data, calculations, calculationsHistory }) => (
   <div>
     <Container>
       <Heading1>Participations</Heading1>
@@ -67,6 +68,9 @@ const Participations = ({ data, calculations }) => (
       <Table columnConfig={investorsConfig}>
         {prepareInvestorTable({ data, calculations })}
       </Table>
+    </Container>
+    <Container>
+      <InvestorChart data={data} calculationsHistory={calculationsHistory} />
     </Container>
     <Container>
       <Heading1>Invests/Redeems</Heading1>
