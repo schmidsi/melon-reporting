@@ -1,7 +1,7 @@
-import { add, subtract, divide } from '~/utils/functionalBigNumber';
+import { add, subtract, divide, multiply } from '~/utils/functionalBigNumber';
 import setPath from '~/api/utils/setPath';
 
-const updateInvestor = (investor, participation, aum) => {
+const updateInvestor = (investor, participation, calculations) => {
   if (investor.address !== participation.investor) return investor;
 
   const shares = investor.shares || '0';
@@ -9,7 +9,7 @@ const updateInvestor = (investor, participation, aum) => {
     participation.type === 'invest'
       ? add(shares, participation.shares)
       : subtract(investor.shares, participation.shares);
-  const percentage = divide(updatedShares, aum);
+  const percentage = divide(updatedShares, calculations.aum);
 
   const invests =
     participation.type === 'invest'
@@ -20,12 +20,15 @@ const updateInvestor = (investor, participation, aum) => {
       ? add(investor.redeems, 1)
       : investor.redeems || 0;
 
+  const value = multiply(updatedShares, calculations.sharePrice);
+
   return {
     ...investor,
     shares: updatedShares,
     percentage,
     invests,
     redeems,
+    value,
   };
 };
 
@@ -35,7 +38,7 @@ const calculateInvestors = () =>
       (carry, participation) =>
         carry.find(investor => investor.address === participation.investor)
           ? carry.map(investor =>
-              updateInvestor(investor, participation, calculations.aum),
+              updateInvestor(investor, participation, calculations),
             )
           : [
               ...carry,

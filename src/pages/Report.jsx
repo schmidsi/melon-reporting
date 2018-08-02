@@ -5,6 +5,7 @@ import reportDataGenerator from '~/api/reportDataGenerator';
 import FactSheet from '~/components/templates/FactSheet';
 import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
+import Participations from '~/components/templates/Participations';
 import Audit from './Audit';
 
 import getDebug from '~/utils/getDebug';
@@ -20,6 +21,7 @@ const Report = ({ data, calculations, calculationsHistory }) => (
     />
     <Holdings data={data} calculations={calculations} />
     <Trades data={data} calculations={calculations} />
+    <Participations data={data} calculations={calculations} />
     <Audit data={data} />
 
     {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
