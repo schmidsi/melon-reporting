@@ -11,8 +11,7 @@ BigNumber.config({
   },
 });
 
-export const toBigNumber = value =>
-  new BigNumber(value === '...' ? 0 : value || 0);
+export const toBigNumber = value => new BigNumber(value || 0);
 
 export const multiply = (base, ...args) =>
   args
@@ -51,6 +50,10 @@ export const equals = (a, b) => toBigNumber(a).eq(b || 0);
 export const max = (a, b) => (greaterThan(a, b) ? a : b).toString();
 
 export const min = (a, b) => (greaterThan(a, b) ? b : a).toString();
+
+export const isPositive = a => toBigNumber(a).gt(0);
+
+export const isNegative = a => toBigNumber(a).lt(0);
 
 export const toFixed = (number, decimals = 3) =>
   toBigNumber(number).toFixed(decimals);

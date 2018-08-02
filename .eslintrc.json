@@ -4,8 +4,8 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
-    "react/prop-types": 0,
-    "react/jsx-one-expression-per-line": 0,
+    "react/prop-types": false,
+    "react/jsx-one-expression-per-line": false,
     "max-params": [
       "warn",
       3
@@ -18,6 +18,22 @@
         "imports": "always-multiline",
         "exports": "always-multiline",
         "functions": "always-multiline"
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/story.jsx"
+        ]
+      }
+    ],
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": [
+          "__"
+        ]
       }
     ]
   },
