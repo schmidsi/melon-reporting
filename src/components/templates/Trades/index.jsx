@@ -1,11 +1,9 @@
 import React from 'react';
-import * as R from 'ramda';
 import { format } from 'date-fns';
 
 import { Heading1 } from '~/components/design/typography';
-import { Column, Container } from '~/components/design/layout';
-import ColoredNumber from '~/components/blocks/ColoredNumber';
-import BuySell from '~/components/blocks/BuySell';
+import { Container } from '~/components/design/layout';
+import ColorCondition from '~/components/blocks/ColorCondition';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
@@ -30,14 +28,14 @@ const Trades = ({ data, calculations }) => (
           },
           type: {
             sortable: true,
-            renderer: BuySell,
+            renderer: ColorCondition,
           },
           price: defaultColumnConfig,
           amount: defaultColumnConfig,
           exchange: defaultColumnConfig,
           profit: {
             sortable: true,
-            renderer: ColoredNumber,
+            renderer: ColorCondition,
             align: 'right',
           },
           txHash: {

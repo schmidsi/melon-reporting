@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 
 import {
   format as formatBigNumber,
-  multiply,
   displayPercent,
 } from '~/utils/functionalBigNumber';
 
@@ -19,7 +18,7 @@ import { Column, Container, Spacer } from '../../design/layout';
 import TimeSpanPicker from '../../blocks/TimeSpanPicker';
 import SharePriceChart from '../../blocks/SharePriceChart';
 import DescriptionList from '../../blocks/DescriptionList';
-import ColoredNumber from '../../blocks/ColoredNumber';
+import ColorCondition from '../../blocks/ColorCondition';
 import HexValue from '../../blocks/HexValue';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
@@ -42,7 +41,12 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
         <SharePriceChart data={calculationsHistory} />
         <DescriptionList>
           {[
-            ['Profit', <ColoredNumber>{calculations.profit}</ColoredNumber>],
+            [
+              'Profit',
+              <ColorCondition>
+                {formatBigNumber(calculations.profit)}%
+              </ColorCondition>,
+            ],
             [''],
             ['Address (ID)', <HexValue>{data.meta.fundAddress}</HexValue>],
             [
@@ -113,13 +117,13 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
                 [
                   'Max Trades',
                   `${data.meta.policy.portfolio.maxTrades.threshold} per ${
-                    data.meta.policy.portfolio.maxTrades.timePeriod
+                  data.meta.policy.portfolio.maxTrades.timePeriod
                   }`,
                 ],
                 [
                   `Max Volume (${data.meta.quoteToken.symbol})`,
                   `${data.meta.policy.portfolio.maxVolume.threshold} per ${
-                    data.meta.policy.portfolio.maxVolume.timePeriod
+                  data.meta.policy.portfolio.maxVolume.timePeriod
                   }`,
                 ],
                 [
@@ -146,7 +150,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
                 [
                   'Market Cap Range',
                   `${data.meta.policy.tokens.marketCapRange.min} - ${
-                    data.meta.policy.tokens.marketCapRange.max
+                  data.meta.policy.tokens.marketCapRange.max
                   }`,
                 ],
                 [
