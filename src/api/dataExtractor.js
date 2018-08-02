@@ -41,8 +41,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
-  const timeSpanStart = parseInt(_timeSpanStart);
-  const timeSpanEnd = parseInt(_timeSpanEnd);
+  const timeSpanStart = parseInt(_timeSpanStart, 10);
+  const timeSpanEnd = parseInt(_timeSpanEnd, 10);
 
   ensure(
     timeSpanStart < timeSpanEnd,

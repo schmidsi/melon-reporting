@@ -1,7 +1,7 @@
 import dataExtractor from './dataExtractor';
 
 import doFinalCalculations from '~/api/calculations/doFinalCalculations';
-import fundSimulator from './mocking/fundSimulator';
+import fundMocker from './mocking/fundMocker';
 
 import {
   mockStaticData,
@@ -21,7 +21,7 @@ const reportDataGenerator = async (
   if (fundAddress === '0xbada55') {
     // mock everything
     const emptyFund = await mockRandomEmptyFund();
-    const mockData = fundSimulator(emptyFund);
+    const mockData = fundMocker(emptyFund);
 
     const withFinalCalculations = doFinalCalculations(mockData);
 

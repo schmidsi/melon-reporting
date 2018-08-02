@@ -5,7 +5,7 @@ const addRedeem = (shares, timestamp, investor) =>
   setPath(['data', 'participations', 'list'], ({ data, calculations }) => [
     ...data.participations.list,
     {
-      investor,
+      investor: investor.address,
       token: data.meta.quoteToken,
       type: 'redeem',
       amount: multiply(calculations.sharePrice, shares),

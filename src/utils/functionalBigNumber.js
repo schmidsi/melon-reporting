@@ -18,7 +18,7 @@ export const multiply = (base, ...args) =>
     .reduce(
       (acc, current) => acc.times(toBigNumber(current)),
       toBigNumber(base),
-    )
+  )
     .toString();
 
 export const add = (base, ...args) =>
@@ -31,7 +31,7 @@ export const subtract = (base, ...args) =>
     .reduce(
       (acc, current) => acc.minus(toBigNumber(current)),
       toBigNumber(base),
-    )
+  )
     .toString();
 
 export const divide = (base, ...args) =>
@@ -64,3 +64,10 @@ export const format = (number, decimals = 3) =>
   toBigNumber(number).toFormat(decimals);
 
 export const displayPercent = number => `${format(multiply(number, 100), 2)}%`;
+
+export const floor = number =>
+  toBigNumber(number)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .toString();
+
+export const isFinite = number => toBigNumber(number).isFinite();
