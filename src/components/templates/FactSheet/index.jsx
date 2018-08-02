@@ -82,19 +82,13 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => (
       <Column>
         <DescriptionList detailsAlign="right">
           {[
+            [`Share Price`, formatBigNumber(calculations.sharePrice)],
             [
-              `Share Price ${data.meta.quoteToken.symbol}/Share`,
-              formatBigNumber(calculations.sharePrice),
-            ],
-            [
-              'Total Number of Shares',
+              'Number of Shares',
               `× ${formatBigNumber(calculations.totalSupply)}`,
             ],
             '---',
-            [
-              `Assets Under Management (${data.meta.quoteToken.symbol})`,
-              formatBigNumber(calculations.aum),
-            ],
+            [`AUM`, formatBigNumber(calculations.aum)],
             [''],
             ['Mangement Fee', displayPercent(data.meta.managementFee)],
             ['Performance Fee', displayPercent(data.meta.performanceFee)],

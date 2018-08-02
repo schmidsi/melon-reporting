@@ -11,10 +11,21 @@ const updateInvestor = (investor, participation, aum) => {
       : subtract(investor.shares, participation.shares);
   const percentage = divide(updatedShares, aum);
 
+  const invests =
+    participation.type === 'invest'
+      ? add(investor.invests, 1)
+      : investor.invests || 0;
+  const redeems =
+    participation.type === 'redeem'
+      ? add(investor.redeems, 1)
+      : investor.redeems || 0;
+
   return {
     ...investor,
     shares: updatedShares,
     percentage,
+    invests,
+    redeems,
   };
 };
 
