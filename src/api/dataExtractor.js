@@ -295,6 +295,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     return [...acc, ...curr];
   }, new Promise(resolve => resolve([])));
 
+  console.log(priceHistory);
+
   const preparedHistory = R.groupBy(
     entry => entry.address.toLowerCase(),
     R.flatten(
