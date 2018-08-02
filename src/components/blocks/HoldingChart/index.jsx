@@ -15,7 +15,11 @@ import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
 
-const HoldingChart = ({ width = 960, height = 494, data }) => {
+const HoldingChart = ({
+  width = 960 * (16 / 18),
+  height = 494 * (16 / 18),
+  data,
+}) => {
   if (!data[1]) return <h1>No data</h1>;
 
   const greys = R.keys(data[1]).map((key, i, tokens) =>

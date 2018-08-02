@@ -13,7 +13,11 @@ import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
 
-const SharePriceChart = ({ width = 548, height = 314, data }) => (
+const SharePriceChart = ({
+  width = 548 * (16 / 18),
+  height = 314 * (16 / 18),
+  data,
+}) => (
   <div className={styles.SharePriceChart}>
     <LineChart
       width={width}
