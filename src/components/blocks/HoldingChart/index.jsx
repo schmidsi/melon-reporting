@@ -3,14 +3,16 @@ import * as R from 'ramda';
 import { interpolateGreys } from 'd3-scale-chromatic';
 
 import {
-  AreaChart,
+  ComposedChart,
   Area,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
 } from 'recharts';
 
+import { toNumber } from '~/utils/functionalBigNumber';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
@@ -23,7 +25,7 @@ const HoldingChart = ({
   if (!data[1]) return <h1>No data</h1>;
 
   const greys = R.keys(data[1]).map((key, i, tokens) =>
-    interpolateGreys((i + 1) / tokens.length),
+    interpolateGreys((i + 1) / (tokens.length - 1)),
   );
 
   const [firstGreys, lastGreys] = R.splitAt(
@@ -35,7 +37,7 @@ const HoldingChart = ({
 
   return (
     <div className={styles.HoldingChart}>
-      <AreaChart
+      <ComposedChart
         width={width}
         height={height}
         data={data}
@@ -48,7 +50,15 @@ const HoldingChart = ({
 
         {R.keys(data[1]).map((key, i) => {
           const color = rearrangedGreys[i];
-          return (
+          return key === 'sharePrice' ? (
+            <Line
+              key={key}
+              dataKey={k => toNumber(k.sharePrice)}
+              stroke="#000000"
+              dot={false}
+              type="stepBefore"
+            />
+          ) : (
             <Area
               key={key}
               dataKey={key}
@@ -68,7 +78,7 @@ const HoldingChart = ({
       />
       <Area dataKey="pv" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
     <Area dataKey="amt" stackId="1" stroke="#ffc658" fill="#ffc658" /> */}
-      </AreaChart>
+      </ComposedChart>
     </div>
   );
 };

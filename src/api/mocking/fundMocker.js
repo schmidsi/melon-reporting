@@ -39,7 +39,7 @@ const getToken = R.prop('token');
 
 const defaultActionWeights = {
   invest: 3,
-  redeem: 2,
+  redeem: 1,
   trade: 20,
   nothing: 15,
 };
