@@ -1,12 +1,14 @@
 import React from 'react';
 import * as R from 'ramda';
 import { format } from 'date-fns';
+import titleCase from 'title-case';
 
 import { format as numberFormat } from '~/utils/functionalBigNumber';
 import { Heading1 } from '~/components/design/typography';
 import { Container } from '~/components/design/layout';
 import Table from '~/components/blocks/Table';
 import HexValue from '~/components/blocks/HexValue';
+import ColorCondition from '~/components/blocks/ColorCondition';
 
 const investorsConfig = {
   address: {
@@ -39,7 +41,7 @@ const investorsConfig = {
 
 const participationsConfig = {
   token: { sortable: true },
-  type: { sortable: true },
+  type: { sortable: true, renderer: ColorCondition },
   value: { sortable: true },
   shares: { sortable: true },
   investor: { sortable: true, renderer: HexValue },
@@ -73,6 +75,7 @@ const Participations = ({ data, calculations }) => (
       <Table columnConfig={participationsConfig}>
         {data.participations.list.map(participation => ({
           ...participation,
+          type: titleCase(participation.type),
           shares: numberFormat(participation.shares),
           value: numberFormat(participation.value),
           token: participation.token.symbol,

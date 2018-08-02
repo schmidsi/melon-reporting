@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import ColorCondition from './';
+import ColorCondition from ".";
 
 storiesOf('ColorCondition', module).add('default', () => (
   <div>
@@ -17,6 +17,9 @@ storiesOf('ColorCondition', module).add('default', () => (
       </li>
       <li>
         <ColorCondition>Invest</ColorCondition>
+      </li>
+      <li>
+        <ColorCondition>invest</ColorCondition>
       </li>
       <li>
         <ColorCondition>Redeem</ColorCondition>
