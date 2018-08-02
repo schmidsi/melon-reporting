@@ -9,6 +9,7 @@ import {
   Legend,
 } from 'recharts';
 
+import { toNumber } from '~/utils/functionalBigNumber';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 import styles from './styles.css';
@@ -25,8 +26,12 @@ const SharePriceChart = ({
       data={data}
       margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
     >
-      <XAxis height={1} domain={[0, 'dataMax']} />
-      <YAxis width={1} />
+      <XAxis height={1} />
+      <YAxis
+        width={1}
+        dataKey={k => toNumber(k.sharePrice)}
+        domain={[0, dataMax => dataMax * 1.1]}
+      />
       <Tooltip />
       <Line dataKey="sharePrice" stroke="#000000" dot={false} />
     </LineChart>
