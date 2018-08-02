@@ -98,11 +98,11 @@ const computations = {
 
       // modifications
       addInvest({
-        amount: action.amount,
+        value: action.value,
         timestamp: action.timestamp,
         investor: getRandomInvestor(data.participations.investors),
       }),
-      increaseHolding(action.amount),
+      increaseHolding(action.value),
     );
 
     return {
@@ -232,16 +232,27 @@ const reducer = R.cond([
   [R.T, state => state],
 ]);
 
-const testMiddleware = store => next => action =>
-  // console.log(store, next, action);
-  next(action);
+const errorReporter = store => next => action => {
+  try {
+    return next(action);
+  } catch (err) {
+    console.error(
+      'Error in fund simulator',
+      action.type,
+      action,
+      store.getState(),
+      err,
+    );
+    throw err;
+  }
+};
 
 const eventSourcingMocker = initialData => {
   const store = createStore(
     reducer,
     initialState,
     compose(
-      applyMiddleware(testMiddleware),
+      applyMiddleware(errorReporter),
       /* eslint-disable no-underscore-dangle */
       global.__REDUX_DEVTOOLS_EXTENSION__ &&
       global.__REDUX_DEVTOOLS_EXTENSION__(),
@@ -250,7 +261,7 @@ const eventSourcingMocker = initialData => {
   );
 
   store.dispatch({ type: 'LOAD', data: initialData });
-  store.dispatch({ type: 'INVEST', amount: '100', dayIndex: 0 });
+  store.dispatch({ type: 'INVEST', value: '100', dayIndex: 0 });
 
   const reportDays = Math.round(
     (initialData.meta.timeSpanEnd - initialData.meta.timeSpanStart) /
@@ -264,7 +275,7 @@ const eventSourcingMocker = initialData => {
         () =>
           store.dispatch({
             type: 'INVEST',
-            amount: randomBigNumber(1, 100),
+            value: randomBigNumber(1, 100),
             dayIndex,
           }),
       ],

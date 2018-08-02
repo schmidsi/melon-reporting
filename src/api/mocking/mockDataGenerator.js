@@ -132,7 +132,7 @@ const randomOpinion = () => {
 };
 
 const randomInvestors = numberOfInvestors =>
-  Array({ length: numberOfInvestors }).map(() => ({
+  R.range(0, numberOfInvestors).map(() => ({
     address: randomEthereumAddress(),
     name: faker.name.findName(),
   }));

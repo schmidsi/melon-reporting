@@ -13,6 +13,7 @@ const columnConfig = {
   },
   kyc: {
     sortable: true,
+    headerText: 'KYC',
     // renderer: a => a, // TODO: TrafficLight
   },
   name: {
