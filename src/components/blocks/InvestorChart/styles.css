@@ -1,0 +1,5 @@
+.InvestorChart {
+  border: 2px solid black;
+  margin-bottom: calc(30rem/18);
+  margin-top: 2rem;
+}

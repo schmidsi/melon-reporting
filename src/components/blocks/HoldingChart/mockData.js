@@ -1,7 +1,5 @@
 import * as R from 'ramda';
 
-import exampleData from '~/data/example-report-data.json';
-
 const sharePrice = [10, 12, 15, 12, 18, 17, 20];
 
 const percentage = {
@@ -24,7 +22,5 @@ const holdingChartData = R.toPairs(effective).reduce(
   (carry, [key, value]) => R.zipWith(R.merge, carry, labelArray(key, value)),
   labelArray('sharePrice', sharePrice),
 );
-
-console.log(holdingChartData);
 
 export default holdingChartData;
