@@ -132,11 +132,7 @@ const randomOpinion = () => {
 };
 
 const randomInvestors = numberOfInvestors =>
-<<<<<<< HEAD
   R.range(0, numberOfInvestors).map(() => ({
-=======
-  Array({ length: numberOfInvestors }).map(() => ({
->>>>>>> PriceHistoryReader first version
     address: randomEthereumAddress(),
     name: faker.name.findName(),
   }));
