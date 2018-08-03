@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import BigNumber from 'bignumber.js';
 import {
   ensure,
   getAddress,
@@ -13,12 +14,29 @@ import {
   performCalculations,
   toReadable,
 } from '@melonproject/melon.js';
-import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 
-// for web3js
 import Web3 from 'web3';
+// for web3js
+
+import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
+import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.json';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
+import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import getAuditsFromFund from './getAuditsFromFund';
+
+import getDebug from '~/utils/getDebug';
+
+const debug = getDebug(__filename);
+
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+);
+
+const AVERAGE_BLOCKTIME = 7; // 7.52
+
+const transferAbi = Erc20Abi.find(
+  e => e.name === 'Transfer' && e.type === 'event',
+);
 
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
@@ -29,7 +47,40 @@ const getExchangeName = ofAddress =>
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
   timestamp >= timeSpanStart && timestamp <= timeSpanEnd;
 
+const parseAddress = hexString => `0x${hexString.slice(-40)}`;
+
+const getSymbolOrFund = (config, address) => {
+  try {
+    return getSymbol(config, address);
+  } catch (e) {
+    return 'MLNF';
+  }
+};
+
+const parseTransferLog = config => log => {
+  const tokens = new BigNumber(log.data);
+
+  const from = parseAddress(log.topics[1]);
+  const to = parseAddress(log.topics[2]);
+
+  const symbol = getSymbolOrFund(config, log.address);
+  const amount = toReadable(
+    config,
+    tokens,
+    symbol === 'MLNF' ? config.quoteAssetSymbol : symbol,
+  ).toString();
+
+  return {
+    from,
+    to,
+    symbol,
+    amount,
+    blockNumber: log.blockNumber,
+  };
+};
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
+  console.log(process.env.JSON_RPC_ENDPOINT);
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
     ...provider,
@@ -54,24 +105,68 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const config = await getConfig(environment);
+  debug({ addressBook, config, environment, url: environment.provider.url });
 
   const fundContract = await getFundContract(environment, fundAddress);
 
   /*
     web3.js contract
   */
-  const web3 = new Web3(
-    new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+
+  const currentBlock = await web3.eth.getBlockNumber();
+
+  const transferEventSignature = web3.eth.abi.encodeEventSignature(transferAbi);
+
+  const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
+
+  const fundAgeInSeconds = Math.floor(
+    (new Date() - informations.inception) / 1000,
   );
 
-  /*
-  const web3 = new Web3(
-    new Web3.providers.HttpProvider(
-      'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C',
-    ),
+  const inceptionBlockApprox = Math.floor(
+    currentBlock - fundAgeInSeconds / AVERAGE_BLOCKTIME,
   );
-  */
-  const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
+
+  const blockBeforeInception = await web3.eth.getBlock(inceptionBlockApprox);
+
+  const tokenSends = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: web3.utils.numberToHex(currentBlock),
+    // address: '0x8888f1f195afa192cfee860698584c030f4c9db1',
+    topics: [transferEventSignature, web3.utils.padLeft(fundAddress, 64)],
+  })).map(parseTransferLog(config));
+
+  const tokenReceives = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: web3.utils.numberToHex(currentBlock),
+    // address: '0x8888f1f195afa192cfee860698584c030f4c9db1',
+    topics: [transferEventSignature, null, web3.utils.padLeft(fundAddress, 64)],
+  })).map(parseTransferLog(config));
+
+  const shares = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: web3.utils.numberToHex(currentBlock),
+    address: fundAddress,
+    topics: [transferEventSignature],
+  })).map(parseTransferLog(config));
+
+  debug(
+    {
+      tokenSends,
+      tokenReceives,
+      shares,
+    },
+    // new Date(blockBeforeInception.timestamp * 1000),
+    // blockBeforeInception,
+    // inceptionBlockApprox,
+    // currentBlock,
+    // fundAgeInSeconds,
+    // informations.inception,
+    // Erc20Abi,
+    // transferAbi,
+    // transferEventSignature,
+    // web3jsFundContract,
+  );
 
   const calculations = await performCalculations(environment, {
     fundAddress,
@@ -119,7 +214,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
             timestamp,
             atUpdateId,
           }),
-        ),
+      ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
@@ -153,7 +248,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         ),
         timestamp,
       }),
-    );
+  );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
@@ -161,11 +256,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     toBlock: 'latest',
   });
 
+  console.log(allRedeems);
+
   const redeems = allRedeems
     // we only need the redeem events that were emitted in the provided report timespan
     .filter(r =>
       onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd),
-    )
+  )
     .map(r => ({
       investor: r.returnValues.ofParticipant,
       type: 'redeem',
@@ -222,7 +319,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
             tokens,
             prices,
           ),
-        ),
+      ),
     ),
   );
 
