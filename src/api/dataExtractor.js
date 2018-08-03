@@ -6,6 +6,7 @@ import {
   getCanonicalPriceFeedContract,
   getConfig,
   getFundContract,
+  getFundRecentTrades,
   getFundInformations,
   getHoldingsAndPrices,
   getOrdersHistory,
@@ -23,8 +24,11 @@ import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.j
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import getAuditsFromFund from './getAuditsFromFund';
+import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
 
 import getDebug from '~/utils/getDebug';
+
+import fundSimulator from '~/api/fundSimulator';
 
 const debug = getDebug(__filename);
 
@@ -36,6 +40,10 @@ const AVERAGE_BLOCKTIME = 7; // 7.52
 
 const transferAbi = Erc20Abi.find(
   e => e.name === 'Transfer' && e.type === 'event',
+);
+
+const zeroExLogFillAbi = ZeroExAbi.find(
+  e => e.name === 'LogFill' && e.type === 'event',
 );
 
 // TODO: Remove kovan from addressBook
@@ -86,6 +94,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ...provider,
     track: 'kovan-demo',
   };
+
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
@@ -117,6 +126,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const transferEventSignature = web3.eth.abi.encodeEventSignature(transferAbi);
 
+  const zeroExLogFillEventSignature = web3.eth.abi.encodeEventSignature(
+    zeroExLogFillAbi,
+  );
+
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
   const fundAgeInSeconds = Math.floor(
@@ -128,6 +141,29 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const blockBeforeInception = await web3.eth.getBlock(inceptionBlockApprox);
+
+  const oasisDexTrades = await getFundRecentTrades(environment, {
+    fundAddress,
+    inlastXDays: 20,
+  });
+  debug('oasisDexTrades', oasisDexTrades);
+
+  const zeroExTrades = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: 'latest',
+    topics: [zeroExLogFillEventSignature],
+  }))
+    .map(log => {
+      const logFill = web3.eth.abi.decodeLog(
+        zeroExLogFillAbi.inputs,
+        log.data,
+        log.topics,
+      );
+      logFill.blockNumber = log.blockNumber;
+      return logFill;
+    })
+    .filter(logFill => logFill.taker === fundAddress);
+  debug('zeroExTrades', zeroExTrades);
 
   const tokenSends = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -214,7 +250,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
             timestamp,
             atUpdateId,
           }),
-      ),
+        ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
@@ -248,7 +284,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         ),
         timestamp,
       }),
-  );
+    );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
@@ -262,7 +298,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     // we only need the redeem events that were emitted in the provided report timespan
     .filter(r =>
       onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd),
-  )
+    )
     .map(r => ({
       investor: r.returnValues.ofParticipant,
       type: 'redeem',
@@ -321,7 +357,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
             tokens,
             prices,
           ),
-      ),
+        ),
     ),
   );
 
@@ -363,6 +399,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const trades = [];
 
+  /*
   return {
     data: {
       meta,
@@ -386,6 +423,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       // lastHistoryEntry,
     },
   };
+  */
+
+  const initialData = {};
+
+  const fund = fundSimulator(initialData);
+
+  const finalState = fund.getState();
+
+  debug('Final Fund State', finalState);
+
+  return finalState;
 };
 
 export default dataExtractor;
