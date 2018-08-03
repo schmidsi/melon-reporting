@@ -31,8 +31,7 @@
       "FL-9490 Vaduz",
       "Liechtenstein"
     ],
-    "strategy":
-      "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user-centric; incentivize web-enabled expedite, tag target,\" podcasts integrated rich-clientAPIs; platforms. ",
+    "strategy": "Melon Crypto Capital focuses on the most promising crypto tokens in Global world-class webservices channels relationships, ROI rss-capable, deliverables paradigms tagclouds visionary distributed; magnetic syndicate revolutionary evolve e-markets, design networks killer, next-generation. Killer back-end engage transition blogging robust beta-test iterate bandwidth, channels, \"user-centric; incentivize web-enabled expedite, tag target,\" podcasts integrated rich-clientAPIs; platforms. ",
     "totalSupply": 53.235,
     "managementFee": 0.02,
     "performanceFee": 0.2,
@@ -731,20 +730,26 @@
   },
   "audits": [
     {
-      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-      "dataHash":
-        "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
+      "auditor": {
+        "address": "0x9b8C165672b41725817a606c18C117C5a171D96b",
+        "name": "Blockchain Audit AG"
+      },
+      "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
       "timespanStart": 1524729021,
       "timespanEnd": 1524739020,
+      "timestamp": 1524739050,
       "opinion": "Qualified Opinion",
       "comment": "Something is wrong!"
     },
     {
-      "auditor": "0x9b8C165672b41725817a606c18C117C5a171D96b",
-      "dataHash":
-        "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
-      "timeSpanStart": 1524729086,
-      "timeSpanEnd": 1524739020,
+      "auditor": {
+        "address": "0x9b8C165672b41725817a606c18C117C5a171D96b",
+        "name": "Blockchain Audit AG"
+      },
+      "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
+      "timespanStart": 1524729086,
+      "timespanEnd": 1524739020,
+      "timestamp": 1524739120,
       "opinion": "Unqualified Opinion",
       "comment": "Everything is fine!"
     }

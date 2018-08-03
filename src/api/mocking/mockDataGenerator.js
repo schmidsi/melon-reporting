@@ -137,17 +137,23 @@ const randomInvestors = numberOfInvestors =>
     name: faker.name.findName(),
   }));
 
-const randomAudits = (timeSpanStart, timeSpanEnd) =>
-  R.range(5, randomInt(5, 10)).map(() => {
-    const auditStart = faker.date
-      .between(new Date(timeSpanStart), new Date(timeSpanEnd))
+const randomAudits = (from, to) =>
+  R.range(0, randomInt(5, 10)).map(() => {
+    const timespanStart = faker.date
+      .between(new Date(from), new Date(to))
       .getTime();
-    const auditEnd = auditStart + 10000;
+    const timespanEnd = timespanStart + 10000;
     return {
-      auditor: randomEthereumAddress(),
+      auditor: {
+        address: randomEthereumAddress(),
+        name: faker.company.companyName(),
+      },
       dataHash: randomHexaDecimal(64),
-      timeSpanStart: auditStart,
-      timeSpanEnd: auditEnd,
+      timespanStart,
+      timespanEnd,
+      timestamp:
+        faker.date.between(new Date(timespanEnd * 1000), new Date()).getTime() /
+        1000,
       opinion: randomOpinion(),
       comment: faker.hacker.phrase(),
     };

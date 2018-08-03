@@ -6,6 +6,7 @@ import FactSheet from '~/components/templates/FactSheet';
 import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
 import Participations from '~/components/templates/Participations';
+import Audits from '~/components/templates/Audits';
 import Audit from './Audit';
 
 import getDebug from '~/utils/getDebug';
@@ -27,6 +28,7 @@ const Report = ({ data, calculations, calculationsHistory }) =>
         calculations={calculations}
         calculationsHistory={calculationsHistory}
       />
+      <Audits data={data} />
       <Audit data={data} />
 
       {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
