@@ -31,7 +31,7 @@ const reportDataGenerator = async (
   // get data from dataExtractor first
   const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
 
-  return data;
+  return {};
 };
 
 export default reportDataGenerator;

@@ -12,25 +12,28 @@ import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
 
-const Report = ({ data, calculations, calculationsHistory }) => (
-  <div>
-    <FactSheet
-      data={data}
-      calculations={calculations}
-      calculationsHistory={calculationsHistory}
-    />
-    <Holdings data={data} calculations={calculations} />
-    <Trades data={data} calculations={calculations} />
-    <Participations
-      data={data}
-      calculations={calculations}
-      calculationsHistory={calculationsHistory}
-    />
-    <Audit data={data} />
+const Report = ({ data, calculations, calculationsHistory }) =>
+  data && calculations && calculationsHistory ? (
+    <div>
+      <FactSheet
+        data={data}
+        calculations={calculations}
+        calculationsHistory={calculationsHistory}
+      />
+      <Holdings data={data} calculations={calculations} />
+      <Trades data={data} calculations={calculations} />
+      <Participations
+        data={data}
+        calculations={calculations}
+        calculationsHistory={calculationsHistory}
+      />
+      <Audit data={data} />
 
-    {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
-  </div>
-);
+      {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
+    </div>
+  ) : (
+    <h1>Missing data</h1>
+  );
 
 const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');
