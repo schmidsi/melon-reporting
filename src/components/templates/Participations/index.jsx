@@ -1,17 +1,24 @@
 import React from 'react';
+import * as R from 'ramda';
+import { format } from 'date-fns';
+import titleCase from 'title-case';
 
+import { format as numberFormat } from '~/utils/functionalBigNumber';
 import { Heading1 } from '~/components/design/typography';
-import { Column, Container } from '~/components/design/layout';
+import { Container } from '~/components/design/layout';
 import Table from '~/components/blocks/Table';
 import HexValue from '~/components/blocks/HexValue';
+import ColorCondition from '~/components/blocks/ColorCondition';
+import InvestorChart from '~/components/blocks/InvestorChart';
 
-const columnConfig = {
+const investorsConfig = {
   address: {
     renderer: HexValue,
   },
   kyc: {
     sortable: true,
-    renderer: a => a, // TODO: TrafficLight
+    headerText: 'KYC',
+    // renderer: a => a, // TODO: TrafficLight
   },
   name: {
     headerText: 'ENS Lookup',
@@ -33,17 +40,54 @@ const columnConfig = {
   },
 };
 
-const prepareInvestorTable = ({ data, calculations }) =>
-  data.participations.investors.map(investor => {});
+const participationsConfig = {
+  token: { sortable: true },
+  type: { sortable: true, renderer: ColorCondition },
+  value: { sortable: true },
+  shares: { sortable: true },
+  investor: { sortable: true, renderer: HexValue },
+  timestamp: { sortable: true },
+};
 
-const Participations = ({ data, calculations }) => (
+const prepareInvestorTable = ({ data, calculations }) =>
+  R.zipWith(R.merge, data.participations.investors, calculations.investors).map(
+    investor => ({
+      ...investor,
+      kyc: 'unknown',
+      shares: numberFormat(investor.shares),
+      value: numberFormat(investor.value),
+    }),
+  );
+
+const Participations = ({ data, calculations, calculationsHistory }) => (
   <div>
     <Container>
       <Heading1>Participations</Heading1>
     </Container>
     <Container>
-      <Table columnConfig={columnConfig}>
+      <Table columnConfig={investorsConfig}>
         {prepareInvestorTable({ data, calculations })}
+      </Table>
+    </Container>
+    <Container>
+      <InvestorChart data={data} calculationsHistory={calculationsHistory} />
+    </Container>
+    <Container>
+      <Heading1>Invests/Redeems</Heading1>
+    </Container>
+    <Container>
+      <Table columnConfig={participationsConfig}>
+        {data.participations.list.map(participation => ({
+          ...participation,
+          type: titleCase(participation.type),
+          shares: numberFormat(participation.shares),
+          value: numberFormat(participation.value),
+          token: participation.token.symbol,
+          timestamp: format(
+            new Date(participation.timestamp * 1000),
+            'YYYY-MM-DD HH:mm:ss',
+          ),
+        }))}
       </Table>
     </Container>
   </div>

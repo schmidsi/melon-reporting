@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 
 import { ComposedChart, Area, Line, Tooltip } from 'recharts';
 
@@ -9,39 +8,38 @@ import rezipGrayscale from '~/components/utils/rezipGrayscale';
 
 import styles from './styles.css';
 
-const HoldingChart = ({
+const InvestorChart = ({
   width = 960 * (16 / 18),
   height = 494 * (16 / 18),
   data,
+  calculationsHistory,
 }) => {
-  if (!data[1]) return <h1>No data</h1>;
-
-  const rezippedGrayscale = rezipGrayscale(R.keys(data[1]));
+  if (!data.participations) return <h1>No data</h1>;
+  const rezippedGrayscale = rezipGrayscale(data.participations.investors);
 
   return (
-    <div className={styles.HoldingChart}>
+    <div className={styles.InvestorChart}>
       <ComposedChart
         width={width}
         height={height}
-        data={data}
+        data={calculationsHistory}
         margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
       >
         <Tooltip />
+        <Line
+          key="aum,"
+          dataKey={k => toNumber(k.aum)}
+          stroke="#000000"
+          dot={false}
+          type="stepBefore"
+        />
 
-        {R.keys(data[1]).map((key, i) => {
+        {data.participations.investors.map((investor, i) => {
           const color = rezippedGrayscale[i];
-          return key === 'sharePrice' ? (
-            <Line
-              key={key}
-              dataKey={k => toNumber(k.sharePrice)}
-              stroke="#000000"
-              dot={false}
-              type="stepBefore"
-            />
-          ) : (
+          return (
             <Area
-              key={key}
-              dataKey={key}
+              key={investor.address}
+              dataKey={k => k.investors[i] && toNumber(k.investors[i].value)}
               stackId="0"
               stroke={color}
               fill={color}
@@ -54,4 +52,4 @@ const HoldingChart = ({
   );
 };
 
-export default withErrorBoundary(__dirname)(HoldingChart);
+export default withErrorBoundary(__dirname)(InvestorChart);

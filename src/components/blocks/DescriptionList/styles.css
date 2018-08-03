@@ -3,6 +3,7 @@
   text-align: left;
   padding: 0;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .DescriptionList td {

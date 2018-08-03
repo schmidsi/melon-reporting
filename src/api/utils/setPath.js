@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 
-const setPath = (path, setter) => ({ data, calculations }) =>
-  R.assocPath(path, setter({ data, calculations }), { data, calculations });
+const setPath = (path, setter) => obj => R.assocPath(path, setter(obj), obj);
 
 export default setPath;

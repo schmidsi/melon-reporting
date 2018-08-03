@@ -19,17 +19,16 @@ const renderCell = (content, config, key) => {
         {Renderer ? <Renderer>{content}</Renderer> : content}
       </th>
     );
-  } else {
-    return (
-      <td className={getClassName(config)} key={key}>
-        {Renderer ? <Renderer>{content}</Renderer> : content}
-      </td>
-    );
   }
+  return (
+    <td className={getClassName(config)} key={key}>
+      {Renderer ? <Renderer>{content}</Renderer> : content}
+    </td>
+  );
 };
 
-const Table = ({ columnConfig, children }) => (
-  <table className={styles.Table}>
+const Table = ({ columnConfig, children, design }) => (
+  <table className={`${styles.Table} ${styles[design]}`}>
     <thead>
       <tr>
         {Object.entries(columnConfig).map(([key, config]) => (

@@ -3,6 +3,12 @@
   border-collapse: collapse;
 }
 
+.Table.small {
+  margin-top: calc(2rem/18);
+  font-size: calc(12rem/18);
+  line-height: calc(32rem/18);
+}
+
 .Table td,
 .Table th {
   padding: 0;

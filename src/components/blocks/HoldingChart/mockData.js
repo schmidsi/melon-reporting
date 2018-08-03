@@ -1,7 +1,5 @@
 import * as R from 'ramda';
 
-import exampleData from '~/data/example-report-data.json';
-
 const sharePrice = [10, 12, 15, 12, 18, 17, 20];
 
 const percentage = {

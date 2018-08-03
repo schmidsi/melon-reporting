@@ -6,7 +6,7 @@
 .underline::after {
   content: " ";
   position: absolute;
-  bottom: 11px;
+  bottom: calc(11rem/18);
   left: 0;
   width: 100%;
   border-bottom: 1px solid black;

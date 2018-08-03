@@ -1,5 +1,5 @@
 .title {
-  margin-top: 88px;
+  margin-top: calc(88rem/18);
   margin-bottom: 0;
   font-weight: 600;
   font-size: 2.666666667rem;

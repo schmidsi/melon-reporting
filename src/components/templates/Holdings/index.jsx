@@ -1,21 +1,14 @@
 import React from 'react';
 import * as R from 'ramda';
-import { format } from 'date-fns';
 
-import {
-  Heading1,
-  Heading2,
-  Heading3,
-  Heading4,
-} from '~/components/design/typography';
+import { Heading1 } from '~/components/design/typography';
 import { Column, Container } from '~/components/design/layout';
-import ColoredNumber from '~/components/blocks/ColoredNumber';
-import HexValue from '~/components/blocks/HexValue';
+import ColorCondition from '~/components/blocks/ColorCondition';
 import Table from '~/components/blocks/Table';
 import SumCell from '~/components/blocks/SumCell';
 import HoldingChart from '~/components/blocks/HoldingChart';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
-import { toFixed, multiply } from '~/utils/functionalBigNumber';
+import { format, multiply } from '~/utils/functionalBigNumber';
 
 const calcPercentage = (start, end) => (100 * (end - start)) / start;
 
@@ -39,7 +32,7 @@ const Holdings = ({ data, calculations }) => (
             change: {
               headerText: 'Chg',
               sortable: true,
-              renderer: ColoredNumber,
+              renderer: ColorCondition,
               align: 'right',
             },
             quantity: {
@@ -56,24 +49,27 @@ const Holdings = ({ data, calculations }) => (
           {[
             ...data.holdings.map(holding => ({
               token: holding.token.symbol,
-              price: toFixed(R.head(holding.priceHistory)),
-              change: calcPercentage(
-                R.head(holding.priceHistory),
-                R.last(holding.priceHistory),
+              price: format(R.head(holding.priceHistory)),
+              change: format(
+                calcPercentage(
+                  R.head(holding.priceHistory),
+                  R.last(holding.priceHistory),
+                ),
+                2,
               ),
-              quantity: toFixed(holding.quantity),
-              value: toFixed(
+              quantity: format(holding.quantity),
+              value: format(
                 multiply(holding.quantity, R.head(holding.priceHistory)),
               ),
             })),
             {
               token: 'Fund',
-              price: toFixed(calculations.sharePrice),
-              change: calculations.profit,
-              quantity: toFixed(data.meta.totalSupply),
+              price: format(calculations.sharePrice),
+              change: format(calculations.profit, 2),
+              quantity: format(data.meta.totalSupply),
               value: (
                 <SumCell>
-                  {toFixed(
+                  {format(
                     multiply(calculations.sharePrice, data.meta.totalSupply),
                   )}
                 </SumCell>
@@ -84,6 +80,7 @@ const Holdings = ({ data, calculations }) => (
       </Column>
       <Column>
         <Table
+          design="small"
           columnConfig={data.holdings.reduce(
             (carry, holding) => ({
               ...carry,
@@ -101,7 +98,7 @@ const Holdings = ({ data, calculations }) => (
     </Container>
     <Container>
       <Column>
-        <HoldingChart data={calculations.holdingChartData} />
+        <HoldingChart data={calculations.holdingsChart} />
       </Column>
     </Container>
   </div>

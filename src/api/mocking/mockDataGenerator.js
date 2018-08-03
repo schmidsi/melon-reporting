@@ -1,4 +1,5 @@
 import faker from 'faker';
+import titleCase from 'title-case';
 import * as R from 'ramda';
 import exampleData from '../../data/example-report-data.json';
 
@@ -9,6 +10,7 @@ import {
   randomPercentage,
   randomHexaDecimal,
   toTimestampSeconds,
+  randomBigNumber,
 } from './utils';
 import getPriceHistoryFromCryptoCompare from './utils/getPriceHistoryFromCryptoCompare';
 
@@ -26,7 +28,9 @@ const randomExchanges = () => {
 
 const randomLegalEntity = () => {
   const legalEntity = [];
-  legalEntity.push(`${faker.company.bs()} Inc`);
+  legalEntity.push(
+    `${titleCase(faker.company.bs())} ${faker.company.companySuffix()}`,
+  );
   legalEntity.push(
     `${faker.address.streetAddress()} ${faker.address.streetName()}`,
   );
@@ -35,7 +39,7 @@ const randomLegalEntity = () => {
   return legalEntity;
 };
 
-const randomStrategy = () => faker.company.catchPhrase();
+const randomStrategy = () => R.times(faker.company.bs, 10).join(' ');
 
 const randomTokenObject = () => ({
   symbol: faker.finance.currencyCode(),
@@ -53,7 +57,7 @@ const randomPolicy = tokenWhitelist => {
   policy.portfolio = {
     maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
     bestPrice: faker.random.number({ min: 0.05, max: 0.3, precision: 0.01 }),
-    bestPrice: randomPercentage(0.05, 0.3),
+    // bestPrice: randomPercentage(0.05, 0.3),
     maxTrades: {
       threshold: faker.random.number({ min: 20, max: 120, precision: 1 }),
       timeperiod: 'month',
@@ -80,25 +84,31 @@ const randomPolicy = tokenWhitelist => {
     volatilityThreshold: randomPercentage(0.1, 0.5),
   };
   policy.participation = {
-    name: `${faker.commerce.productName()} ${faker.address.country()} KYC`,
-    address: randomEthereumAddress(),
+    complianceModule: {
+      name: `${faker.company.companyName()} KYC`,
+      address: randomEthereumAddress(),
+    },
+    investmentFee: randomBigNumber(0, 0.1),
+    redeemFee: randomBigNumber(0, 0.1),
   };
 
   return policy;
 };
 
-const randomMetaData = (
+const randomMetaData = ({
   fundAddress,
   timeSpanStart,
   timeSpanEnd,
   tokenWhitelist,
-) => ({
+}) => ({
   fundName: faker.company.companyName(),
   fundAddress,
   timeSpanStart,
   timeSpanEnd,
   inception: timeSpanStart,
   quoteToken: tokenWhitelist[0],
+  managementFee: randomBigNumber(0, 0.1),
+  performanceFee: randomBigNumber(0, 0.7),
   manager: {
     address: randomEthereumAddress(),
     name: faker.name.findName(),
@@ -122,7 +132,7 @@ const randomOpinion = () => {
 };
 
 const randomInvestors = numberOfInvestors =>
-  Array(...{ length: numberOfInvestors }).map(() => ({
+  R.range(0, numberOfInvestors).map(() => ({
     address: randomEthereumAddress(),
     name: faker.name.findName(),
   }));
@@ -153,14 +163,31 @@ const mockStaticData = async () => {
 const mockRandomEmptyFund = async ({
   inception = 1514764800,
   now = toTimestampSeconds(new Date()),
-  tokenWhiteList = ['ETH', 'MLN', 'ANT', 'GNO', 'MKR', 'OMG'],
+  tokenWhiteList = [
+    'ETH',
+    'DAI',
+    'MKR',
+    'DGD',
+    'REP',
+    'MLN',
+    'BAT',
+    'ZRX',
+    'KNC',
+    'JNT',
+    'OMG',
+    'ANT',
+    'GNO',
+    'REQ',
+    'NMR',
+    // 'DGX',
+  ],
 } = {}) => {
-  const meta = randomMetaData(
-    randomEthereumAddress(),
-    inception,
-    now,
-    createTokenWhitelist(tokenWhiteList),
-  );
+  const meta = randomMetaData({
+    fundAddress: randomEthereumAddress(),
+    timeSpanStart: inception,
+    timeSpanEnd: now,
+    tokenWhitelist: createTokenWhitelist(tokenWhiteList),
+  });
 
   const holdings = await Promise.all(
     meta.policy.tokens.whitelist.map(async token => ({
