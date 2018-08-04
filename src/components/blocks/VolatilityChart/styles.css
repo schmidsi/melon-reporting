@@ -1,0 +1,25 @@
+.VolatilityChart {
+
+}
+
+.line {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.indicatorLine {
+  stroke: black;
+  stroke-width: 3;
+}
+
+.smallText {
+  font-size: calc(12rem / 18);
+}
+
+.activeText {
+  fill: white;
+}
+
+.activeRect {
+  fill: rgba(0,0,0,0.3);
+}
