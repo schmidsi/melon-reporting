@@ -2,7 +2,7 @@ import React from 'react';
 import * as R from 'ramda';
 
 import { Heading1 } from '~/components/design/typography';
-import { Column, Container } from '~/components/design/layout';
+import { Column, Container, PageBreak } from '~/components/design/layout';
 import ColorCondition from '~/components/blocks/ColorCondition';
 import Table from '~/components/blocks/Table';
 import SumCell from '~/components/blocks/SumCell';
@@ -16,6 +16,7 @@ const calcPercentage = (start, end) => (100 * (end - start)) / start;
 
 const Holdings = ({ data, calculations }) => (
   <div>
+    <PageBreak />
     <Container>
       <Heading1>Holdings</Heading1>
     </Container>

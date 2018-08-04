@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 
 import { Heading1 } from '~/components/design/typography';
-import { Container } from '~/components/design/layout';
+import { Container, PageBreak } from '~/components/design/layout';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import AuditChart from '~/components/blocks/AuditChart';
@@ -10,6 +10,7 @@ import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
 const Audits = ({ data }) => (
   <div>
+    <PageBreak />
     <Container>
       <Heading1>Audits</Heading1>
     </Container>

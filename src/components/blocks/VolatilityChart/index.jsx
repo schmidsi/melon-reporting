@@ -86,7 +86,7 @@ const VolatilityChart = ({ children }) => {
 
         {/* Boxes: vertical lines, numbers & bottom labels */}
         {volatilityClasses.map((volatilityClass, i) => (
-          <g>
+          <g key={volatilityClass}>
             <line
               x1={xScale(i)}
               x2={xScale(i)}
@@ -108,29 +108,29 @@ const VolatilityChart = ({ children }) => {
             </text>
             {i > 0 &&
               (volatilityClasses[i - 1] < children &&
-                volatilityClasses[i] > children ? (
-                  <g>
-                    <rect
-                      x={xScale(i - 1)}
-                      y={yScale(2)}
-                      width={xScale(i) - xScale(i - 1)}
-                      height={yScale(5) - yScale(2)}
-                      className={styles.activeRect}
-                    />
-                    <text
-                      x={xScale(i - 0.5)}
-                      y={yScale(3.9)}
-                      textAnchor="middle"
-                      className={styles.activeText}
-                    >
-                      {i}
-                    </text>
-                  </g>
-                ) : (
-                  <text x={xScale(i - 0.5)} y={yScale(3.9)} textAnchor="middle">
+              volatilityClasses[i] > children ? (
+                <g>
+                  <rect
+                    x={xScale(i - 1)}
+                    y={yScale(2)}
+                    width={xScale(i) - xScale(i - 1)}
+                    height={yScale(5) - yScale(2)}
+                    className={styles.activeRect}
+                  />
+                  <text
+                    x={xScale(i - 0.5)}
+                    y={yScale(3.9)}
+                    textAnchor="middle"
+                    className={styles.activeText}
+                  >
                     {i}
                   </text>
-                ))}
+                </g>
+              ) : (
+                <text x={xScale(i - 0.5)} y={yScale(3.9)} textAnchor="middle">
+                  {i}
+                </text>
+              ))}
           </g>
         ))}
       </g>

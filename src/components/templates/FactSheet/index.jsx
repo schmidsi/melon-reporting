@@ -96,8 +96,8 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
               [''],
               ['Mangement Fee', displayPercent(data.meta.managementFee)],
               ['Performance Fee', displayPercent(data.meta.performanceFee)],
-              [''],
-              ['Transaction Fees (Gas + Fees)', calculations.transactionFees],
+              // [''],
+              // ['Transaction Fees (Gas + Fees)', calculations.transactionFees],
             ]}
           </DescriptionList>
           <Heading4>Volatility / Risk Indicator</Heading4>
@@ -125,15 +125,15 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
                   [
                     'Max Trades',
                     `${data.meta.policy.portfolio.maxTrades.threshold} per ${
-                      data.meta.policy.portfolio.maxTrades.timePeriod
+                    data.meta.policy.portfolio.maxTrades.timePeriod
                     }`,
                   ],
-                  [
-                    `Max Volume (${data.meta.quoteToken.symbol})`,
-                    `${data.meta.policy.portfolio.maxVolume.threshold} per ${
-                      data.meta.policy.portfolio.maxVolume.timePeriod
-                    }`,
-                  ],
+                  // [
+                  //   `Max Volume (${data.meta.quoteToken.symbol})`,
+                  //   `${data.meta.policy.portfolio.maxVolume.threshold} per ${
+                  //     data.meta.policy.portfolio.maxVolume.timePeriod
+                  //   }`,
+                  // ],
                   [
                     'Volatility Threshold',
                     displayPercent(
@@ -160,7 +160,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
                   [
                     'Market Cap Range',
                     `${data.meta.policy.tokens.marketCapRange.min} - ${
-                      data.meta.policy.tokens.marketCapRange.max
+                    data.meta.policy.tokens.marketCapRange.max
                     }`,
                   ],
                   [

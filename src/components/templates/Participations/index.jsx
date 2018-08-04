@@ -5,7 +5,7 @@ import titleCase from 'title-case';
 
 import { format as numberFormat } from '~/utils/functionalBigNumber';
 import { Heading1 } from '~/components/design/typography';
-import { Container } from '~/components/design/layout';
+import { Container, PageBreak } from '~/components/design/layout';
 import Table from '~/components/blocks/Table';
 import HexValue from '~/components/blocks/HexValue';
 import ColorCondition from '~/components/blocks/ColorCondition';
@@ -61,6 +61,7 @@ const prepareInvestorTable = ({ data, calculations }) =>
 
 const Participations = ({ data, calculations, calculationsHistory }) => (
   <div>
+    <PageBreak />
     <Container>
       <Heading1>Participations</Heading1>
     </Container>
