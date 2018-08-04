@@ -126,22 +126,21 @@ const AuditChart = ({
     >
       <Xaxis {...{ start, middle, end, xScale, y: yScale(2), lineHeight }} />
 
-      {greenTimeSpans.map(
-        ({ from, to }) =>
-          console.log(from, to, xScale(from)) || (
-            <Indicator
-              start={xScale(from)}
-              end={xScale(to)}
-              type="green"
-              y={yScale(2)}
-            />
-          ),
-      )}
-
-      {redTimeSpans.map(({ from, to }) => (
+      {greenTimeSpans.map(({ timespanStart, timespanEnd }) => (
         <Indicator
-          start={xScale(from)}
-          end={xScale(to)}
+          key={`${timespanStart}-${timespanEnd}`}
+          start={xScale(timespanStart)}
+          end={xScale(timespanEnd)}
+          type="green"
+          y={yScale(2)}
+        />
+      ))}
+
+      {redTimeSpans.map(({ timespanStart, timespanEnd }) => (
+        <Indicator
+          key={`${timespanStart}-${timespanEnd}`}
+          start={xScale(timespanStart)}
+          end={xScale(timespanEnd)}
           type="red"
           y={yScale(2)}
         />

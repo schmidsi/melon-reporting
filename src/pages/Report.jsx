@@ -28,14 +28,14 @@ const Report = ({ data, calculations, calculationsHistory }) =>
         calculations={calculations}
         calculationsHistory={calculationsHistory}
       />
-      <Audits data={data} />
+      <Audits data={data} calculations={calculations} />
       <Audit data={data} />
 
       {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
     </div>
   ) : (
-    <h1>Missing data</h1>
-  );
+      <h1>Missing data</h1>
+    );
 
 const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');

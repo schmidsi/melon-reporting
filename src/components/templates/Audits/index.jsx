@@ -8,7 +8,7 @@ import Table from '~/components/blocks/Table';
 import AuditChart from '~/components/blocks/AuditChart';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-const Audits = ({ data }) => (
+const Audits = ({ data, calculations }) => (
   <div>
     <PageBreak />
     <Container>
@@ -18,6 +18,8 @@ const Audits = ({ data }) => (
       <AuditChart
         start={data.meta.timeSpanStart * 1000}
         end={data.meta.timeSpanEnd * 1000}
+        greenTimeSpans={calculations.auditedTimespans.audited}
+        redTimeSpans={calculations.auditedTimespans.gaps}
       >
         {data.audits}
       </AuditChart>

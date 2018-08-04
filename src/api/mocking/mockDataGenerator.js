@@ -146,8 +146,9 @@ const randomAudits = (from, to) =>
       .getTime();
     const timespanEnd = min(
       to,
-      addMonths(timespanStart * 1000, randomInt(1, 3)).getTime() / 1000,
-    );
+      addMonths(timespanStart, randomInt(1, 3)),
+    ).getTime();
+
     return {
       auditor: {
         address: randomEthereumAddress(),

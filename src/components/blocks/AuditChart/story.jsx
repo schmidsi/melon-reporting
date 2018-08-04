@@ -13,18 +13,18 @@ storiesOf('AuditChart', module).add('default', () => (
       end={new Date(mockData.data.meta.timeSpanEnd * 1000)}
       greenTimeSpans={[
         {
-          from: new Date(2018, 0, 1),
-          to: new Date(2018, 3, 25),
+          timespanStart: new Date(2018, 0, 1),
+          timespanEnd: new Date(2018, 3, 25),
         },
         {
-          from: new Date(2018, 3, 26),
-          to: new Date(2018, 5, 20),
+          timespanStart: new Date(2018, 3, 26),
+          timespanEnd: new Date(2018, 5, 20),
         },
       ]}
       redTimeSpans={[
         {
-          from: new Date(2018, 3, 25),
-          to: new Date(2018, 3, 26),
+          timespanStart: new Date(2018, 3, 25),
+          timespanEnd: new Date(2018, 3, 26),
         },
       ]}
     >
