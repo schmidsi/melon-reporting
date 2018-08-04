@@ -36,11 +36,10 @@ import getAuditsFromFund from './getAuditsFromFund';
 const debug = getDebug(__filename);
 
 const web3 = new Web3(
-  // new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
-  new Web3.providers.HttpProvider(process.env.JSON_RPC_LOCALENDPOINT),
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
 );
 
-const priceHistoryReaderAddress = '0x7eB494D4460c39eF76536CE87Bd5b1455b8728fa';
+const priceHistoryReaderAddress = '0x1f1173e263ba65923D62730cDA64aCeFF9f15a2C';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -97,7 +96,6 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
   const relevantDates = [];
   let timestamp = timeSpanStart;
   while (timestamp <= timeSpanEnd) {
-    console.log(timestamp);
     const date = new Date(timestamp * 1000);
     relevantDates.push({
       year: date.getUTCFullYear(),
@@ -117,7 +115,8 @@ const extractPrices = (address, priceHistory) =>
     }
     const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
-    return index === -1 ? 0 : priceEntry.averagedPrices[index];
+    // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
+    return index === -1 ? 0 : priceEntry.prices[index]; // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -398,8 +397,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
-      .getAveragedPricesForDay(date.year, date.month, date.day)
-      // .getAveragedPricesForDay(2018, 8, 3)
+      // .getAveragedPricesForDay(date.year, date.month, date.day)
+      .getFirstAvailablePricesForDay(2018, 8, 3)
       .call({})
       .then(res => res)
       .catch(() => null),
@@ -425,7 +424,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
-    priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
+    priceHistory: extractPrices(holding.token.address, priceHistory),
   }));
 
   // PREPARE SIMULATOR ACTIONS
