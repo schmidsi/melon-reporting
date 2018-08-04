@@ -119,6 +119,15 @@ const extractPrices = (address, priceHistory) =>
     return index === -1 ? 0 : priceEntry.averagedPrices[index];
   });
 
+const getTokenByAddress = (holdings, address) => {
+  const tokens = holdings.map(holding => ({
+    symbol: holding.token.symbol,
+    address: holding.token.address.toLowerCase(),
+  }));
+  const token = R.find(R.propEq('address', address.toLowerCase()))(tokens);
+  return token;
+};
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   console.log(process.env.JSON_RPC_ENDPOINT);
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
@@ -329,8 +338,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     toBlock: 'latest',
   });
 
-  console.log(allRedeems);
-
   const redeems = allRedeems
     // we only need the redeem events that were emitted in the provided report timespan
     .filter(r =>
@@ -350,55 +357,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const participations = [...invests, ...redeems];
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
-
-  /*
-  const priceHistoryPromises = R.range(
-    historyLength - 200, // should be 0
-    historyLength.toNumber(),
-  ).map(i => () =>
-    canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
-  );
-
-  const priceHistoryChunks = R.splitEvery(10, priceHistoryPromises);
-
-  const priceHistory = await priceHistoryChunks.reduce(async (accP, chunk) => {
-    const acc = await accP;
-    const curr = await Promise.all(chunk.map(c => c()));
-    // await new Promise(resolve => setTimeout(() => resolve(), 1000));
-    // console.log('INTERVAL', curr);
-    return [...acc, ...curr];
-  }, new Promise(resolve => resolve([])));
-
-  console.log(priceHistory);
-
-  const preparedHistory = R.groupBy(
-    entry => entry.address.toLowerCase(),
-    R.flatten(
-      priceHistory
-        .map(([addresses, prices, timestamp]) => ({
-          tokens: addresses.map(({ _value }) => ({
-            address: _value,
-            symbol: getSymbol(config, _value),
-          })),
-          prices: prices.map(({ _value }) => ({
-            price: _value,
-          })),
-          timestamp,
-        }))
-        .map(({ tokens, prices, timestamp }) =>
-          R.zipWith(
-            (token, price) => ({
-              ...token,
-              ...price,
-              timestamp,
-            }),
-            tokens,
-            prices,
-          ),
-        ),
-    ),
-  );
-  */
 
   const [
     exchangeAddresses,
@@ -423,6 +381,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   };
 
   // HOLDINGS AND PRICES
+  // TODO remove commenting out!
+  /*
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
   const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
 
@@ -443,6 +403,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     },
     new Promise(resolve => resolve([])),
   );
+  */
 
   const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
     token: {
@@ -451,19 +412,46 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     },
     quantity: holding.balance.toString(),
     priceHistory: [],
-    /*
-    priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
-      toReadable(config, entry.price, holding.name),
-    ),
-    */
   }));
 
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
-    priceHistory: extractPrices(holding.token.address, priceHistory),
+    // priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
   }));
 
-  const trades = [];
+  // PREPARE SIMULATOR ACTIONS
+
+  const investActions = invests.map(invest => ({
+    type: 'INVEST',
+    value: invest.amount.toString(),
+    investor: invest.investor,
+    timestamp: parseInt(invest.timestamp.toString(), 10),
+  }));
+  debug(investActions);
+
+  const redeemActions = redeems.map(redeem => ({
+    type: 'REDEEM',
+    shares: redeem.shares,
+    investor: redeem.investor,
+    timestamp: redeem.timestamp,
+  }));
+  debug(redeemActions);
+
+  const zeroExTradeActions = zeroExTrades.map(trade => ({
+    type: 'TRADE',
+    sellToken: getTokenByAddress(holdings, trade.makerToken),
+    sellHowMuch: 0,
+    buyToken: getTokenByAddress(holdings, trade.takerToken),
+    buyHowMuch: 0,
+    timestamp: 0,
+    exchange: 0,
+    transaction: 0,
+  }));
+  debug(zeroExTradeActions);
+
+  // SIMULATOR
+
+  const simulatorActions = [];
 
   const initialData = {
     meta,
