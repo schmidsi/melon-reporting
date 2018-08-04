@@ -7,6 +7,11 @@
   stroke-width: 1;
 }
 
+.axis {
+  stroke: black;
+  stroke-width: 2;
+}
+
 .text {
   font-size: calc(12rem / 18);
 }

@@ -13,7 +13,7 @@ const Tick = ({ anchor, orientation, xScale, y, lineHeight, date }) => (
       x1={xScale(date)}
       y1={y}
       x2={xScale(date)}
-      y2={orientation === 'top' ? y - lineHeight / 2 : y + lineHeight / 2}
+      y2={y - lineHeight / 2}
       className={styles.line}
     />
     <text
@@ -34,7 +34,7 @@ const Xaxis = ({ start, middle, end, xScale, y, lineHeight }) => (
       y1={y}
       x2={xScale(end)}
       y2={y}
-      className={styles.line}
+      className={styles.axis}
     />
 
     <Tick
@@ -66,12 +66,35 @@ const Xaxis = ({ start, middle, end, xScale, y, lineHeight }) => (
   </g>
 );
 
-const AuditChart = () => {
+const Entry = ({ start, end, xScale, y, lineHeight }) => (
+  <g>
+    <line
+      x1={xScale(start)}
+      y1={y}
+      x2={xScale(end)}
+      y2={y}
+      className={styles.line}
+    />
+    <Tick
+      anchor="start"
+      date={start}
+      xScale={xScale}
+      y={y}
+      lineHeight={lineHeight}
+    />
+    <Tick
+      anchor="end"
+      date={end}
+      xScale={xScale}
+      y={y}
+      lineHeight={lineHeight}
+    />
+  </g>
+);
+
+const AuditChart = ({ start, end, children = [] }) => {
   const width = Math.round(960 * (16 / 18));
   const lineHeight = Math.round((16 * 16) / 18);
-
-  const start = new Date(2018, 0, 1);
-  const end = new Date(2018, 3, 1);
 
   const xScale = scaleTime()
     .domain([start, end])
@@ -83,21 +106,20 @@ const AuditChart = () => {
   const diff = end - start;
   const middle = addMilliseconds(start, diff / 2);
 
-  console.log(xScale(middle));
-
   return (
     <svg width={width} className={styles.AuditChart}>
       <Xaxis {...{ start, middle, end, xScale, y: yScale(2), lineHeight }} />
 
-      <g>
-        <line
-          x1={xScale(start)}
-          y1={yScale(3)}
-          x2={xScale(new Date(2018, 2, 3))}
-          y2={yScale(3)}
-          className={styles.line}
+      {children.map((audit, i) => (
+        <Entry
+          key={audit.dataHash}
+          start={new Date(audit.timespanStart * 1000)}
+          end={new Date(audit.timespanEnd * 1000)}
+          xScale={xScale}
+          y={yScale(3 + i * 2)}
+          lineHeight={lineHeight}
         />
-      </g>
+      ))}
     </svg>
   );
 };
