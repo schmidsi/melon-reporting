@@ -67,7 +67,7 @@ const getSymbolOrFund = (config, address) => {
   }
 };
 
-const getFundManager = address => ({
+const getPersonFromAddress = address => ({
   address,
   // do ens lookup here (future work)
   name: 'unknown',
@@ -341,6 +341,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       }),
     );
 
+  const investors = invests.map(invest =>
+    getPersonFromAddress(invest.investor),
+  );
+
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
     fromBlock: 0,
@@ -378,7 +382,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress: informations.fundAddress,
     timeSpanStart,
     timeSpanEnd,
-    manager: getFundManager(informations.owner),
+    manager: getPersonFromAddress(informations.owner),
     inception: Math.round(new Date(informations.inception).getTime() / 1000),
     quoteToken: {
       symbol: config.quoteAssetSymbol,
@@ -491,7 +495,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     meta,
     trades: [],
     participations: {
-      investors: [],
+      investors,
       list: [],
     },
     holdings,
