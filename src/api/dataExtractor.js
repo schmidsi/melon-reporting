@@ -271,9 +271,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   });
 
   // TODO this returns the holdings of 'now', but we would start by inception
-  const holdingsAndPrices = await getHoldingsAndPrices(environment, {
+  const initialHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
-  });
+  })).map(holding => ({
+    name: holding.name,
+    balance: '0',
+  }));
 
   const audits = await getAuditsFromFund(environment, {
     fundAddress,
@@ -423,7 +426,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     new Promise(resolve => resolve([])),
   );
 
-  const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
+  const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
     token: {
       symbol: holding.name,
       address: getAddress(config, holding.name),
@@ -504,7 +507,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const fund = fundSimulator(initialData);
 
-  debug('Initial state', fund.getState());
+  debug('Initial Fund State', fund.getState());
 
   orderedSimulatorActions.forEach(action => fund.dispatch(action));
 
