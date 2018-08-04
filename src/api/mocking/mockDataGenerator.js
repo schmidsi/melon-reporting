@@ -1,6 +1,8 @@
 import faker from 'faker';
 import titleCase from 'title-case';
 import * as R from 'ramda';
+import { addMonths, min } from 'date-fns';
+
 import exampleData from '../../data/example-report-data.json';
 
 import {
@@ -142,7 +144,10 @@ const randomAudits = (from, to) =>
     const timespanStart = faker.date
       .between(new Date(from), new Date(to))
       .getTime();
-    const timespanEnd = timespanStart + 10000;
+    const timespanEnd = min(
+      to,
+      addMonths(timespanStart * 1000, randomInt(1, 3)).getTime() / 1000,
+    );
     return {
       auditor: {
         address: randomEthereumAddress(),

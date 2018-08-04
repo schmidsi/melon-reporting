@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ComposedChart, Area, Line } from 'recharts';
+import { ComposedChart, Area, Line, Tooltip } from 'recharts';
 
 import { toNumber } from '~/utils/functionalBigNumber';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
@@ -25,6 +25,7 @@ const InvestorChart = ({
         data={calculationsHistory}
         margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
       >
+        <Tooltip />
         <Line
           key="aum,"
           dataKey={k => toNumber(k.aum)}

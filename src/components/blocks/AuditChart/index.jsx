@@ -22,7 +22,7 @@ const Tick = ({ anchor, orientation, xScale, y, lineHeight, date }) => (
       textAnchor={anchor}
       className={styles.text}
     >
-      {format(date, 'D. MMM YYYY')}
+      {format(date, 'D. MMM')}
     </text>
   </g>
 );
@@ -107,7 +107,11 @@ const AuditChart = ({ start, end, children = [] }) => {
   const middle = addMilliseconds(start, diff / 2);
 
   return (
-    <svg width={width} className={styles.AuditChart}>
+    <svg
+      width={width}
+      height={(2 + children.length) * lineHeight * 2}
+      className={styles.AuditChart}
+    >
       <Xaxis {...{ start, middle, end, xScale, y: yScale(2), lineHeight }} />
 
       {children.map((audit, i) => (

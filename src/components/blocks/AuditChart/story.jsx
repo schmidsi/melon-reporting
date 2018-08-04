@@ -4,7 +4,7 @@ import AuditChart from '.';
 
 import styles from './story.css';
 
-import mockData from './mockData.js';
+import mockData from './mockData';
 
 storiesOf('AuditChart', module).add('default', () => (
   <div className={styles.wrapper}>

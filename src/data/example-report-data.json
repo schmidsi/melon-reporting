@@ -1,8 +1,8 @@
 {
   "meta": {
     "fundName": "Melon Crypto Capital",
-    "timeSpanStart": 1514764800000,
-    "timeSpanEnd": 1522454400000,
+    "timeSpanStart": 1514764800,
+    "timeSpanEnd": 1522454400,
     "fundAddress": "0x44741EAcA12736bc9ADcF92FEED25ad46b4c1fD8",
     "inception": 1498168800,
     "quoteToken": {
@@ -735,9 +735,9 @@
         "name": "Blockchain Audit AG"
       },
       "dataHash": "0x1b3edc1db1d421e9c15b84cdae900ac7966cd15b05e20ae7554619377f2fa66a",
-      "timespanStart": 1524729021,
-      "timespanEnd": 1524739020,
-      "timestamp": 1524739050,
+      "timespanStart": 1514764800,
+      "timespanEnd": 1519858800,
+      "timestamp": 1519858900,
       "opinion": "Qualified Opinion",
       "comment": "Something is wrong!"
     },
@@ -747,8 +747,20 @@
         "name": "Blockchain Audit AG"
       },
       "dataHash": "0x383480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
-      "timespanStart": 1524729086,
-      "timespanEnd": 1524739020,
+      "timespanStart": 1519858800,
+      "timespanEnd": 1524607200,
+      "timestamp": 1524739120,
+      "opinion": "Unqualified Opinion",
+      "comment": "Everything is fine!"
+    },
+    {
+      "auditor": {
+        "address": "0x9b8C165672b41725817a606c18C117C5a171D96b",
+        "name": "Blockchain Audit AG"
+      },
+      "dataHash": "0x283480d3df1a424636456dc1f986cbe5459c24616049ceb36ef634115a78a8dd",
+      "timespanStart": 1524739020,
+      "timespanEnd": 1529445600,
       "timestamp": 1524739120,
       "opinion": "Unqualified Opinion",
       "comment": "Everything is fine!"
