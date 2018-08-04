@@ -149,6 +149,8 @@ const getTokenBySymbol = (holdings, symbol) => {
 const getExchangeByName = (exchanges, name) =>
   R.find(R.propEq('name', name))(exchanges);
 
+const getStrategy = () => 'unknown'; // future work: get strategy when available
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
@@ -382,9 +384,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   ] = await fundContract.instance.getExchangeInfo.call();
 
   const ownCalculations = await fundContract.instance.performCalculations.call();
-  debug('own calculations', ownCalculations);
   const managementFee = ownCalculations[1].div(10 ** 18).toString();
   const performanceFee = ownCalculations[2].div(10 ** 18).toString();
+
+  const strategy = getStrategy();
 
   const meta = {
     fundName: informations.name,
@@ -405,6 +408,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     legalEntity: getLegalEntity(),
     managementFee,
     performanceFee,
+    strategy,
   };
 
   // HOLDINGS AND PRICES
