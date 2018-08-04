@@ -55,7 +55,7 @@ const zeroExLogFillAbi = ZeroExAbi.find(
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
-    ([name, address]) => address === ofAddress,
+    ([name, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
@@ -127,6 +127,17 @@ const getTokenByAddress = (holdings, address) => {
   const token = R.find(R.propEq('address', address.toLowerCase()))(tokens);
   return token;
 };
+
+const getTokenBySymbol = (holdings, symbol) => {
+  const tokens = holdings.map(holding => ({
+    symbol: holding.token.symbol,
+    address: holding.token.address,
+  }));
+  return R.find(R.propEq('symbol', symbol))(tokens);
+};
+
+const getExchangeByName = (exchanges, name) =>
+  R.find(R.propEq('name', name))(exchanges);
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   console.log(process.env.JSON_RPC_ENDPOINT);
@@ -437,17 +448,35 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   }));
   debug(redeemActions);
 
-  const zeroExTradeActions = zeroExTrades.map(trade => ({
+  debug(meta.exchanges);
+
+  const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
     type: 'TRADE',
     sellToken: getTokenByAddress(holdings, trade.makerToken),
-    sellHowMuch: 0,
+    sellHowMuch: trade.filledMakerTokenAmount,
     buyToken: getTokenByAddress(holdings, trade.takerToken),
-    buyHowMuch: 0,
-    timestamp: 0,
-    exchange: 0,
-    transaction: 0,
+    buyHowMuch: trade.filledTakerTokenAmount,
+    timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
+    exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
+    transaction: trade.orderHash,
   }));
-  debug(zeroExTradeActions);
+
+  const zeroExTradeActions = await Promise.all(
+    zeroExTradeActionTasks.map(p => p()),
+  );
+  debug('ZeroExTradeActions', zeroExTradeActions);
+
+  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
+    type: 'TRADE',
+    sellToken: getTokenBySymbol(holdings, trade.sellToken),
+    sellHowMuch: trade.sellQuantity.toString(),
+    buyToken: getTokenBySymbol(holdings, trade.buyToken),
+    buyHowMuch: trade.buyQuantity.toString(),
+    timestamp: trade.timestamp.getTime() / 1000,
+    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+    transaction: trade.transactionHash,
+  }));
+  debug('OasisDexTradeActions', oasisDexTradeActions);
 
   // SIMULATOR
 
