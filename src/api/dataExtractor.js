@@ -6,6 +6,7 @@ import {
   getCanonicalPriceFeedContract,
   getConfig,
   getFundContract,
+  getFundRecentTrades,
   getFundInformations,
   getHoldingsAndPrices,
   getOrdersHistory,
@@ -23,14 +24,23 @@ import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.j
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import getAuditsFromFund from './getAuditsFromFund';
+import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
 
 import getDebug from '~/utils/getDebug';
+
+import fundSimulator from '~/api/fundSimulator';
+
+import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
+import RSVP from 'rsvp';
 
 const debug = getDebug(__filename);
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+  // new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_LOCALENDPOINT),
 );
+
+const priceHistoryReaderAddress = '0x7eB494D4460c39eF76536CE87Bd5b1455b8728fa';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -38,10 +48,14 @@ const transferAbi = Erc20Abi.find(
   e => e.name === 'Transfer' && e.type === 'event',
 );
 
+const zeroExLogFillAbi = ZeroExAbi.find(
+  e => e.name === 'LogFill' && e.type === 'event',
+);
+
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
-    ([name, address]) => address === ofAddress,
+    ([name, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
@@ -79,6 +93,52 @@ const parseTransferLog = config => log => {
   };
 };
 
+const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
+  const relevantDates = [];
+  let timestamp = timeSpanStart;
+  while (timestamp <= timeSpanEnd) {
+    const date = new Date(timestamp * 1000);
+    relevantDates.push({
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth() + 1,
+      day: date.getUTCDate(),
+    });
+    timestamp += 86400;
+  }
+  // exclude current day
+  return R.take(relevantDates.length - 1, relevantDates);
+};
+
+const extractPrices = (address, priceHistory) =>
+  priceHistory.map(priceEntry => {
+    if (priceEntry === null) {
+      return 0;
+    }
+    const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
+    const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
+    return index === -1 ? 0 : priceEntry.averagedPrices[index];
+  });
+
+const getTokenByAddress = (holdings, address) => {
+  const tokens = holdings.map(holding => ({
+    symbol: holding.token.symbol,
+    address: holding.token.address.toLowerCase(),
+  }));
+  const token = R.find(R.propEq('address', address.toLowerCase()))(tokens);
+  return token;
+};
+
+const getTokenBySymbol = (holdings, symbol) => {
+  const tokens = holdings.map(holding => ({
+    symbol: holding.token.symbol,
+    address: holding.token.address,
+  }));
+  return R.find(R.propEq('symbol', symbol))(tokens);
+};
+
+const getExchangeByName = (exchanges, name) =>
+  R.find(R.propEq('name', name))(exchanges);
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   console.log(process.env.JSON_RPC_ENDPOINT);
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
@@ -86,6 +146,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ...provider,
     track: 'kovan-demo',
   };
+
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
@@ -109,6 +170,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const fundContract = await getFundContract(environment, fundAddress);
 
+  const priceHistoryReader = new web3.eth.Contract(
+    priceHistoryReaderAbi,
+    priceHistoryReaderAddress,
+  );
+
   /*
     web3.js contract
   */
@@ -116,6 +182,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const currentBlock = await web3.eth.getBlockNumber();
 
   const transferEventSignature = web3.eth.abi.encodeEventSignature(transferAbi);
+
+  const zeroExLogFillEventSignature = web3.eth.abi.encodeEventSignature(
+    zeroExLogFillAbi,
+  );
 
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
@@ -128,6 +198,29 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const blockBeforeInception = await web3.eth.getBlock(inceptionBlockApprox);
+
+  const oasisDexTrades = await getFundRecentTrades(environment, {
+    fundAddress,
+    inlastXDays: 20,
+  });
+  debug('oasisDexTrades', oasisDexTrades);
+
+  const zeroExTrades = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: 'latest',
+    topics: [zeroExLogFillEventSignature],
+  }))
+    .map(log => {
+      const logFill = web3.eth.abi.decodeLog(
+        zeroExLogFillAbi.inputs,
+        log.data,
+        log.topics,
+      );
+      logFill.blockNumber = log.blockNumber;
+      return logFill;
+    })
+    .filter(logFill => logFill.taker === fundAddress);
+  debug('zeroExTrades', zeroExTrades);
 
   const tokenSends = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -214,7 +307,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
             timestamp,
             atUpdateId,
           }),
-      ),
+        ),
   );
 
   const requests = await Promise.all(requestPromises.map(p => p()));
@@ -248,7 +341,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         ),
         timestamp,
       }),
-  );
+    );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
@@ -256,13 +349,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     toBlock: 'latest',
   });
 
-  console.log(allRedeems);
-
   const redeems = allRedeems
     // we only need the redeem events that were emitted in the provided report timespan
     .filter(r =>
       onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd),
-  )
+    )
     .map(r => ({
       investor: r.returnValues.ofParticipant,
       type: 'redeem',
@@ -277,53 +368,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const participations = [...invests, ...redeems];
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
-
-  const priceHistoryPromises = R.range(
-    historyLength - 200, // should be 0
-    historyLength.toNumber(),
-  ).map(i => () =>
-    canonicalPriceFeedContract.instance.getHistoryAt.call({}, [i]),
-  );
-
-  const priceHistoryChunks = R.splitEvery(10, priceHistoryPromises);
-
-  const priceHistory = await priceHistoryChunks.reduce(async (accP, chunk) => {
-    const acc = await accP;
-    const curr = await Promise.all(chunk.map(c => c()));
-    // await new Promise(resolve => setTimeout(() => resolve(), 1000));
-    // console.log('INTERVAL', curr);
-    return [...acc, ...curr];
-  }, new Promise(resolve => resolve([])));
-
-  console.log(priceHistory);
-
-  const preparedHistory = R.groupBy(
-    entry => entry.address.toLowerCase(),
-    R.flatten(
-      priceHistory
-        .map(([addresses, prices, timestamp]) => ({
-          tokens: addresses.map(({ _value }) => ({
-            address: _value,
-            symbol: getSymbol(config, _value),
-          })),
-          prices: prices.map(({ _value }) => ({
-            price: _value,
-          })),
-          timestamp,
-        }))
-        .map(({ tokens, prices, timestamp }) =>
-          R.zipWith(
-            (token, price) => ({
-              ...token,
-              ...price,
-              timestamp,
-            }),
-            tokens,
-            prices,
-          ),
-      ),
-    ),
-  );
 
   const [
     exchangeAddresses,
@@ -347,45 +391,115 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     totalSupply: calculations.totalSupply.toString(),
   };
 
-  const holdings = holdingsAndPrices.map(holding => ({
+  // HOLDINGS AND PRICES
+  // TODO remove commenting out!
+  /*
+  const fundInceptionTimestamp = informations.inception.getTime() / 1000;
+  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+
+  const priceHistoryTasks = relevantDates.map(date => () =>
+    priceHistoryReader.methods
+      .getAveragedPricesForDay(date.year, date.month, date.day)
+      // .getAveragedPricesForDay(2018, 8, 3)
+      .call({})
+      .then(res => res)
+      .catch(() => null),
+  );
+
+  const priceHistory = await priceHistoryTasks.reduce(
+    async (carryPromise, currentTask) => {
+      const carry = await carryPromise;
+      const currentResult = await currentTask();
+      return [...carry, currentResult];
+    },
+    new Promise(resolve => resolve([])),
+  );
+  */
+
+  const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
     token: {
       symbol: holding.name,
       address: getAddress(config, holding.name),
     },
     quantity: holding.balance.toString(),
     priceHistory: [],
-    /*
-    priceHistory: preparedHistory[getAddress(config, holding.name)].map(entry =>
-      toReadable(config, entry.price, holding.name),
-    ),
-    */
   }));
 
-  const trades = [];
+  const holdings = holdingsWithoutPriceHistory.map(holding => ({
+    ...holding,
+    // priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
+  }));
 
-  return {
-    data: {
-      meta,
-      participations,
-      audits,
-      holdings,
-      trades,
+  // PREPARE SIMULATOR ACTIONS
+
+  const investActions = invests.map(invest => ({
+    type: 'INVEST',
+    value: invest.amount.toString(),
+    investor: invest.investor,
+    timestamp: parseInt(invest.timestamp.toString(), 10),
+  }));
+  debug(investActions);
+
+  const redeemActions = redeems.map(redeem => ({
+    type: 'REDEEM',
+    shares: redeem.shares,
+    investor: redeem.investor,
+    timestamp: redeem.timestamp,
+  }));
+  debug(redeemActions);
+
+  debug(meta.exchanges);
+
+  const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
+    type: 'TRADE',
+    sellToken: getTokenByAddress(holdings, trade.makerToken),
+    sellHowMuch: trade.filledMakerTokenAmount,
+    buyToken: getTokenByAddress(holdings, trade.takerToken),
+    buyHowMuch: trade.filledTakerTokenAmount,
+    timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
+    exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
+    transaction: trade.orderHash,
+  }));
+
+  const zeroExTradeActions = await Promise.all(
+    zeroExTradeActionTasks.map(p => p()),
+  );
+  debug('ZeroExTradeActions', zeroExTradeActions);
+
+  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
+    type: 'TRADE',
+    sellToken: getTokenBySymbol(holdings, trade.sellToken),
+    sellHowMuch: trade.sellQuantity.toString(),
+    buyToken: getTokenBySymbol(holdings, trade.buyToken),
+    buyHowMuch: trade.buyQuantity.toString(),
+    timestamp: trade.timestamp.getTime() / 1000,
+    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+    transaction: trade.transactionHash,
+  }));
+  debug('OasisDexTradeActions', oasisDexTradeActions);
+
+  // SIMULATOR
+
+  const simulatorActions = [];
+
+  const initialData = {
+    meta,
+    trades: [],
+    participations: {
+      investors: [],
+      list: [],
     },
-    debug: {
-      lastRequestId,
-      requests,
-      ordersHistory,
-      addressBook,
-      exchangeAddresses,
-      config,
-      calculations,
-      historyLength,
-      // preparedHistory,
-      // informations,
-      // holdingsAndPrices,
-      // lastHistoryEntry,
-    },
+    holdings: [],
+    audits: [],
   };
+
+  const fund = fundSimulator(initialData);
+
+  const finalState = fund.getState();
+
+  debug('Final Fund State', finalState);
+
+  return finalState;
 };
 
 export default dataExtractor;
