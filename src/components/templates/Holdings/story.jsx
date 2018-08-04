@@ -23,6 +23,23 @@ storiesOf('Templates|Holdings', module).add('default', () => (
           profit: 5.23,
           tokenCorrelation: getRandomCorrelation(exampleData.holdings),
           holdingsChart,
+          allocation: [
+            {
+              percentage: 0.4,
+            },
+            {
+              percentage: 0.3,
+            },
+            {
+              percentage: 0.2,
+            },
+            {
+              percentage: 0.07,
+            },
+            {
+              percentage: 0.03,
+            },
+          ],
         }}
       />
     </div>

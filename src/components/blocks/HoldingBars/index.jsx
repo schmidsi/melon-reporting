@@ -7,7 +7,7 @@ import styles from './styles.css';
 const HoldingBars = ({ allocations, children }) => {
   const lineHeight = Math.round((16 * 16) / 18);
   const width = Math.round((960 + 12) * (16 / 18));
-  const height = 2 * lineHeight * (allocations.length + 1);
+  const height = 2 * lineHeight * (allocations.length + 2);
 
   const xScale = scaleLinear()
     .domain([0, 1])
@@ -21,6 +21,7 @@ const HoldingBars = ({ allocations, children }) => {
       <svg style={{ width, height }} className={styles.underlay}>
         {allocations.map((holding, i) => (
           <rect
+            key={holding.token.symbol}
             x={0}
             y={yScale(2 * i)}
             height={yScale(1.5)}

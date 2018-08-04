@@ -1,10 +1,11 @@
 .holder {
-  position: relative
+  position: relative;
+  margin-left: calc(-6rem / 18);
 }
 
 .underlay {
   position: absolute;
-  top: calc(3.375rem / 18);
+  top: calc((32rem + 3.375rem) / 18);
   left: 0;
   width: 100%;
 }
