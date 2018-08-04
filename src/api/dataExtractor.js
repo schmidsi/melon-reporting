@@ -443,7 +443,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     type: 'REDEEM',
     shares: redeem.shares,
     investor: redeem.investor,
-    timestamp: redeem.timestamp,
+    timestamp: parseInt(redeem.timestamp, 10),
   }));
   debug(redeemActions);
 
@@ -479,7 +479,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // SIMULATOR
 
-  const simulatorActions = [];
+  const unorderedSimulatorActions = investActions
+    .concat(redeemActions)
+    .concat(zeroExTradeActions)
+    .concat(oasisDexTradeActions);
+  debug('UnorderedSimulatorActions', unorderedSimulatorActions);
+
+  const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
+    unorderedSimulatorActions,
+  );
+  debug('OrderedSimulatorActions', orderedSimulatorActions);
 
   const initialData = {
     meta,
