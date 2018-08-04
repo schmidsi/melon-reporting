@@ -17,7 +17,6 @@ import {
 } from '@melonproject/melon.js';
 
 import Web3 from 'web3';
-// for web3js
 
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.json';
@@ -382,6 +381,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     exchangeAddresses,
   ] = await fundContract.instance.getExchangeInfo.call();
 
+  const ownCalculations = await fundContract.instance.performCalculations.call();
+  debug('own calculations', ownCalculations);
+  const managementFee = ownCalculations[1].div(10 ** 18).toString();
+  const performanceFee = ownCalculations[2].div(10 ** 18).toString();
+
   const meta = {
     fundName: informations.name,
     fundAddress: informations.fundAddress,
@@ -399,6 +403,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     })),
     totalSupply: calculations.totalSupply.toString(),
     legalEntity: getLegalEntity(),
+    managementFee,
+    performanceFee,
   };
 
   // HOLDINGS AND PRICES
