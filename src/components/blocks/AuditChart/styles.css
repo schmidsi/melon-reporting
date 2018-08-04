@@ -1,0 +1,12 @@
+.AuditChart {
+  width: 100%;
+}
+
+.line {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.text {
+  font-size: calc(12rem / 18);
+}
