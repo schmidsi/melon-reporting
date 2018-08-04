@@ -92,7 +92,19 @@ const Entry = ({ start, end, xScale, y, lineHeight }) => (
   </g>
 );
 
-const AuditChart = ({ start, end, children = [] }) => {
+const Indicator = ({ start, end, y, type }) => (
+  <g>
+    <line x1={start} x2={end} y1={y} y2={y} className={styles[type]} />
+  </g>
+);
+
+const AuditChart = ({
+  start,
+  end,
+  children = [],
+  greenTimeSpans = [],
+  redTimeSpans = [],
+}) => {
   const width = Math.round(960 * (16 / 18));
   const lineHeight = Math.round((16 * 16) / 18);
 
@@ -113,6 +125,27 @@ const AuditChart = ({ start, end, children = [] }) => {
       className={styles.AuditChart}
     >
       <Xaxis {...{ start, middle, end, xScale, y: yScale(2), lineHeight }} />
+
+      {greenTimeSpans.map(
+        ({ from, to }) =>
+          console.log(from, to, xScale(from)) || (
+            <Indicator
+              start={xScale(from)}
+              end={xScale(to)}
+              type="green"
+              y={yScale(2)}
+            />
+          ),
+      )}
+
+      {redTimeSpans.map(({ from, to }) => (
+        <Indicator
+          start={xScale(from)}
+          end={xScale(to)}
+          type="red"
+          y={yScale(2)}
+        />
+      ))}
 
       {children.map((audit, i) => (
         <Entry
