@@ -1,0 +1,23 @@
+.holder {
+  position: relative
+}
+
+.underlay {
+  position: absolute;
+  top: calc(3.375rem / 18);
+  left: 0;
+  width: 100%;
+}
+
+.content {
+  position: relative;
+  padding: 0 calc(6rem / 18);
+}
+
+.holding {
+  fill: #DBD9D0;
+}
+
+.sum {
+  fill: rgba(0,0,0,0.07);
+}
