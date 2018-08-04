@@ -30,11 +30,17 @@ import getDebug from '~/utils/getDebug';
 
 import fundSimulator from '~/api/fundSimulator';
 
+import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
+import RSVP from 'rsvp';
+
 const debug = getDebug(__filename);
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+  // new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_LOCALENDPOINT),
 );
+
+const priceHistoryReaderAddress = '0x7eB494D4460c39eF76536CE87Bd5b1455b8728fa';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -87,6 +93,32 @@ const parseTransferLog = config => log => {
   };
 };
 
+const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
+  const relevantDates = [];
+  let timestamp = timeSpanStart;
+  while (timestamp <= timeSpanEnd) {
+    const date = new Date(timestamp * 1000);
+    relevantDates.push({
+      year: date.getUTCFullYear(),
+      month: date.getUTCMonth() + 1,
+      day: date.getUTCDate(),
+    });
+    timestamp += 86400;
+  }
+  // exclude current day
+  return R.take(relevantDates.length - 1, relevantDates);
+};
+
+const extractPrices = (address, priceHistory) =>
+  priceHistory.map(priceEntry => {
+    if (priceEntry === null) {
+      return 0;
+    }
+    const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
+    const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
+    return index === -1 ? 0 : priceEntry.averagedPrices[index];
+  });
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   console.log(process.env.JSON_RPC_ENDPOINT);
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
@@ -117,6 +149,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   debug({ addressBook, config, environment, url: environment.provider.url });
 
   const fundContract = await getFundContract(environment, fundAddress);
+
+  const priceHistoryReader = new web3.eth.Contract(
+    priceHistoryReaderAbi,
+    priceHistoryReaderAddress,
+  );
 
   /*
     web3.js contract
@@ -314,6 +351,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
 
+  /*
   const priceHistoryPromises = R.range(
     historyLength - 200, // should be 0
     historyLength.toNumber(),
@@ -360,6 +398,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         ),
     ),
   );
+  */
 
   const [
     exchangeAddresses,
@@ -383,7 +422,29 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     totalSupply: calculations.totalSupply.toString(),
   };
 
-  const holdings = holdingsAndPrices.map(holding => ({
+  // HOLDINGS AND PRICES
+  const fundInceptionTimestamp = informations.inception.getTime() / 1000;
+  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+
+  const priceHistoryTasks = relevantDates.map(date => () =>
+    priceHistoryReader.methods
+      .getAveragedPricesForDay(date.year, date.month, date.day)
+      // .getAveragedPricesForDay(2018, 8, 3)
+      .call({})
+      .then(res => res)
+      .catch(() => null),
+  );
+
+  const priceHistory = await priceHistoryTasks.reduce(
+    async (carryPromise, currentTask) => {
+      const carry = await carryPromise;
+      const currentResult = await currentTask();
+      return [...carry, currentResult];
+    },
+    new Promise(resolve => resolve([])),
+  );
+
+  const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
     token: {
       symbol: holding.name,
       address: getAddress(config, holding.name),
@@ -397,35 +458,23 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     */
   }));
 
+  const holdings = holdingsWithoutPriceHistory.map(holding => ({
+    ...holding,
+    priceHistory: extractPrices(holding.token.address, priceHistory),
+  }));
+
   const trades = [];
 
-  /*
-  return {
-    data: {
-      meta,
-      participations,
-      audits,
-      holdings,
-      trades,
+  const initialData = {
+    meta,
+    trades: [],
+    participations: {
+      investors: [],
+      list: [],
     },
-    debug: {
-      lastRequestId,
-      requests,
-      ordersHistory,
-      addressBook,
-      exchangeAddresses,
-      config,
-      calculations,
-      historyLength,
-      // preparedHistory,
-      // informations,
-      // holdingsAndPrices,
-      // lastHistoryEntry,
-    },
+    holdings: [],
+    audits: [],
   };
-  */
-
-  const initialData = {};
 
   const fund = fundSimulator(initialData);
 
