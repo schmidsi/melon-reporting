@@ -3,13 +3,11 @@ import BigNumber from 'bignumber.js';
 import {
   ensure,
   getAddress,
-  getCanonicalPriceFeedContract,
   getConfig,
   getFundContract,
   getFundRecentTrades,
   getFundInformations,
   getHoldingsAndPrices,
-  getOrdersHistory,
   getParityProvider,
   getSymbol,
   performCalculations,
@@ -53,7 +51,7 @@ const zeroExLogFillAbi = ZeroExAbi.find(
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
-    ([name, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
+    ([, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
@@ -158,7 +156,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     track: 'kovan-demo',
   };
 
-  // 'https://kovan.melonport.com' ~ 605ms
+  // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
     fundAddress,
@@ -207,8 +205,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const inceptionBlockApprox = Math.floor(
     currentBlock - fundAgeInSeconds / AVERAGE_BLOCKTIME,
   );
-
-  const blockBeforeInception = await web3.eth.getBlock(inceptionBlockApprox);
 
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
@@ -279,15 +275,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
-  const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
-    environment,
-  );
-
   const audits = await getAuditsFromFund(environment, {
-    fundAddress,
-  });
-
-  const ordersHistory = await getOrdersHistory(environment, {
     fundAddress,
   });
 
@@ -375,10 +363,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       timestamp: r.returnValues.atTimestamp,
     }));
 
-  const participations = [...invests, ...redeems];
-
-  const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
-
   const [
     exchangeAddresses,
   ] = await fundContract.instance.getExchangeInfo.call();
@@ -401,8 +385,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       address: getAddress(config, config.quoteAssetSymbol),
     },
     exchanges: exchangeAddresses.map(entry => ({
+      /* eslint-disable no-underscore-dangle */
       address: entry._value,
       name: getExchangeName(entry._value),
+      /* eslint-enable */
     })),
     totalSupply: calculations.totalSupply.toString(),
     legalEntity: getLegalEntity(),
