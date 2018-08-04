@@ -116,15 +116,18 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
   return relevantDates;
 };
 
-const extractPrices = (address, priceHistory) =>
+const extractPrices = (address, priceHistory, config) =>
   priceHistory.map(priceEntry => {
     if (priceEntry === null) {
       return 0;
     }
     const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
+    const symbol = getSymbol(config, address);
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
     // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
-    return index === -1 ? 0 : priceEntry.prices[index]; // for first prices
+    return index === -1
+      ? 0
+      : toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -437,7 +440,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
-    priceHistory: extractPrices(holding.token.address, priceHistory),
+    priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
 
   // PREPARE SIMULATOR ACTIONS
@@ -459,9 +462,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
     type: 'TRADE',
     sellToken: getTokenByAddress(holdings, trade.makerToken),
-    sellHowMuch: trade.filledMakerTokenAmount,
+    sellHowMuch: toReadable(
+      config,
+      trade.filledMakerTokenAmount,
+      getSymbol(config, trade.makerToken),
+    ),
     buyToken: getTokenByAddress(holdings, trade.takerToken),
-    buyHowMuch: trade.filledTakerTokenAmount,
+    buyHowMuch: toReadable(
+      config,
+      trade.filledTakerTokenAmount,
+      getSymbol(config, trade.takerToken),
+    ),
     timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
     exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
     transaction: trade.orderHash,
@@ -474,9 +485,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
     sellToken: getTokenBySymbol(holdings, trade.sellToken),
-    sellHowMuch: trade.sellQuantity.toString(),
+    sellHowMuch: toReadable(config, trade.sellQuantity, trade.sellToken),
     buyToken: getTokenBySymbol(holdings, trade.buyToken),
-    buyHowMuch: trade.buyQuantity.toString(),
+    buyHowMuch: toReadable(config, trade.buyQuantity, trade.buyToken),
     timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
