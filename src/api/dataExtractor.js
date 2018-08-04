@@ -97,6 +97,7 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
   const relevantDates = [];
   let timestamp = timeSpanStart;
   while (timestamp <= timeSpanEnd) {
+    console.log(timestamp);
     const date = new Date(timestamp * 1000);
     relevantDates.push({
       year: date.getUTCFullYear(),
@@ -391,10 +392,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   };
 
   // HOLDINGS AND PRICES
-  // TODO remove commenting out!
-  /*
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
   const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+  debug('relevant dates', relevantDates);
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
@@ -413,7 +413,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     },
     new Promise(resolve => resolve([])),
   );
-  */
 
   const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
     token: {
@@ -426,7 +425,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
-    // priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
+    priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
   }));
 
   // PREPARE SIMULATOR ACTIONS
@@ -497,11 +496,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       investors: [],
       list: [],
     },
-    holdings: [],
+    holdings,
     audits: [],
   };
 
   const fund = fundSimulator(initialData);
+
+  orderedSimulatorActions.forEach(action => fund.dispatch(action));
 
   const finalState = fund.getState();
 
