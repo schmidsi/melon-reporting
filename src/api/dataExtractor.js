@@ -70,6 +70,14 @@ const getSymbolOrFund = (config, address) => {
   }
 };
 
+const getFundManager = address => ({
+  address,
+  // do ens lookup here (future work)
+  name: 'unknown',
+});
+
+const getLegalEntity = () => ['unknown']; // future work when legal entity is available
+
 const parseTransferLog = config => log => {
   const tokens = new BigNumber(log.data);
 
@@ -105,7 +113,10 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
     timestamp += 86400;
   }
   // exclude current day
-  return R.take(relevantDates.length - 1, relevantDates);
+  // return R.take(relevantDates.length - 1, relevantDates);
+
+  // with current day
+  return relevantDates;
 };
 
 const extractPrices = (address, priceHistory) =>
@@ -262,6 +273,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
+  // TODO this returns the holdings of 'now', but we would start by inception
   const holdingsAndPrices = await getHoldingsAndPrices(environment, {
     fundAddress,
   });
@@ -375,7 +387,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress: informations.fundAddress,
     timeSpanStart,
     timeSpanEnd,
-    manager: informations.owner,
+    manager: getFundManager(informations.owner),
     inception: Math.round(new Date(informations.inception).getTime() / 1000),
     quoteToken: {
       symbol: config.quoteAssetSymbol,
@@ -386,6 +398,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       name: getExchangeName(entry._value),
     })),
     totalSupply: calculations.totalSupply.toString(),
+    legalEntity: getLegalEntity(),
   };
 
   // HOLDINGS AND PRICES
@@ -486,10 +499,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       list: [],
     },
     holdings,
-    audits: [],
+    audits,
   };
 
   const fund = fundSimulator(initialData);
+
+  debug('Initial state', fund.getState());
 
   orderedSimulatorActions.forEach(action => fund.dispatch(action));
 

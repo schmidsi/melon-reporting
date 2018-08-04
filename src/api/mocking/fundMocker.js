@@ -63,6 +63,8 @@ const selectRandomWeightedAction = actions => {
 const fundMocker = initialData => {
   const fund = fundSimulator(initialData);
 
+  debug('Initial state', fund.getState());
+
   fund.dispatch({
     type: 'INVEST',
     value: '100',
