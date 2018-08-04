@@ -202,7 +202,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
     inlastXDays: 20,
   });
-  debug('oasisDexTrades', oasisDexTrades);
 
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -219,7 +218,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       return logFill;
     })
     .filter(logFill => logFill.taker === fundAddress);
-  debug('zeroExTrades', zeroExTrades);
 
   const tokenSends = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -393,12 +391,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   // HOLDINGS AND PRICES
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
   const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
-  debug('relevant dates', relevantDates);
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
       // .getAveragedPricesForDay(date.year, date.month, date.day)
-      .getFirstAvailablePricesForDay(2018, 8, 3)
+      .getFirstAvailablePricesForDay(date.year, date.month, date.day)
       .call({})
       .then(res => res)
       .catch(() => null),
@@ -435,7 +432,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     investor: invest.investor,
     timestamp: parseInt(invest.timestamp.toString(), 10),
   }));
-  debug(investActions);
 
   const redeemActions = redeems.map(redeem => ({
     type: 'REDEEM',
@@ -443,9 +439,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     investor: redeem.investor,
     timestamp: parseInt(redeem.timestamp, 10),
   }));
-  debug(redeemActions);
-
-  debug(meta.exchanges);
 
   const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
     type: 'TRADE',
@@ -461,7 +454,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const zeroExTradeActions = await Promise.all(
     zeroExTradeActionTasks.map(p => p()),
   );
-  debug('ZeroExTradeActions', zeroExTradeActions);
 
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
@@ -473,7 +465,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
   }));
-  debug('OasisDexTradeActions', oasisDexTradeActions);
 
   // SIMULATOR
 
@@ -481,7 +472,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     .concat(redeemActions)
     .concat(zeroExTradeActions)
     .concat(oasisDexTradeActions);
-  debug('UnorderedSimulatorActions', unorderedSimulatorActions);
 
   const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
     unorderedSimulatorActions,
