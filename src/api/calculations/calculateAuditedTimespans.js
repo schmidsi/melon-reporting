@@ -3,9 +3,10 @@ import { areRangesOverlapping, min, max } from 'date-fns';
 
 import setPath from '~/api/utils/setPath';
 
-const parseTimestamp = t => new Date(t) * 1000;
+export const parseTimestamp = t => new Date(t * 1000);
+export const toTimestamp = date => Math.floor(date.getTime() / 1000);
 
-const areTimespansOverlapping = R.curry((a, b) =>
+export const areTimespansOverlapping = R.curry((a, b) =>
   areRangesOverlapping(
     parseTimestamp(a.timespanStart),
     parseTimestamp(a.timespanEnd),
@@ -14,25 +15,21 @@ const areTimespansOverlapping = R.curry((a, b) =>
   ),
 );
 
-const mergeTimespans = (a, b) => ({
-  timespanStart: min(
-    parseTimestamp(a.timespanStart),
-    parseTimestamp(b.timespanStart),
+export const mergeTimespans = (a, b) => ({
+  timespanStart: toTimestamp(
+    min(parseTimestamp(a.timespanStart), parseTimestamp(b.timespanStart)),
   ),
-  timespanEnd: max(
-    parseTimestamp(a.timespanEnd),
-    parseTimestamp(b.timespanEnd),
+  timespanEnd: toTimestamp(
+    max(parseTimestamp(a.timespanEnd), parseTimestamp(b.timespanEnd)),
   ),
 });
 
-const reduceOverlappingTimespans = timespans =>
+export const reduceOverlappingTimespans = timespans =>
   timespans.reduce((reduced, candidate) => {
     const [overlapping, notOverlapping] = R.partition(
       areTimespansOverlapping(candidate),
       reduced,
     );
-
-    console.log({ overlapping, notOverlapping });
 
     if (overlapping.length === 0) return [candidate, ...notOverlapping];
 
@@ -45,7 +42,7 @@ const reduceOverlappingTimespans = timespans =>
     return [...reduceOverlappingTimespans(merged), ...notOverlapping];
   }, []);
 
-const calculateAuditedTimespans = setPath(
+export const calculateAuditedTimespans = setPath(
   ['calculations', 'auditedTimespans'],
   ({ data }) => {
     const audited = reduceOverlappingTimespans(data.audits);
@@ -61,8 +58,6 @@ const calculateAuditedTimespans = setPath(
       if (i === all.length - 1) return carry;
       return [{ timespanStart: candidate.timespanEnd }, ...rest];
     }, []);
-
-    console.log(audited, gaps, data.audits);
 
     return { audited, gaps };
   },
