@@ -17,7 +17,6 @@ import {
 import Web3 from 'web3';
 
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
-import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.json';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
@@ -27,7 +26,6 @@ import getDebug from '~/utils/getDebug';
 import fundSimulator from '~/api/fundSimulator';
 
 import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
-import RSVP from 'rsvp';
 import getAuditsFromFund from './getAuditsFromFund';
 
 const debug = getDebug(__filename);
@@ -467,17 +465,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
     type: 'TRADE',
-    sellToken: getTokenByAddress(holdings, trade.makerToken),
+    sellToken: getTokenByAddress(holdings, trade.takerToken),
     sellHowMuch: toReadable(
-      config,
-      trade.filledMakerTokenAmount,
-      getSymbol(config, trade.makerToken),
-    ).toString(),
-    buyToken: getTokenByAddress(holdings, trade.takerToken),
-    buyHowMuch: toReadable(
       config,
       trade.filledTakerTokenAmount,
       getSymbol(config, trade.takerToken),
+    ).toString(),
+    buyToken: getTokenByAddress(holdings, trade.makerToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.filledMakerTokenAmount,
+      getSymbol(config, trade.makerToken),
     ).toString(),
     timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
     exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
@@ -490,17 +488,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
-    sellToken: getTokenBySymbol(holdings, trade.sellToken),
+    sellToken: getTokenBySymbol(holdings, trade.buyToken),
     sellHowMuch: toReadable(
-      config,
-      trade.sellQuantity,
-      trade.sellToken,
-    ).toString(),
-    buyToken: getTokenBySymbol(holdings, trade.buyToken),
-    buyHowMuch: toReadable(
       config,
       trade.buyQuantity,
       trade.buyToken,
+    ).toString(),
+    buyToken: getTokenBySymbol(holdings, trade.sellToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.sellQuantity,
+      trade.sellToken,
     ).toString(),
     timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),

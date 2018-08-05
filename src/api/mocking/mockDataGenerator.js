@@ -167,7 +167,6 @@ const randomAudits = (from, to) =>
       ),
       opinion: randomOpinion(),
       comment: faker.hacker.phrase(),
-      timestamp: auditEnd + 450,
     };
   });
 
