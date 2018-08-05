@@ -33,7 +33,8 @@ interface AuditingInterface {
         uint256 timespanStart, 
         uint256 timespanEnd, 
         uint256 opinion,
-        string comment
+        string comment,
+        uint256 timestamp
     );
 
     function isApprovedAuditor(

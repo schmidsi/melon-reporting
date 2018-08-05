@@ -3,13 +3,11 @@ import BigNumber from 'bignumber.js';
 import {
   ensure,
   getAddress,
-  getCanonicalPriceFeedContract,
   getConfig,
   getFundContract,
   getFundRecentTrades,
   getFundInformations,
   getHoldingsAndPrices,
-  getOrdersHistory,
   getParityProvider,
   getSymbol,
   performCalculations,
@@ -17,10 +15,8 @@ import {
 } from '@melonproject/melon.js';
 
 import Web3 from 'web3';
-// for web3js
 
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
-import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.json';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
@@ -30,17 +26,15 @@ import getDebug from '~/utils/getDebug';
 import fundSimulator from '~/api/fundSimulator';
 
 import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
-import RSVP from 'rsvp';
 import getAuditsFromFund from './getAuditsFromFund';
 
 const debug = getDebug(__filename);
 
 const web3 = new Web3(
-  // new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
-  new Web3.providers.HttpProvider(process.env.JSON_RPC_LOCALENDPOINT),
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
 );
 
-const priceHistoryReaderAddress = '0x7eB494D4460c39eF76536CE87Bd5b1455b8728fa';
+const priceHistoryReaderAddress = '0x1f1173e263ba65923D62730cDA64aCeFF9f15a2C';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -55,7 +49,7 @@ const zeroExLogFillAbi = ZeroExAbi.find(
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
   (Object.entries(addressBook.kovan).find(
-    ([name, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
+    ([, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
 const onlyInTimespan = (timestamp, timeSpanStart, timeSpanEnd) =>
@@ -70,6 +64,14 @@ const getSymbolOrFund = (config, address) => {
     return 'MLNF';
   }
 };
+
+const getPersonFromAddress = address => ({
+  address,
+  // do ens lookup here (future work)
+  name: 'unknown',
+});
+
+const getLegalEntity = () => ['unknown']; // future work when legal entity is available
 
 const parseTransferLog = config => log => {
   const tokens = new BigNumber(log.data);
@@ -95,28 +97,38 @@ const parseTransferLog = config => log => {
 
 const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
   const relevantDates = [];
-  let timestamp = timeSpanStart;
+  const d = new Date(timeSpanStart * 1000);
+  let timestamp =
+    new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0) /
+    1000;
   while (timestamp <= timeSpanEnd) {
     const date = new Date(timestamp * 1000);
     relevantDates.push({
-      year: date.getUTCFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate(),
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
     });
     timestamp += 86400;
   }
   // exclude current day
-  return R.take(relevantDates.length - 1, relevantDates);
+  // return R.take(relevantDates.length - 1, relevantDates);
+
+  // with current day
+  return relevantDates;
 };
 
-const extractPrices = (address, priceHistory) =>
+const extractPrices = (address, priceHistory, config) =>
   priceHistory.map(priceEntry => {
     if (priceEntry === null) {
       return 0;
     }
     const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
+    const symbol = getSymbol(config, address);
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
-    return index === -1 ? 0 : priceEntry.averagedPrices[index];
+    // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
+    return index === -1
+      ? 0
+      : toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -139,6 +151,8 @@ const getTokenBySymbol = (holdings, symbol) => {
 const getExchangeByName = (exchanges, name) =>
   R.find(R.propEq('name', name))(exchanges);
 
+const getStrategy = () => 'unknown'; // future work: get strategy when available
+
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
@@ -146,7 +160,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     track: 'kovan-demo',
   };
 
-  // 'https://kovan.melonport.com' ~ 605ms
+  // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
     fundAddress,
@@ -196,17 +210,14 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     currentBlock - fundAgeInSeconds / AVERAGE_BLOCKTIME,
   );
 
-  const blockBeforeInception = await web3.eth.getBlock(inceptionBlockApprox);
-
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
     inlastXDays: 20,
   });
-  debug('oasisDexTrades', oasisDexTrades);
 
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: 'latest',
+    toBlock: web3.utils.numberToHex(currentBlock),
     topics: [zeroExLogFillEventSignature],
   }))
     .map(log => {
@@ -219,7 +230,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       return logFill;
     })
     .filter(logFill => logFill.taker === fundAddress);
-  debug('zeroExTrades', zeroExTrades);
 
   const tokenSends = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -264,21 +274,18 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
-  const holdingsAndPrices = await getHoldingsAndPrices(environment, {
+  // TODO this returns the holdings of 'now', but we would start by inception
+  const initialHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
-  });
+  })).map(holding => ({
+    name: holding.name,
+    balance: '0',
+  }));
 
-  const canonicalPriceFeedContract = await getCanonicalPriceFeedContract(
-    environment,
-  );
+  const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
-  const audits = await getAuditsFromFund(environment, {
-    fundAddress,
-  });
-
-  const ordersHistory = await getOrdersHistory(environment, {
-    fundAddress,
-  });
+  // filter audits before timeSpan for determinism
+  const audits = allAudits.filter(audit => audit.timestamp <= timeSpanEnd);
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
@@ -342,10 +349,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       }),
     );
 
+  const investors = invests.map(invest =>
+    getPersonFromAddress(invest.investor),
+  );
+
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
-    fromBlock: 0,
-    toBlock: 'latest',
+    // fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    // toBlock: web3.utils.numberToHex(currentBlock),
+    fromBlock: inceptionBlockApprox,
+    toBlock: currentBlock,
   });
 
   const redeems = allRedeems
@@ -364,42 +377,48 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       timestamp: r.returnValues.atTimestamp,
     }));
 
-  const participations = [...invests, ...redeems];
-
-  const historyLength = await canonicalPriceFeedContract.instance.getHistoryLength.call();
-
   const [
     exchangeAddresses,
   ] = await fundContract.instance.getExchangeInfo.call();
+
+  const ownCalculations = await fundContract.instance.performCalculations.call();
+  const managementFee = ownCalculations[1].div(10 ** 18).toString();
+  const performanceFee = ownCalculations[2].div(10 ** 18).toString();
+
+  const strategy = getStrategy();
 
   const meta = {
     fundName: informations.name,
     fundAddress: informations.fundAddress,
     timeSpanStart,
     timeSpanEnd,
-    manager: informations.owner,
+    manager: getPersonFromAddress(informations.owner),
     inception: Math.round(new Date(informations.inception).getTime() / 1000),
     quoteToken: {
       symbol: config.quoteAssetSymbol,
       address: getAddress(config, config.quoteAssetSymbol),
     },
     exchanges: exchangeAddresses.map(entry => ({
+      /* eslint-disable no-underscore-dangle */
       address: entry._value,
       name: getExchangeName(entry._value),
+      /* eslint-enable */
     })),
     totalSupply: calculations.totalSupply.toString(),
+    legalEntity: getLegalEntity(),
+    managementFee,
+    performanceFee,
+    strategy,
   };
 
   // HOLDINGS AND PRICES
-  // TODO remove commenting out!
-  /*
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
   const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
-      .getAveragedPricesForDay(date.year, date.month, date.day)
-      // .getAveragedPricesForDay(2018, 8, 3)
+      // .getAveragedPricesForDay(date.year, date.month, date.day)
+      .getFirstAvailablePricesForDay(date.year, date.month, date.day)
       .call({})
       .then(res => res)
       .catch(() => null),
@@ -413,9 +432,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     },
     new Promise(resolve => resolve([])),
   );
-  */
 
-  const holdingsWithoutPriceHistory = holdingsAndPrices.map(holding => ({
+  const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
     token: {
       symbol: holding.name,
       address: getAddress(config, holding.name),
@@ -426,7 +444,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
-    // priceHistory: extractPrices(holding.token.address, priceHistory), // TODO uncomment!
+    priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
 
   // PREPARE SIMULATOR ACTIONS
@@ -437,24 +455,28 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     investor: invest.investor,
     timestamp: parseInt(invest.timestamp.toString(), 10),
   }));
-  debug(investActions);
 
   const redeemActions = redeems.map(redeem => ({
     type: 'REDEEM',
-    shares: redeem.shares,
+    shares: redeem.shares.toString(),
     investor: redeem.investor,
-    timestamp: redeem.timestamp,
+    timestamp: parseInt(redeem.timestamp, 10),
   }));
-  debug(redeemActions);
-
-  debug(meta.exchanges);
 
   const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
     type: 'TRADE',
-    sellToken: getTokenByAddress(holdings, trade.makerToken),
-    sellHowMuch: trade.filledMakerTokenAmount,
-    buyToken: getTokenByAddress(holdings, trade.takerToken),
-    buyHowMuch: trade.filledTakerTokenAmount,
+    sellToken: getTokenByAddress(holdings, trade.takerToken),
+    sellHowMuch: toReadable(
+      config,
+      trade.filledTakerTokenAmount,
+      getSymbol(config, trade.takerToken),
+    ).toString(),
+    buyToken: getTokenByAddress(holdings, trade.makerToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.filledMakerTokenAmount,
+      getSymbol(config, trade.makerToken),
+    ).toString(),
     timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
     exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
     transaction: trade.orderHash,
@@ -463,36 +485,54 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const zeroExTradeActions = await Promise.all(
     zeroExTradeActionTasks.map(p => p()),
   );
-  debug('ZeroExTradeActions', zeroExTradeActions);
 
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
-    sellToken: getTokenBySymbol(holdings, trade.sellToken),
-    sellHowMuch: trade.sellQuantity.toString(),
-    buyToken: getTokenBySymbol(holdings, trade.buyToken),
-    buyHowMuch: trade.buyQuantity.toString(),
+    sellToken: getTokenBySymbol(holdings, trade.buyToken),
+    sellHowMuch: toReadable(
+      config,
+      trade.buyQuantity,
+      trade.buyToken,
+    ).toString(),
+    buyToken: getTokenBySymbol(holdings, trade.sellToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.sellQuantity,
+      trade.sellToken,
+    ).toString(),
     timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
   }));
-  debug('OasisDexTradeActions', oasisDexTradeActions);
 
   // SIMULATOR
 
-  const simulatorActions = [];
+  const unorderedSimulatorActions = investActions
+    .concat(redeemActions)
+    .concat(zeroExTradeActions)
+    .concat(oasisDexTradeActions);
+
+  const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
+    unorderedSimulatorActions,
+  );
+  debug('OrderedSimulatorActions', orderedSimulatorActions);
 
   const initialData = {
     meta,
     trades: [],
     participations: {
-      investors: [],
+      investors,
       list: [],
     },
-    holdings: [],
-    audits: [],
+    holdings,
+    audits,
   };
 
   const fund = fundSimulator(initialData);
+
+  debug('Initial Fund State', fund.getState());
+
+  orderedSimulatorActions.forEach(action => fund.dispatch(action));
 
   const finalState = fund.getState();
 

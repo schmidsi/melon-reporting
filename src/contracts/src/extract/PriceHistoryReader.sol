@@ -49,6 +49,26 @@ contract PriceHistoryReader {
         return priceFeedHistory.getHistoryLength();
     }
     
+    function getFirstAvailablePricesForDay(uint16 year, uint8 month, uint8 day)
+    public view
+    returns (address[] tokenAddresses, uint[] prices) {
+        require(month <= 12);
+        require(day <= 31);
+        
+        uint timeSpanStart = dateTime.toTimestamp(year, month, day, 0, 0, 0); // this day, 00:00:00
+        uint historyIndex = binarySearchForTimestamp(timeSpanStart, 0);
+        
+        bool found = false;
+        uint timestamp;
+        
+        while (found == false) {
+            (tokenAddresses, prices, timestamp) = getHistoryAt(historyIndex);
+            if (timestamp != 0 && tokenAddresses.length != 0 && prices.length != 0) {
+                found = true;
+            }
+            historyIndex++;
+        }
+    }
     
     // Returns an array of the daily average prices of one token
     // The tokenIndex stems from the order of "getHistoryAt"

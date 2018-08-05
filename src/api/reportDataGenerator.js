@@ -23,15 +23,16 @@ const reportDataGenerator = async (
     const emptyFund = await mockRandomEmptyFund();
     const mockData = fundMocker(emptyFund);
 
-    const withFinalCalculations = doFinalCalculations(mockData);
+    const mockWithFinalCalculations = doFinalCalculations(mockData);
 
-    return withFinalCalculations;
+    return mockWithFinalCalculations;
   }
   // enhance dataExtractor data with mock where necessary
   // get data from dataExtractor first
   const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
+  const withFinalCalculations = doFinalCalculations(data);
 
-  return {};
+  return withFinalCalculations;
 };
 
 export default reportDataGenerator;
