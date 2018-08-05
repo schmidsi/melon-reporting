@@ -51,11 +51,12 @@ export const calculateAuditedTimespans = setPath(
       const lastGap = R.head(carry);
       const rest = R.tail(carry);
 
-      if (!lastGap) return [{ timespanStart: candidate.timespanEnd }];
-      if (!lastGap.timespanEnd)
+      if (lastGap && !lastGap.timespanEnd)
         return [{ ...lastGap, timespanEnd: candidate.timespanStart }, ...rest];
       if (i === all.length - 1) return carry;
-      return [{ timespanStart: candidate.timespanEnd }, ...rest];
+      if (all.length > 0 && !lastGap)
+        return [{ timespanStart: candidate.timespanEnd }, ...rest];
+      return rest;
     }, []);
 
     return { audited, gaps };

@@ -89,16 +89,45 @@ describe('reduceOverlappingTimespans', () => {
   });
 });
 
-test('calculateAuditedTimespans', () => {
-  const data = { audits: [january, february, march, overlappingJanFeb] };
+describe('calculateAuditedTimespans', () => {
+  test('overlapping', () => {
+    const data = { audits: [january, february, march, overlappingJanFeb] };
 
-  const { calculations } = calculateAuditedTimespans({ data });
+    const { calculations } = calculateAuditedTimespans({ data });
 
-  expect(calculations.auditedTimespans.audited.length).toBe(2);
-  expect(calculations.auditedTimespans.gaps.length).toBe(1);
+    expect(calculations.auditedTimespans.audited.length).toBe(2);
+    expect(calculations.auditedTimespans.gaps.length).toBe(1);
 
-  const gap = calculations.auditedTimespans.gaps[0];
+    const gap = calculations.auditedTimespans.gaps[0];
 
-  expect(gap.timespanStart).toBe(february.timespanEnd);
-  expect(gap.timespanEnd).toBe(march.timespanStart);
+    expect(gap.timespanStart).toBe(february.timespanEnd);
+    expect(gap.timespanEnd).toBe(march.timespanStart);
+  });
+
+  test('overlapping 2', () => {
+    const data = { audits: [january, overlappingJanFeb] };
+
+    const { calculations } = calculateAuditedTimespans({ data });
+
+    expect(calculations.auditedTimespans.audited.length).toBe(1);
+    expect(calculations.auditedTimespans.gaps.length).toBe(0);
+  });
+
+  test('only one', () => {
+    const data = { audits: [january] };
+
+    const { calculations } = calculateAuditedTimespans({ data });
+
+    expect(calculations.auditedTimespans.audited.length).toBe(1);
+    expect(calculations.auditedTimespans.gaps.length).toBe(0);
+  });
+
+  test('not overlapping', () => {
+    const data = { audits: [january, march] };
+
+    const { calculations } = calculateAuditedTimespans({ data });
+
+    expect(calculations.auditedTimespans.audited.length).toBe(2);
+    expect(calculations.auditedTimespans.gaps.length).toBe(1);
+  });
 });

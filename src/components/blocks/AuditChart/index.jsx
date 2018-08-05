@@ -1,9 +1,11 @@
 import React from 'react';
 import { scaleTime } from 'd3-scale';
 import { interpolateRound } from 'd3-interpolate';
-import { addMilliseconds, format } from 'date-fns';
+import { format } from 'date-fns';
 
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
+
+import { parseTimestamp } from '~/utils/timestamp';
 
 import styles from './styles.css';
 
@@ -94,6 +96,7 @@ const Entry = ({ start, end, xScale, y, lineHeight }) => (
 
 const Indicator = ({ start, end, y, type }) => (
   <g>
+    {console.log({ start, end, y, type })}
     <line x1={start} x2={end} y1={y} y2={y} className={styles[type]} />
   </g>
 );
@@ -109,14 +112,16 @@ const AuditChart = ({
   const lineHeight = Math.round((16 * 16) / 18);
 
   const xScale = scaleTime()
-    .domain([start, end])
+    .domain([parseTimestamp(start), parseTimestamp(end)])
     .range([0, width])
     .interpolate(interpolateRound);
 
   const yScale = n => n * lineHeight;
 
   const diff = end - start;
-  const middle = addMilliseconds(start, diff / 2);
+  const middle = end - diff / 2;
+
+  console.log({ redTimeSpans, greenTimeSpans });
 
   return (
     <svg
@@ -124,13 +129,20 @@ const AuditChart = ({
       height={(2 + children.length) * lineHeight * 2}
       className={styles.AuditChart}
     >
-      <Xaxis {...{ start, middle, end, xScale, y: yScale(2), lineHeight }} />
+      <Xaxis
+        start={parseTimestamp(start)}
+        middle={parseTimestamp(middle)}
+        end={parseTimestamp(end)}
+        xScale={xScale}
+        y={yScale(2)}
+        lineHeight={lineHeight}
+      />
 
       {greenTimeSpans.map(({ timespanStart, timespanEnd }) => (
         <Indicator
           key={`${timespanStart}-${timespanEnd}`}
-          start={xScale(timespanStart)}
-          end={xScale(timespanEnd)}
+          start={xScale(parseTimestamp(timespanStart))}
+          end={xScale(parseTimestamp(timespanEnd))}
           type="green"
           y={yScale(2)}
         />
@@ -139,8 +151,8 @@ const AuditChart = ({
       {redTimeSpans.map(({ timespanStart, timespanEnd }) => (
         <Indicator
           key={`${timespanStart}-${timespanEnd}`}
-          start={xScale(timespanStart)}
-          end={xScale(timespanEnd)}
+          start={xScale(parseTimestamp(timespanStart))}
+          end={xScale(parseTimestamp(timespanEnd))}
           type="red"
           y={yScale(2)}
         />
@@ -149,8 +161,8 @@ const AuditChart = ({
       {children.map((audit, i) => (
         <Entry
           key={audit.dataHash}
-          start={new Date(audit.timespanStart * 1000)}
-          end={new Date(audit.timespanEnd * 1000)}
+          start={parseTimestamp(audit.timespanStart)}
+          end={parseTimestamp(audit.timespanEnd)}
           xScale={xScale}
           y={yScale(3 + i * 2)}
           lineHeight={lineHeight}

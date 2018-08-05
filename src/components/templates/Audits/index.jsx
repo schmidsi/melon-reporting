@@ -16,8 +16,8 @@ const Audits = ({ data, calculations }) => (
     </Container>
     <Container>
       <AuditChart
-        start={data.meta.timeSpanStart * 1000}
-        end={data.meta.timeSpanEnd * 1000}
+        start={data.meta.timeSpanStart}
+        end={data.meta.timeSpanEnd}
         greenTimeSpans={calculations.auditedTimespans.audited}
         redTimeSpans={calculations.auditedTimespans.gaps}
       >

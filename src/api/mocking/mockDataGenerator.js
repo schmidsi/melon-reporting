@@ -3,6 +3,8 @@ import titleCase from 'title-case';
 import * as R from 'ramda';
 import { addMonths, min } from 'date-fns';
 
+import { toTimestamp, parseTimestamp } from '~/utils/timestamp';
+
 import exampleData from '../../data/example-report-data.json';
 
 import {
@@ -140,19 +142,17 @@ const randomInvestors = numberOfInvestors =>
   }));
 
 const randomAudits = (from, to) =>
-  console.log(from, to) ||
   R.range(0, randomInt(1, 3)).map(() => {
-    const timespanStart =
-      faker.date.between(new Date(from * 1000), new Date(to * 1000)).getTime() /
-      1000;
+    const timespanStart = toTimestamp(
+      faker.date.between(parseTimestamp(from), parseTimestamp(to)),
+    );
 
-    console.log(timespanStart, new Date(timespanStart * 1000));
-
-    const timespanEnd =
+    const timespanEnd = toTimestamp(
       min(
-        new Date(to * 1000),
-        addMonths(timespanStart * 1000, randomInt(1, 3)),
-      ).getTime() / 1000;
+        parseTimestamp(to),
+        addMonths(parseTimestamp(timespanStart), randomInt(1, 3)),
+      ),
+    );
 
     return {
       auditor: {
@@ -162,9 +162,9 @@ const randomAudits = (from, to) =>
       dataHash: randomHexaDecimal(64),
       timespanStart,
       timespanEnd,
-      timestamp:
-        faker.date.between(new Date(timespanEnd * 1000), new Date()).getTime() /
-        1000,
+      timestamp: toTimestamp(
+        faker.date.between(parseTimestamp(timespanEnd), new Date()),
+      ),
       opinion: randomOpinion(),
       comment: faker.hacker.phrase(),
     };
