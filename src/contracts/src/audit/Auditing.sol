@@ -15,6 +15,7 @@ contract Auditing is AuditingInterface {
         uint256 timespanEnd; // the end timestamp of the report
         Opinion opinion; // the opinion for this timespan
         string comment; // a comment on this timespan
+        uint256 timestamp; // transaction timestamp
     }
 
     enum Opinion { 
@@ -72,7 +73,7 @@ contract Auditing is AuditingInterface {
         // check if the sender is an approved auditor with "require"
         require(this.isApprovedAuditor(msg.sender));
 
-        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, Opinion(_opinion), _comment);
+        Audit memory newAudit = Audit(msg.sender, _dataHash, _timespanStart, _timespanEnd, Opinion(_opinion), _comment, now);
         uint256 index = insertAudit(_fundAddress, newAudit);
 
         emit Added(_fundAddress, index);
@@ -105,8 +106,14 @@ contract Auditing is AuditingInterface {
     /// Returns the requested audit data
     function getByIndex(address _fundAddress, uint256 _index)
             external view
-            returns (address auditor, bytes32 dataHash, uint256 timespanStart, uint256 timespanEnd, uint256 opinion, string comment) {
-        require(_index < fundAudits[_fundAddress].length); // index must be smaller than array length
+            returns (address auditor, 
+                bytes32 dataHash, 
+                uint256 timespanStart, 
+                uint256 timespanEnd, 
+                uint256 opinion,
+                string comment, 
+                uint256 timestamp) {
+        require(_index < fundAudits[_fundAddress].length, "Index must be smaller than array length"); 
 
         Audit memory audit = fundAudits[_fundAddress][_index];
         auditor = audit.auditor;
@@ -115,6 +122,7 @@ contract Auditing is AuditingInterface {
         timespanEnd = audit.timespanEnd;
         opinion = uint256(audit.opinion);
         comment = audit.comment;
+        timestamp = audit.timestamp;
     }
 
     /// Returns true if a fund is completely audited over a specific timespan.

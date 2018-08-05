@@ -219,7 +219,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: 'latest',
+    toBlock: web3.utils.numberToHex(currentBlock),
     topics: [zeroExLogFillEventSignature],
   }))
     .map(log => {
@@ -284,9 +284,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     balance: '0',
   }));
 
-  const audits = await getAuditsFromFund(environment, {
-    fundAddress,
-  });
+  const audits = await getAuditsFromFund(environment, { fundAddress });
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
@@ -356,8 +354,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     // we cannot narrow the blocks by timestamp, so we get all events here
-    fromBlock: 0,
-    toBlock: 'latest',
+    // fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    // toBlock: web3.utils.numberToHex(currentBlock),
+    fromBlock: inceptionBlockApprox,
+    toBlock: currentBlock,
   });
 
   const redeems = allRedeems
@@ -457,7 +457,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const redeemActions = redeems.map(redeem => ({
     type: 'REDEEM',
-    shares: redeem.shares,
+    shares: redeem.shares.toString(),
     investor: redeem.investor,
     timestamp: parseInt(redeem.timestamp, 10),
   }));
@@ -469,13 +469,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       config,
       trade.filledMakerTokenAmount,
       getSymbol(config, trade.makerToken),
-    ),
+    ).toString(),
     buyToken: getTokenByAddress(holdings, trade.takerToken),
     buyHowMuch: toReadable(
       config,
       trade.filledTakerTokenAmount,
       getSymbol(config, trade.takerToken),
-    ),
+    ).toString(),
     timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
     exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
     transaction: trade.orderHash,
@@ -488,9 +488,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
     sellToken: getTokenBySymbol(holdings, trade.sellToken),
-    sellHowMuch: toReadable(config, trade.sellQuantity, trade.sellToken),
+    sellHowMuch: toReadable(
+      config,
+      trade.sellQuantity,
+      trade.sellToken,
+    ).toString(),
     buyToken: getTokenBySymbol(holdings, trade.buyToken),
-    buyHowMuch: toReadable(config, trade.buyQuantity, trade.buyToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.buyQuantity,
+      trade.buyToken,
+    ).toString(),
     timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,

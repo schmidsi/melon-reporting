@@ -2,13 +2,10 @@ import * as R from 'ramda';
 import Web3 from 'web3';
 import abi from '../contracts/abi/Auditing';
 
-const auditingContractAddress = '0xeedaaab170b755b0c43efb809a07ea49b0ce836d';
+const auditingContractAddress = '0xe05339048101af344575e651ce343e04cbbc93d8';
 
-// const web3 = new Web3(new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT));
 const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C',
-  ),
+  new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
 );
 
 const opinionMap = {
@@ -37,6 +34,7 @@ const getAuditsFromFund = async (environment, { fundAddress }) => {
           timespanEnd,
           opinion,
           comment,
+          timestamp,
         ]) => ({
           auditor,
           dataHash: dataHash.reduce(
@@ -47,6 +45,7 @@ const getAuditsFromFund = async (environment, { fundAddress }) => {
           timespanEnd: timespanEnd.toNumber(),
           opinion: opinionMap[opinion],
           comment: web3.utils.hexToAscii(comment),
+          timestamp: timestamp.toNumber(),
         }),
       ),
   );

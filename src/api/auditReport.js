@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import auditingabi from '../contracts/abi/Auditing';
 import hashReport from './hashReport';
 
-const auditingContractAddress = '0xeedaaab170b755b0c43efb809a07ea49b0ce836d';
+const auditingContractAddress = '0xe05339048101af344575e651ce343e04cbbc93d8';
 
 const auditReport = async (data, opinion, comment) => {
   const web3 = new Web3(Web3.givenProvider);
@@ -17,7 +17,7 @@ const auditReport = async (data, opinion, comment) => {
   const dataHash = hashReport(data);
   const timespanStart = data.meta.timeSpanStart;
   const timespanEnd = data.meta.timeSpanEnd;
-  const opinionValue = parseInt(opinion);
+  const opinionValue = parseInt(opinion, 10);
   const commentValue = web3.utils.fromAscii(comment);
 
   auditingContract.methods
