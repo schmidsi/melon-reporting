@@ -99,13 +99,16 @@ const parseTransferLog = config => log => {
 
 const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
   const relevantDates = [];
-  let timestamp = timeSpanStart;
+  const d = new Date(timeSpanStart * 1000);
+  let timestamp =
+    new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0) /
+    1000;
   while (timestamp <= timeSpanEnd) {
     const date = new Date(timestamp * 1000);
     relevantDates.push({
-      year: date.getUTCFullYear(),
-      month: date.getUTCMonth() + 1,
-      day: date.getUTCDate(),
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
     });
     timestamp += 86400;
   }
