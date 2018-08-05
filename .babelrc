@@ -1,15 +1,28 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [
-          "last 2 Chrome versions",
-          "last 2 Firefox versions",
-          "last 2 Edge versions"
-        ]
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 Chrome versions",
+            "last 2 Firefox versions",
+            "last 2 Edge versions"
+          ]
+        }
       }
-    }],
+    ],
     "react"
   ],
-  "plugins": ["transform-object-rest-spread"]
+  "plugins": [
+    "transform-object-rest-spread",
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "~/api": "./src/api"
+        }
+      }
+    ]
+  ]
 }
