@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 
 import { Heading1 } from '~/components/design/typography';
-import { Container } from '~/components/design/layout';
+import { Container, PageBreak } from '~/components/design/layout';
 import ColorCondition from '~/components/blocks/ColorCondition';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
@@ -17,6 +17,7 @@ const defaultColumnConfig = {
 
 const Trades = ({ data, calculations }) => (
   <div>
+    <PageBreak />
     <Container>
       <Heading1>Trades</Heading1>
     </Container>

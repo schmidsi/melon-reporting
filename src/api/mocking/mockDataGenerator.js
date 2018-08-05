@@ -1,6 +1,10 @@
 import faker from 'faker';
 import titleCase from 'title-case';
 import * as R from 'ramda';
+import { addMonths, min } from 'date-fns';
+
+import { toTimestamp, parseTimestamp } from '~/utils/timestamp';
+
 import exampleData from '../../data/example-report-data.json';
 
 import {
@@ -137,17 +141,30 @@ const randomInvestors = numberOfInvestors =>
     name: faker.name.findName(),
   }));
 
-const randomAudits = (timeSpanStart, timeSpanEnd) =>
-  R.range(5, randomInt(5, 10)).map(() => {
-    const auditStart = faker.date
-      .between(new Date(timeSpanStart), new Date(timeSpanEnd))
-      .getTime();
-    const auditEnd = auditStart + 10000;
+const randomAudits = (from, to) =>
+  R.range(0, randomInt(1, 3)).map(() => {
+    const timespanStart = toTimestamp(
+      faker.date.between(parseTimestamp(from), parseTimestamp(to)),
+    );
+
+    const timespanEnd = toTimestamp(
+      min(
+        parseTimestamp(to),
+        addMonths(parseTimestamp(timespanStart), randomInt(1, 3)),
+      ),
+    );
+
     return {
-      auditor: randomEthereumAddress(),
+      auditor: {
+        address: randomEthereumAddress(),
+        name: faker.company.companyName(),
+      },
       dataHash: randomHexaDecimal(64),
-      timeSpanStart: auditStart,
-      timeSpanEnd: auditEnd,
+      timespanStart,
+      timespanEnd,
+      timestamp: toTimestamp(
+        faker.date.between(parseTimestamp(timespanEnd), new Date()),
+      ),
       opinion: randomOpinion(),
       comment: faker.hacker.phrase(),
     };

@@ -21,6 +21,7 @@
   margin-bottom: 5px;
   font-weight: 600;
   font-size: 2rem;
+  page-break-before: always;
 }
 
 .Heading2 {
@@ -43,4 +44,9 @@
   margin-bottom: 0;
   font-weight: 600;
   font-size: 1rem;
+}
+
+.Warning {
+  color: #E0933C;
+  font-weight: 600;
 }

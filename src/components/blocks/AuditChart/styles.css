@@ -1,0 +1,27 @@
+.AuditChart {
+  width: 100%;
+}
+
+.line {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: black;
+  stroke-width: 2;
+}
+
+.green {
+  stroke: #8DC567;
+  stroke-width: 2;
+}
+
+.red {
+  stroke: #D0021B;
+  stroke-width: 3;
+}
+
+.text {
+  font-size: calc(12rem / 18);
+}

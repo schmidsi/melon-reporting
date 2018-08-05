@@ -40,8 +40,8 @@ const getToken = R.prop('token');
 const defaultActionWeights = {
   invest: 3,
   redeem: 1,
-  trade: 20,
-  nothing: 15,
+  trade: 10,
+  nothing: 100,
 };
 
 const selectRandomWeightedAction = actions => {

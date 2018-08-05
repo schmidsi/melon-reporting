@@ -23,7 +23,6 @@ import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 import VersionAbi from '@melonproject/smart-contracts/out/VersionInterface.abi.json';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
-import getAuditsFromFund from './getAuditsFromFund';
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
 
 import getDebug from '~/utils/getDebug';
@@ -32,6 +31,7 @@ import fundSimulator from '~/api/fundSimulator';
 
 import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
 import RSVP from 'rsvp';
+import getAuditsFromFund from './getAuditsFromFund';
 
 const debug = getDebug(__filename);
 
@@ -140,7 +140,6 @@ const getExchangeByName = (exchanges, name) =>
   R.find(R.propEq('name', name))(exchanges);
 
 const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
-  console.log(process.env.JSON_RPC_ENDPOINT);
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
     ...provider,

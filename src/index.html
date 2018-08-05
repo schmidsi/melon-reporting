@@ -4,6 +4,20 @@
 <head>
   <title>Melon Reporting</title>
   <link rel="stylesheet" href="components/global.css">
+  <style>
+    @media all {
+      .pageBreak {
+        display: none;
+      }
+    }
+
+    @media print {
+      .pageBreak {
+        display: block;
+        page-break-before: always;
+      }
+    }
+  </style>
 </head>
 
 <body>

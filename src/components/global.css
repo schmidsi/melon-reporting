@@ -5,6 +5,8 @@
 
 html,
 body {
+  margin: 0;
+  padding: 0;
   height: 100%;
   width: 100%;
   font-family: 'Source Serif Pro', serif;
@@ -25,3 +27,5 @@ p {
   margin-top: 0;
   margin-bottom: 1.75em;
 }
+
+

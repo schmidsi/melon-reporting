@@ -23,7 +23,7 @@ const getPriceHistoryFromCryptoCompare = async (
 
   // HACK: It seems that with JNT some close prizes are wrong
   // otherwise close prices are the best.
-  const key = symbol === 'JNT' ? 'open' : 'close';
+  // const key = symbol === 'JNT' ? 'open' : 'close';
 
   const url = `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=ETH&limit=${numberOfDays}&toTs=${timeSpanEnd}`;
 
@@ -37,7 +37,7 @@ const getPriceHistoryFromCryptoCompare = async (
       response,
     );
     const histoDay = response.data.Data;
-    const dailyAveragePrices = histoDay.map(day => day[key].toString()); // Note: Close price is the only one without errors
+    const dailyAveragePrices = histoDay.map(day => day.open.toString()); // Note: Close price is the only one without errors
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);
