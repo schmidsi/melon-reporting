@@ -4,9 +4,9 @@ import {
   calculateAuditedTimespans,
   reduceOverlappingTimespans,
   mergeTimespans,
-  parseTimestamp,
-  toTimestamp,
 } from './calculateAuditedTimespans';
+
+import { toTimestamp } from '~/utils/timestamp';
 
 const january = {
   timespanStart: toTimestamp(new Date(2018, 0, 1)),
@@ -32,13 +32,6 @@ const overlappingJanFeb = {
   timespanStart: toTimestamp(new Date(2018, 0, 20)),
   timespanEnd: toTimestamp(new Date(2018, 1, 5)),
 };
-
-test('parseTimestamp', () => {
-  const date = new Date(2018, 0, 1);
-  const timestamp = toTimestamp(date);
-  const parsed = parseTimestamp(timestamp);
-  expect(parsed.getTime()).toBe(date.getTime());
-});
 
 test('areTimespansOverlapping', () => {
   expect(areTimespansOverlapping(january, february)).toBe(false);

@@ -20,7 +20,7 @@
       "module-resolver",
       {
         "alias": {
-          "~/api": "./src/api"
+          "~": "./src"
         }
       }
     ]

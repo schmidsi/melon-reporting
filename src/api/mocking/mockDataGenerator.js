@@ -140,14 +140,19 @@ const randomInvestors = numberOfInvestors =>
   }));
 
 const randomAudits = (from, to) =>
-  R.range(0, randomInt(5, 10)).map(() => {
-    const timespanStart = faker.date
-      .between(new Date(from), new Date(to))
-      .getTime();
-    const timespanEnd = min(
-      to,
-      addMonths(timespanStart, randomInt(1, 3)),
-    ).getTime();
+  console.log(from, to) ||
+  R.range(0, randomInt(1, 3)).map(() => {
+    const timespanStart =
+      faker.date.between(new Date(from * 1000), new Date(to * 1000)).getTime() /
+      1000;
+
+    console.log(timespanStart, new Date(timespanStart * 1000));
+
+    const timespanEnd =
+      min(
+        new Date(to * 1000),
+        addMonths(timespanStart * 1000, randomInt(1, 3)),
+      ).getTime() / 1000;
 
     return {
       auditor: {
