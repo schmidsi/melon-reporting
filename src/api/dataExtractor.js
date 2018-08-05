@@ -284,7 +284,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     balance: '0',
   }));
 
-  const audits = await getAuditsFromFund(environment, { fundAddress });
+  const allAudits = await getAuditsFromFund(environment, { fundAddress });
+
+  // filter audits before timeSpan for determinism
+  const audits = allAudits.filter(audit => audit.timestamp <= timeSpanEnd);
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
