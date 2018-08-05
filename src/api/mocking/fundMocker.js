@@ -33,7 +33,7 @@ const getOrthogonalPrice = (calculations, buyToken, sellToken) => {
 };
 
 const getTimestamp = (data, dayIndex) =>
-  add(data.meta.timeSpanStart, multiply(dayIndex, secondsPerDay));
+  data.meta.timeSpanStart + dayIndex * secondsPerDay;
 
 const getToken = R.prop('token');
 
@@ -68,7 +68,7 @@ const fundMocker = initialData => {
   fund.dispatch({
     type: 'INVEST',
     value: '100',
-    timestamp: getTimestamp(initialData, 0),
+    timestamp: getTimestamp(initialData, 0) + 1,
     investor: initialData.meta.manager,
   });
 
@@ -162,17 +162,14 @@ const fundMocker = initialData => {
           });
         },
       ],
-      [
-        R.equals('nothing'),
-        () =>
-          fund.dispatch({
-            type: 'NOTHING',
-            timestamp: getTimestamp(data, dayIndex),
-          }),
-      ],
     ]);
 
     dispatchAction(selectRandomWeightedAction(defaultActionWeights));
+  });
+
+  fund.dispatch({
+    type: 'CALCULATE',
+    timestamp: getTimestamp(initialData, reportDays),
   });
 
   const finalState = fund.getState();

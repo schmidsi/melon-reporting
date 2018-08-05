@@ -5,7 +5,7 @@ import setPath from '~/api/utils/setPath';
 import isSameToken from '~/api/queries/isSameToken';
 
 const updateHoldings = ({ buyToken, buyHowMuch, sellToken, sellHowMuch }) =>
-  setPath(['data', 'holdings'], ({ data, calculations }) =>
+  setPath(['data', 'holdings'], ({ data }) =>
     data.holdings.map(holding => ({
       ...holding,
       quantity: R.cond([

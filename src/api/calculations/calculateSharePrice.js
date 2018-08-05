@@ -2,7 +2,7 @@ import { divide } from '~/utils/functionalBigNumber';
 import setPath from '~/api/utils/setPath';
 
 const calculateSharePrice = () =>
-  setPath(['calculations', 'sharePrice'], ({ data, calculations }) =>
+  setPath(['calculations', 'sharePrice'], ({ calculations }) =>
     divide(calculations.aum, calculations.totalSupply),
   );
 

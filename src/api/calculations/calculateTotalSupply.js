@@ -2,7 +2,7 @@ import { add, subtract } from '~/utils/functionalBigNumber';
 import setPath from '~/api/utils/setPath';
 
 const calculateTotalSupply = () =>
-  setPath(['calculations', 'totalSupply'], ({ data, calculations }) =>
+  setPath(['calculations', 'totalSupply'], ({ data }) =>
     data.participations.list.reduce(
       (carry, participation) =>
         participation.type === 'invest'
