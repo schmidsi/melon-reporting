@@ -96,7 +96,6 @@ const Entry = ({ start, end, xScale, y, lineHeight }) => (
 
 const Indicator = ({ start, end, y, type }) => (
   <g>
-    {console.log({ start, end, y, type })}
     <line x1={start} x2={end} y1={y} y2={y} className={styles[type]} />
   </g>
 );
@@ -120,8 +119,6 @@ const AuditChart = ({
 
   const diff = end - start;
   const middle = end - diff / 2;
-
-  console.log({ redTimeSpans, greenTimeSpans });
 
   return (
     <svg

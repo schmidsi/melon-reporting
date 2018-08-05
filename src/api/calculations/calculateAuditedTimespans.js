@@ -25,9 +25,12 @@ export const mergeTimespans = (a, b) => ({
 
 export const reduceOverlappingTimespans = timespans =>
   timespans.reduce((reduced, candidate) => {
+    const onlyTimespan = R.pick(['timespanStart', 'timespanEnd']);
+    const filtered = reduced.map(onlyTimespan);
+
     const [overlapping, notOverlapping] = R.partition(
       areTimespansOverlapping(candidate),
-      reduced,
+      filtered,
     );
 
     if (overlapping.length === 0) return [candidate, ...notOverlapping];
@@ -46,18 +49,26 @@ export const calculateAuditedTimespans = setPath(
   ({ data }) => {
     const audited = reduceOverlappingTimespans(data.audits);
 
-    // eslint-disable-next-line max-params
-    const gaps = audited.reduce((carry, candidate, i, all) => {
-      const lastGap = R.head(carry);
-      const rest = R.tail(carry);
+    const gaps = audited
+      .sort((a, b) => a.timespanStart - b.timespanStart)
+      // eslint-disable-next-line max-params
+      .reduce((carry, candidate, i, all) => {
+        const lastGap = R.head(carry);
+        const rest = R.tail(carry);
 
-      if (lastGap && !lastGap.timespanEnd)
-        return [{ ...lastGap, timespanEnd: candidate.timespanStart }, ...rest];
-      if (i === all.length - 1) return carry;
-      if (all.length > 0 && !lastGap)
-        return [{ timespanStart: candidate.timespanEnd }, ...rest];
-      return rest;
-    }, []);
+        if (lastGap && !lastGap.timespanEnd)
+          return [
+            {
+              timespanStart: lastGap.timespanStart,
+              timespanEnd: candidate.timespanStart,
+            },
+            ...rest,
+          ];
+        if (i === all.length - 1) return carry;
+        if (all.length > 0 && !lastGap)
+          return [{ timespanStart: candidate.timespanEnd }, ...rest];
+        return rest;
+      }, []);
 
     return { audited, gaps };
   },
