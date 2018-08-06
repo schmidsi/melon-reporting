@@ -34,8 +34,8 @@ const Report = ({ data, calculations, calculationsHistory }) =>
       {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
     </div>
   ) : (
-      <h1>Missing data</h1>
-    );
+    <h1>Missing data</h1>
+  );
 
 const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');
@@ -46,7 +46,7 @@ const enhance = withLoading(async ({ match: { params } }) => {
     params.timeSpanEnd,
   );
 
-  const { data, calculations, calculationsHistory } = res;
+  const { data, calculations, calculationsHistory, isValid } = res;
 
   // const calculations = {
   //   sharePrice: 123,
@@ -64,6 +64,7 @@ const enhance = withLoading(async ({ match: { params } }) => {
     data,
     calculations,
     calculationsHistory,
+    isValid,
   };
 });
 
