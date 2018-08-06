@@ -6,6 +6,23 @@ import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
 
+const symbolPriceKeyMap = R.cond([
+  [R.equals('MKR'), R.always('open')],
+  [R.equals('DAI'), R.always('open')], // both are good
+  [R.equals('DGD'), R.always('close')],
+  [R.equals('REP'), R.always('close')],
+  [R.equals('ZRX'), R.always('close')],
+  [R.equals('BAT'), R.always('close')],
+  [R.equals('MLN'), R.always('close')],
+  [R.equals('ANT'), R.always('close')],
+  [R.equals('KNC'), R.always('close')],
+  [R.equals('NMR'), R.always('close')],
+
+  [R.equals('JNT'), R.always('open')],
+  [R.equals('REQ'), R.always('open')],
+  [R.T, R.always('close')],
+]);
+
 const getPriceHistoryFromCryptoCompare = async (
   symbol,
   timeSpanStart,
@@ -36,12 +53,19 @@ const getPriceHistoryFromCryptoCompare = async (
       response.data.Response,
       url,
       response,
+      {
+        firstPrice: R.head(response.data.Data),
+        lastPrice: R.last(response.data.Data),
+      },
     );
     const histoDay = response.data.Data;
-    const dailyAveragePrices = histoDay.map(day => day.open.toString()); // Note: Close price is the only one without errors
+    const dailyAveragePrices = histoDay.map(day =>
+      day[symbolPriceKeyMap(symbol)].toString(),
+    ); // Note: Close price is the only one without errors
     return dailyAveragePrices;
   } catch (e) {
     console.error(e);
+    return false;
   }
 };
 

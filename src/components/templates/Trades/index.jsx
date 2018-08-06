@@ -42,7 +42,15 @@ const Trades = ({ data, calculations }) => (
           txHash: {
             headerText: 'TX Hash',
             align: 'right',
-            renderer: ({ children }) => <HexValue short>{children}</HexValue>,
+            renderer: ({ children }) => (
+              <a
+                href={`https://kovan.etherscan.io/tx/${children}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <HexValue short>{children}</HexValue>
+              </a>
+            ),
           },
           fee: defaultColumnConfig,
           timestamp: defaultColumnConfig,

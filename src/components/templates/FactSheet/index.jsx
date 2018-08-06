@@ -47,7 +47,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
               [
                 'Profit',
                 <ColorCondition>
-                  {formatBigNumber(calculations.profit)}%
+                  {displayPercent(calculations.profit)}
                 </ColorCondition>,
               ],
               [''],
@@ -125,7 +125,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
                   [
                     'Max Trades',
                     `${data.meta.policy.portfolio.maxTrades.threshold} per ${
-                      data.meta.policy.portfolio.maxTrades.timePeriod
+                    data.meta.policy.portfolio.maxTrades.timePeriod
                     }`,
                   ],
                   // [
@@ -160,7 +160,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
                   [
                     'Market Cap Range',
                     `${data.meta.policy.tokens.marketCapRange.min} - ${
-                      data.meta.policy.tokens.marketCapRange.max
+                    data.meta.policy.tokens.marketCapRange.max
                     }`,
                   ],
                   [

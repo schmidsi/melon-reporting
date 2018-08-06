@@ -12,6 +12,7 @@
 .Table td,
 .Table th {
   padding: 0;
+  white-space: nowrap;
 }
 
 .Table th {
@@ -30,4 +31,13 @@
 
 .alignRight {
   text-align: right;
+}
+
+.Table a {
+  text-decoration: none;
+  color: black;
+}
+
+.Table a:hover {
+  text-decoration: underline;
 }

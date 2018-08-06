@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 
 import { Heading1 } from '~/components/design/typography';
 import { Column, Container, PageBreak } from '~/components/design/layout';
@@ -10,9 +9,7 @@ import HoldingChart from '~/components/blocks/HoldingChart';
 import HoldingBars from '~/components/blocks/HoldingBars';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-import { format, multiply } from '~/utils/functionalBigNumber';
-
-const calcPercentage = (start, end) => (100 * (end - start)) / start;
+import { format, multiply, displayPercent } from '~/utils/functionalBigNumber';
 
 const Holdings = ({ data, calculations }) => (
   <div>
@@ -52,36 +49,19 @@ const Holdings = ({ data, calculations }) => (
               }}
             >
               {[
-                ...data.holdings.map(holding => ({
+                ...calculations.allocation.map(holding => ({
                   token: holding.token.symbol,
-                  price: format(R.head(holding.priceHistory)),
-                  change: format(
-                    calcPercentage(
-                      R.head(holding.priceHistory),
-                      R.last(holding.priceHistory),
-                    ),
-                    2,
-                  ),
+                  price: format(holding.price),
+                  change: displayPercent(holding.change),
                   quantity: format(holding.quantity),
-                  value: format(
-                    multiply(holding.quantity, R.head(holding.priceHistory)),
-                  ),
+                  value: format(multiply(holding.value)),
                 })),
                 {
                   token: 'Fund',
                   price: format(calculations.sharePrice),
-                  change: format(calculations.profit, 2),
-                  quantity: format(data.meta.totalSupply),
-                  value: (
-                    <SumCell>
-                      {format(
-                        multiply(
-                          calculations.sharePrice,
-                          data.meta.totalSupply,
-                        ),
-                      )}
-                    </SumCell>
-                  ),
+                  change: displayPercent(calculations.profit),
+                  quantity: format(calculations.totalSupply),
+                  value: <SumCell>{format(calculations.aum)}</SumCell>,
                 },
               ]}
             </Table>

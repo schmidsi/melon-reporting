@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 import titleCase from 'title-case';
 
 import calcKey from '~/components/utils/calcKey';

@@ -190,7 +190,7 @@ const mockRandomEmptyFund = async ({
     'BAT',
     'ZRX',
     'KNC',
-    'JNT',
+    // 'JNT',
     'OMG',
     'ANT',
     'GNO',
