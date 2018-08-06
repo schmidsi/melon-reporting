@@ -211,10 +211,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     currentBlock - fundAgeInSeconds / AVERAGE_BLOCKTIME,
   );
 
+  const fundInceptionTimestamp = informations.inception.getTime() / 1000;
+  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+
+  // TRADES
+
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
-    inlastXDays: 20,
+    inlastXDays: relevantDates.length,
   });
+
+  debug('oasis dex', oasisDexTrades);
 
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -232,20 +239,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     })
     .filter(logFill => logFill.taker === fundAddress);
 
-  const tokenSends = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    // address: '0x8888f1f195afa192cfee860698584c030f4c9db1',
-    topics: [transferEventSignature, web3.utils.padLeft(fundAddress, 64)],
-  })).map(parseTransferLog(config));
-
-  const tokenReceives = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    // address: '0x8888f1f195afa192cfee860698584c030f4c9db1',
-    topics: [transferEventSignature, null, web3.utils.padLeft(fundAddress, 64)],
-  })).map(parseTransferLog(config));
-
   const shares = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -255,8 +248,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   debug(
     {
-      tokenSends,
-      tokenReceives,
       shares,
     },
     // new Date(blockBeforeInception.timestamp * 1000),
@@ -413,8 +404,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   };
 
   // HOLDINGS AND PRICES
-  const fundInceptionTimestamp = informations.inception.getTime() / 1000;
-  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
@@ -447,6 +436,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ...holding,
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
+
+  debug('holdings', holdings);
 
   // PREPARE SIMULATOR ACTIONS
 
