@@ -1,0 +1,34 @@
+.AuditForm {
+  width: 50%;
+}
+
+select {
+  font-size: 1rem;
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid rgb(234,229,212);
+  background-color: rgb(249,242,219);
+  border-radius: 0 !important;
+  padding: calc(8rem / 18);
+  width: 100%;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+}
+
+textarea {
+  font-size: 1rem;
+  padding: calc(8rem / 18);
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid rgb(234,229,212);
+  background-color: rgb(249,242,219);
+  width: 100%;
+}
+
+button {
+  font-size: 1rem;
+  padding: calc(8rem / 18);
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid rgb(234,229,212);
+  background-color: rgb(195,179,121);
+  width: 100%;
+
+}

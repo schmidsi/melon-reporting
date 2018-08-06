@@ -1,6 +1,8 @@
 import React from 'react';
 
-class Audit extends React.Component {
+import styles from './styles.css';
+
+class AuditForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -15,35 +17,39 @@ class Audit extends React.Component {
 
   render() {
     return (
-      <div>
-        <select
-          value={this.state.opinion}
-          onChange={event => this.setState({ opinion: event.target.value })}
-        >
-          <option value="0">Unqualified Opinion</option>
-          <option value="1">Qualified Opinion</option>
-          <option value="2">Adverse Opinion</option>
-          <option value="3">Disclaimer Of Opinion</option>
-        </select>
-
-        <input
-          type="text"
-          name="comment"
-          value={this.state.comment}
-          onChange={e => this.setState({ comment: e.target.value })}
-        />
-
-        <button
-          type="submit"
-          onClick={() =>
-            this.doAudit(this.data, this.state.opinion, this.state.comment)
-          }
-        >
-          Audit
-        </button>
+      <div className={styles.AuditForm}>
+        <p>
+          <select
+            value={this.state.opinion}
+            onChange={event => this.setState({ opinion: event.target.value })}
+          >
+            <option value="0">Unqualified Opinion ▼</option>
+            <option value="1">Qualified Opinion ▼</option>
+            <option value="2">Adverse Opinion ▼</option>
+            <option value="3">Disclaimer Of Opinion ▼</option>
+          </select>
+        </p>
+        <p>
+          <textarea
+            type="text"
+            name="comment"
+            value={this.state.comment}
+            onChange={e => this.setState({ comment: e.target.value })}
+          />
+        </p>
+        <p>
+          <button
+            type="submit"
+            onClick={() =>
+              this.doAudit(this.data, this.state.opinion, this.state.comment)
+            }
+          >
+            Add
+          </button>
+        </p>
       </div>
     );
   }
 }
 
-export default Audit;
+export default AuditForm;
