@@ -19,6 +19,7 @@ import Web3 from 'web3';
 import * as addressBook from '@melonproject/smart-contracts/addressBook.json';
 import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
+import OasisDexAbi from '@melonproject/smart-contracts/out/exchange/adapter/MatchingMarket.abi.json';
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
 
 import getDebug from '~/utils/getDebug';
@@ -45,6 +46,10 @@ const transferAbi = Erc20Abi.find(
 
 const zeroExLogFillAbi = ZeroExAbi.find(
   e => e.name === 'LogFill' && e.type === 'event',
+);
+
+const oasisDexLogTakeAbi = OasisDexAbi.find(
+  e => e.name === 'LogTake' && e.type === 'event',
 );
 
 // TODO: Remove kovan from addressBook
@@ -201,6 +206,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     zeroExLogFillAbi,
   );
 
+  const oasisDexLogTakeEventSignature = web3.eth.abi.encodeEventSignature(
+    oasisDexLogTakeAbi,
+  );
+
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
   const fundAgeInSeconds = Math.floor(
@@ -216,12 +225,35 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // TRADES
 
+  /*
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
     inlastXDays: relevantDates.length,
   });
+  */
 
-  debug('oasis dex', oasisDexTrades);
+  const oasisDexTrades = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: web3.utils.numberToHex(currentBlock),
+    topics: [oasisDexLogTakeEventSignature],
+  }))
+    .map(log => {
+      const logTake = web3.eth.abi.decodeLog(
+        oasisDexLogTakeAbi.inputs,
+        log.data,
+        log.topics,
+      );
+      logTake.blockNumber = log.blockNumber;
+      logTake.transactionHash = log.transactionHash;
+      return logTake;
+    })
+    .filter(
+      logTake =>
+        logTake.maker.toLowerCase() === fundAddress.toLowerCase() ||
+        logTake.taker.toLowerCase() === fundAddress.toLowerCase(),
+    );
+
+  debug('oasisDexTrades', oasisDexTrades);
 
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -237,7 +269,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       logFill.blockNumber = log.blockNumber;
       return logFill;
     })
-    .filter(logFill => logFill.taker === fundAddress);
+    .filter(
+      logFill => logFill.taker === fundAddress || logFill.maker === fundAddress,
+    );
+
+  debug('zeroExTrades', zeroExTrades);
 
   const shares = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -246,27 +282,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     topics: [transferEventSignature],
   })).map(parseTransferLog(config));
 
-  debug(
-    {
-      shares,
-    },
-    // new Date(blockBeforeInception.timestamp * 1000),
-    // blockBeforeInception,
-    // inceptionBlockApprox,
-    // currentBlock,
-    // fundAgeInSeconds,
-    // informations.inception,
-    // Erc20Abi,
-    // transferAbi,
-    // transferEventSignature,
-    // web3jsFundContract,
-  );
-
   const calculations = await performCalculations(environment, {
     fundAddress,
   });
 
-  // TODO this returns the holdings of 'now', but we would start by inception
+  // this returns the holdings of 'now', but we would start by inception
+  // we erase the holdings further below
   const initialHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
   })).map(holding => ({
@@ -437,8 +458,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
 
-  debug('holdings', holdings);
-
   // PREPARE SIMULATOR ACTIONS
 
   const investActions = invests.map(invest => ({
@@ -480,19 +499,19 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
-    sellToken: getTokenBySymbol(holdings, trade.buyToken),
+    sellToken: getTokenByAddress(holdings, trade.pay_gem.toLowerCase()),
     sellHowMuch: toReadable(
       config,
-      trade.buyQuantity,
-      trade.buyToken,
+      trade.give_amt,
+      getSymbol(config, trade.pay_gem.toLowerCase()),
     ).toString(),
-    buyToken: getTokenBySymbol(holdings, trade.sellToken),
+    buyToken: getTokenByAddress(holdings, trade.buy_gem.toLowerCase()),
     buyHowMuch: toReadable(
       config,
-      trade.sellQuantity,
-      trade.sellToken,
+      trade.take_amt,
+      getSymbol(config, trade.buy_gem),
     ).toString(),
-    timestamp: trade.timestamp.getTime() / 1000,
+    timestamp: trade.timestamp,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
   }));

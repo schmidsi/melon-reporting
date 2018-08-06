@@ -92,13 +92,6 @@ const calculateAfter = modifier => (state, action) => {
   // const uncalculatedDays = Math.ceil(uncalculatedSeconds / secondsPerDay);
   const uncalculatedDays = Math.floor(uncalculatedSeconds / secondsPerDay);
 
-  console.log(uncalculatedDays);
-
-  console.log(
-    lastCalculatedDayIndex + 1,
-    lastCalculatedDayIndex + uncalculatedDays + 1,
-  );
-
   if (uncalculatedDays === 0) {
     const lastRecalculation = doHistoricCalculations(lastCalculatedDayIndex)({
       data,
