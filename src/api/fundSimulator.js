@@ -89,7 +89,27 @@ const calculateAfter = modifier => (state, action) => {
         );
 
   const uncalculatedSeconds = action.timestamp - lastCalculationTimestamp;
-  const uncalculatedDays = Math.ceil(uncalculatedSeconds / secondsPerDay);
+  // const uncalculatedDays = Math.ceil(uncalculatedSeconds / secondsPerDay);
+  const uncalculatedDays = Math.floor(uncalculatedSeconds / secondsPerDay);
+
+  if (uncalculatedDays === 0) {
+    const lastRecalculation = doHistoricCalculations(lastCalculatedDayIndex)({
+      data,
+      calculations,
+    }).calculations;
+    lastRecalculation.timestamp = action.timestamp;
+    const stillValidCalulactionsHistory = R.init(calculationsHistory);
+    const result = {
+      data,
+      calculations: lastRecalculation,
+      calculationsHistory: [
+        ...stillValidCalulactionsHistory,
+        lastRecalculation,
+      ],
+      actionHistory: [action, ...actionHistory],
+    };
+    return result;
+  }
 
   const newCalculations = R.range(
     lastCalculatedDayIndex + 1,

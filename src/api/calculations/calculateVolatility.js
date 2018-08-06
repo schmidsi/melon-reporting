@@ -4,6 +4,11 @@ import * as math from 'mathjs';
 const calculateVolatility = setPath(
   ['calculations', 'volatility'],
   ({ calculationsHistory }) => {
+    if (calculationsHistory.length <= 1) {
+      // only compute volatility for funds older than one day
+      return 0;
+    }
+
     // calculate continuously compounded return of each period
     const days = calculationsHistory.length - 1;
 
