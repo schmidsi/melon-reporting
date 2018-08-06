@@ -2,7 +2,7 @@ import React from 'react';
 import { format } from 'date-fns';
 
 import { Heading1, Heading2 } from '~/components/design/typography';
-import { Container, PageBreak } from '~/components/design/layout';
+import { Container, PageBreak, Spacer } from '~/components/design/layout';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import AuditChart from '~/components/blocks/AuditChart';
@@ -69,6 +69,9 @@ const Audits = ({ data, calculations, doAudit }) => (
     </Container>
     <Container>
       <Heading2>Add Audit</Heading2>
+    </Container>
+    <Container>
+      <Spacer height={0.5} />
     </Container>
     <Container>
       <AuditForm data={data} doAudit={doAudit} />

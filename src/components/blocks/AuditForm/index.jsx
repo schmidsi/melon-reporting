@@ -23,14 +23,15 @@ class AuditForm extends React.Component {
             value={this.state.opinion}
             onChange={event => this.setState({ opinion: event.target.value })}
           >
-            <option value="0">Unqualified Opinion ▼</option>
-            <option value="1">Qualified Opinion ▼</option>
-            <option value="2">Adverse Opinion ▼</option>
-            <option value="3">Disclaimer Of Opinion ▼</option>
+            <option value="0">Unqualified Opinion</option>
+            <option value="1">Qualified Opinion</option>
+            <option value="2">Adverse Opinion</option>
+            <option value="3">Disclaimer Of Opinion</option>
           </select>
         </p>
         <p>
           <textarea
+            placeholder="Comment ..."
             type="text"
             name="comment"
             value={this.state.comment}
