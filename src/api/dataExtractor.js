@@ -225,13 +225,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // TRADES
 
-  /*
+  // TODO old trades dont show up
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
-    inlastXDays: relevantDates.length,
+    inlastXDays: relevantDates.length + 2,
   });
-  */
+  debug('old oasisdextrades', oasisDexTrades);
 
+  /*
+  // TODO are partial orders missing?
+  // --> event LogItemUpdate
   const oasisDexTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -254,7 +257,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     );
 
   debug('oasisDexTrades', oasisDexTrades);
+  */
 
+  // TODO are partial orders missing?
+  // TODO problem is probably that maker is always the 0x contract
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -270,7 +276,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       return logFill;
     })
     .filter(
-      logFill => logFill.taker === fundAddress || logFill.maker === fundAddress,
+      logFill =>
+        logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
+        logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
 
   debug('zeroExTrades', zeroExTrades);
@@ -497,6 +505,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     zeroExTradeActionTasks.map(p => p()),
   );
 
+  /*
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
     sellToken: getTokenByAddress(holdings, trade.pay_gem.toLowerCase()),
@@ -512,6 +521,26 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       getSymbol(config, trade.buy_gem),
     ).toString(),
     timestamp: trade.timestamp,
+    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+    transaction: trade.transactionHash,
+  }));
+  */
+
+  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
+    type: 'TRADE',
+    sellToken: getTokenBySymbol(holdings, trade.buyToken),
+    sellHowMuch: toReadable(
+      config,
+      trade.buyQuantity,
+      trade.buyToken,
+    ).toString(),
+    buyToken: getTokenBySymbol(holdings, trade.sellToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.sellQuantity,
+      trade.sellToken,
+    ).toString(),
+    timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
   }));

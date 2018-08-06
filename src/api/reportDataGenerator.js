@@ -7,6 +7,7 @@ import {
   mockStaticData,
   mockRandomEmptyFund,
 } from './mocking/mockDataGenerator';
+import validateReport from '~/api/validateReport';
 
 const reportDataGenerator = async (
   fundAddress,
@@ -31,8 +32,9 @@ const reportDataGenerator = async (
   // get data from dataExtractor first
   const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
   const withFinalCalculations = doFinalCalculations(data);
+  const withValidation = validateReport(data);
 
-  return withFinalCalculations;
+  return withValidation;
 };
 
 export default reportDataGenerator;
