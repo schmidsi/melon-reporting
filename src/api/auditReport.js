@@ -14,6 +14,9 @@ const auditReport = async (data, opinion, comment) => {
   const accounts = await web3.eth.getAccounts();
   const auditorAccount = accounts[0];
 
+  if (!auditorAccount)
+    alert('Could not find your account. Is MetaMask installed and unlocked?');
+
   const dataHash = hashReport(data);
   const timespanStart = data.meta.timeSpanStart;
   const timespanEnd = data.meta.timeSpanEnd;
@@ -28,7 +31,7 @@ const auditReport = async (data, opinion, comment) => {
       timespanEnd,
       opinionValue,
       commentValue,
-    )
+  )
     .send({
       from: auditorAccount,
     });

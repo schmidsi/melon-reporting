@@ -1,12 +1,11 @@
 import React from 'react';
 
-import auditReport from '../api/auditReport';
-
 class Audit extends React.Component {
   constructor(props) {
     super(props);
 
     this.data = props.data;
+    this.doAudit = props.doAudit;
 
     this.state = {
       opinion: '0',
@@ -35,8 +34,9 @@ class Audit extends React.Component {
         />
 
         <button
+          type="submit"
           onClick={() =>
-            auditReport(this.data, this.state.opinion, this.state.comment)
+            this.doAudit(this.data, this.state.opinion, this.state.comment)
           }
         >
           Audit

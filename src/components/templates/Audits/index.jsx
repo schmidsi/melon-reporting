@@ -6,9 +6,10 @@ import { Container, PageBreak } from '~/components/design/layout';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import AuditChart from '~/components/blocks/AuditChart';
+import AuditForm from '~/components/blocks/AuditForm';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-const Audits = ({ data, calculations }) => (
+const Audits = ({ data, calculations, doAudit }) => (
   <div>
     <PageBreak />
     <Container>
@@ -65,6 +66,12 @@ const Audits = ({ data, calculations }) => (
           ),
         }))}
       </Table>
+    </Container>
+    <Container>
+      <Heading1>Add Audit</Heading1>
+    </Container>
+    <Container>
+      <AuditForm data={data} doAudit={doAudit} />
     </Container>
   </div>
 );
