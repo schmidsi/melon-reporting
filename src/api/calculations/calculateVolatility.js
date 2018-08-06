@@ -8,7 +8,7 @@ const calculateVolatility = setPath(
     const days = calculationsHistory.length - 1;
 
     const returns = new Array(days - 1); // returns
-    for (let i = days; i > 0; i--) {
+    for (let i = days; i > 0; i -= 1) {
       const C = parseFloat(calculationsHistory[i].sharePrice);
       const Cprevious = parseFloat(calculationsHistory[i - 1].sharePrice);
       returns[i - 1] = math.log(C / Cprevious); // naturalis is standard in mathjs

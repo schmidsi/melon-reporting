@@ -27,6 +27,7 @@ import fundSimulator from '~/api/fundSimulator';
 
 import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
 import getAuditsFromFund from './getAuditsFromFund';
+import { toTimestamp } from '~/utils/timestamp';
 
 const debug = getDebug(__filename);
 
@@ -533,6 +534,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   debug('Initial Fund State', fund.getState());
 
   orderedSimulatorActions.forEach(action => fund.dispatch(action));
+
+  fund.dispatch({
+    type: 'CALCULATE',
+    timestamp: toTimestamp(new Date()),
+  });
 
   const finalState = fund.getState();
 

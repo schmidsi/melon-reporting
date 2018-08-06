@@ -9,7 +9,7 @@ const addTrade = ({
   timestamp,
   transaction,
 }) =>
-  setPath(['data', 'trades'], ({ data, calculations }) => [
+  setPath(['data', 'trades'], ({ data }) => [
     ...data.trades,
     {
       buy: {

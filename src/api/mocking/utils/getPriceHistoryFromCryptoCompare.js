@@ -11,10 +11,11 @@ const getPriceHistoryFromCryptoCompare = async (
   timeSpanStart,
   timeSpanEnd,
 ) => {
-  const numberOfDays = differenceInDays(
-    new Date(timeSpanEnd * 1000),
-    new Date(timeSpanStart * 1000),
-  );
+  const numberOfDays =
+    differenceInDays(
+      new Date(timeSpanEnd * 1000),
+      new Date(timeSpanStart * 1000),
+    ) + 1;
 
   if (symbol === 'ETH') {
     // price of 1 for quote token

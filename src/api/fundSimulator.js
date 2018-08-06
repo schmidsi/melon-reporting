@@ -1,13 +1,7 @@
 import * as R from 'ramda';
 import { createStore, applyMiddleware, compose } from 'redux';
 
-import {
-  toNumber,
-  floor,
-  subtract,
-  divide,
-  isFinite,
-} from '~/utils/functionalBigNumber';
+import { isFinite } from '~/utils/functionalBigNumber';
 import doHistoricCalculations from '~/api/calculations/doHistoricCalculations';
 import addInvest from '~/api/modifications/addInvest';
 import addRedeem from '~/api/modifications/addRedeem';
@@ -20,6 +14,7 @@ const initialState = {
   data: {},
   actionHistory: [],
   calculations: {
+    timestamp: 0,
     sharePrice: 1,
     aum: 0,
     totalSupply: 0,
@@ -31,102 +26,99 @@ const initialState = {
 
 const secondsPerDay = 60 * 60 * 24;
 
-const getDayIndex = (data, timestamp) =>
-  toNumber(
-    floor(divide(subtract(timestamp, data.meta.timeSpanStart), secondsPerDay)),
-  );
-
-const computations = {
+const modifiers = {
   invest: (state, action) => {
-    const { data, calculations, actionHistory, calculationsHistory } = state;
+    const { data, calculations } = state;
 
-    const updateData = R.compose(
-      // calculations
-      doHistoricCalculations(getDayIndex(data, action.timestamp)),
-
-      // modifications
+    const modifiyData = R.compose(
       addInvest(action),
       increaseHolding(action.value),
     );
 
-    return {
-      ...updateData({ data, calculations }),
-      calculationsHistory: [...calculationsHistory, calculations],
-      actionHistory: [...actionHistory, action],
-    };
+    const result = modifiyData({ data, calculations });
+
+    return R.merge(state, result);
   },
   redeem: (state, action) => {
-    const { data, calculations, actionHistory, calculationsHistory } = state;
+    const { data, calculations } = state;
 
     const investor = calculations.investors.find(
       i => i.address === R.path(['investor', 'address'], action),
     );
 
     if (investor) {
-      const updateData = R.compose(
-        // calculations
-        doHistoricCalculations(getDayIndex(data, action.timestamp)),
-
-        // modifications
+      const modifiyData = R.compose(
         addRedeem(action.shares, action.timestamp, investor),
         decreaseHoldings(action.shares),
       );
 
-      return {
-        ...updateData({ data, calculations }),
-        calculationsHistory: [...calculationsHistory, calculations],
-        actionHistory: [...actionHistory, action],
-      };
+      return R.merge(state, modifiyData({ data, calculations }));
     }
 
-    return {
-      ...doHistoricCalculations(getDayIndex(data, action.timestamp))({
-        data,
-        calculations,
-      }),
-      calculationsHistory: [...calculationsHistory, calculations],
-      actionHistory: [...actionHistory, action],
-    };
+    return { data };
   },
   trade: (state, action) => {
-    const { data, calculations, actionHistory, calculationsHistory } = state;
+    const { data, calculations } = state;
 
-    const updateData = R.compose(
-      // calculations
-      doHistoricCalculations(getDayIndex(data, action.timestamp)),
-
-      // modifications
+    const modifiyData = R.compose(
       addTrade(action),
       updateHoldings(action),
     );
 
-    return {
-      ...updateData({ data, calculations }),
-      calculationsHistory: [...calculationsHistory, calculations],
-      actionHistory: [...actionHistory, action],
-    };
+    return R.merge(state, modifiyData({ data, calculations }));
   },
-  nothing: (
-    { data, calculations, actionHistory, calculationsHistory },
-    action,
-  ) => ({
-    ...doHistoricCalculations(getDayIndex(data, action.timestamp))({
-      data,
-      calculations,
-    }),
-    calculationsHistory: [...calculationsHistory, calculations],
-    actionHistory: [...actionHistory, action],
-  }),
+};
+
+const calculateAfter = modifier => (state, action) => {
+  const stateAfterAction = modifier(state, action);
+
+  const {
+    data,
+    calculations,
+    actionHistory,
+    calculationsHistory,
+  } = stateAfterAction;
+
+  const lastCalculationTimestamp =
+    calculations.timestamp || data.meta.inception;
+  const lastCalculatedDayIndex =
+    lastCalculationTimestamp === data.meta.inception
+      ? -1
+      : Math.floor(
+          (lastCalculationTimestamp - data.meta.inception) / secondsPerDay,
+        );
+
+  const uncalculatedSeconds = action.timestamp - lastCalculationTimestamp;
+  const uncalculatedDays = Math.ceil(uncalculatedSeconds / secondsPerDay);
+
+  const newCalculations = R.range(
+    lastCalculatedDayIndex + 1,
+    lastCalculatedDayIndex + uncalculatedDays + 1,
+  ).map(
+    dayIndex =>
+      doHistoricCalculations(dayIndex)({ data, calculations }).calculations,
+  );
+
+  const lastCalculations = R.last(newCalculations);
+  lastCalculations.timestamp = action.timestamp;
+
+  const result = {
+    data,
+    calculations: lastCalculations,
+    calculationsHistory: [...calculationsHistory, ...newCalculations],
+    actionHistory: [action, ...actionHistory],
+  };
+
+  return result;
 };
 
 const isType = type => (_, action) => action.type === type;
 
 const reducer = R.cond([
-  [isType('LOAD'), computations.load],
-  [isType('INVEST'), computations.invest],
-  [isType('REDEEM'), computations.redeem],
-  [isType('TRADE'), computations.trade],
-  [isType('NOTHING'), computations.nothing],
+  [isType('INVEST'), calculateAfter(modifiers.invest)],
+  [isType('REDEEM'), calculateAfter(modifiers.redeem)],
+  [isType('TRADE'), calculateAfter(modifiers.trade)],
+  [isType('CALCULATE'), calculateAfter(R.identity)],
   [R.T, state => state],
 ]);
 
@@ -145,7 +137,7 @@ const errorReporter = store => next => action => {
   }
 };
 
-const guards = store => next => action => {
+const guards = () => next => action => {
   if (
     (action.type === 'TRADE' && !isFinite(action.sellHowMuch)) ||
     !isFinite(action.buyHowMuch)
