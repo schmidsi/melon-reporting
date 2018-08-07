@@ -228,7 +228,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   // TODO old trades dont show up
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
-    inlastXDays: relevantDates.length + 2,
+    inlastXdays: relevantDates.length,
   });
   debug('old oasisdextrades', oasisDexTrades);
 
@@ -283,6 +283,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   debug('zeroExTrades', zeroExTrades);
 
+  // TODO remove?
   const shares = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -300,7 +301,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   })).map(holding => ({
     name: holding.name,
-    balance: '0',
+    balance: '0.0',
   }));
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
@@ -375,11 +376,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
-    // we cannot narrow the blocks by timestamp, so we get all events here
-    // fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    // toBlock: web3.utils.numberToHex(currentBlock),
     fromBlock: inceptionBlockApprox,
-    toBlock: currentBlock,
+    toBlock: 'latest',
   });
 
   const redeems = allRedeems
@@ -398,9 +396,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       timestamp: r.returnValues.atTimestamp,
     }));
 
-  const [
-    exchangeAddresses,
-  ] = await fundContract.instance.getExchangeInfo.call();
+  const [exchanges] = await fundContract.instance.getExchangeInfo.call();
 
   const ownCalculations = await fundContract.instance.performCalculations.call();
   const managementFee = ownCalculations[1].div(10 ** 18).toString();
@@ -419,7 +415,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       symbol: config.quoteAssetSymbol,
       address: getAddress(config, config.quoteAssetSymbol),
     },
-    exchanges: exchangeAddresses.map(entry => ({
+    exchanges: exchanges.map(entry => ({
       /* eslint-disable no-underscore-dangle */
       address: entry._value,
       name: getExchangeName(entry._value),
