@@ -382,18 +382,18 @@
           "dataHash": {
             "type": "string"
           },
-          "timeSpanStart": {
+          "timespanStart": {
             "$ref": "#/definitions/nonNegativeInteger"
           },
-          "timeSpanEnd": {
+          "timespanEnd": {
             "$ref": "#/definitions/nonNegativeInteger"
           }
         },
         "required": [
           "auditor",
-          "dataHash",
-          "timeSpanStart",
-          "timeSpanEnd"
+          "timespanStart",
+          "timespanEnd",
+          "timestamp"
         ]
       }
     }

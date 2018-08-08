@@ -125,16 +125,11 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
 
 const extractPrices = (address, priceHistory, config) =>
   priceHistory.map(priceEntry => {
-    if (priceEntry === null) {
-      return 0;
-    }
     const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
     const symbol = getSymbol(config, address);
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
     // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
-    return index === -1
-      ? 0
-      : toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
+    return toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -221,46 +216,24 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
-  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+  const timestampOfNow = new Date().getTime() / 1000;
+  const relevantDates = getRelevantDates(
+    fundInceptionTimestamp,
+    timestampOfNow,
+  );
 
   // TRADES
 
-  // TODO old trades dont show up
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
     inlastXdays: relevantDates.length,
   });
   debug('old oasisdextrades', oasisDexTrades);
 
-  /*
-  // TODO are partial orders missing?
-  // --> event LogItemUpdate
-  const oasisDexTrades = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    topics: [oasisDexLogTakeEventSignature],
-  }))
-    .map(log => {
-      const logTake = web3.eth.abi.decodeLog(
-        oasisDexLogTakeAbi.inputs,
-        log.data,
-        log.topics,
-      );
-      logTake.blockNumber = log.blockNumber;
-      logTake.transactionHash = log.transactionHash;
-      return logTake;
-    })
-    .filter(
-      logTake =>
-        logTake.maker.toLowerCase() === fundAddress.toLowerCase() ||
-        logTake.taker.toLowerCase() === fundAddress.toLowerCase(),
-    );
-
-  debug('oasisDexTrades', oasisDexTrades);
-  */
-
   // TODO are partial orders missing?
   // TODO problem is probably that maker is always the 0x contract
+  // TODO maybe get trades with OrderUpdated event of Fund.sol
+  // TODO maybe it is the manager
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -300,7 +273,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const initialHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
   })).map(holding => ({
-    name: holding.name,
+    symbol: holding.name,
     balance: '0.0',
   }));
 
@@ -450,17 +423,19 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
     token: {
-      symbol: holding.name,
-      address: getAddress(config, holding.name),
+      symbol: holding.symbol,
+      address: getAddress(config, holding.symbol),
     },
     quantity: holding.balance.toString(),
     priceHistory: [],
   }));
 
+  debug('before');
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
+  debug('after');
 
   // PREPARE SIMULATOR ACTIONS
 
