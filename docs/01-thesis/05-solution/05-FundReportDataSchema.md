@@ -1,6 +1,7 @@
 # Fund Report Data Schema
 
 ## Description
+
 We need a way to define the data from which a report can be produced for viewing and auditing.
 The [JSON Schema](http://json-schema.org/) is a good fit, because we can specify types, involved data structures, constraints and describe the data directly.
 
@@ -38,11 +39,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
     },
     "timePeriod": {
       "type": "string",
-      "enum": [
-        "day",
-        "month",
-        "year"
-      ]
+      "enum": ["day", "month", "year"]
     },
     "token": {
       "type": "object",
@@ -54,10 +51,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
           "$ref": "#/definitions/ethereumAddress"
         }
       },
-      "required": [
-        "symbol",
-        "address"
-      ]
+      "required": ["symbol", "address"]
     },
     "exchange": {
       "type": "object",
@@ -69,10 +63,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
           "$ref": "#/definitions/ethereumAddress"
         }
       },
-      "required": [
-        "id",
-        "address"
-      ]
+      "required": ["id", "address"]
     },
     "orderSide": {
       "type": "object",
@@ -84,17 +75,11 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
           "$ref": "#/definitions/bigNumber"
         }
       },
-      "required": [
-        "token",
-        "howMuch"
-      ]
+      "required": ["token", "howMuch"]
     },
     "participationType": {
       "type": "string",
-      "enum": [
-        "invest",
-        "redeem"
-      ]
+      "enum": ["invest", "redeem"]
     }
   },
   "properties": {
@@ -126,10 +111,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
               "$ref": "#/definitions/ethereumAddress"
             }
           },
-          "required": [
-            "symbol",
-            "address"
-          ]
+          "required": ["symbol", "address"]
         },
         "manager": {
           "$ref": "#/definitions/ethereumAddress"
@@ -171,10 +153,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
                       "$ref": "#/definitions/timePeriod"
                     }
                   },
-                  "required": [
-                    "threshold",
-                    "timePeriod"
-                  ]
+                  "required": ["threshold", "timePeriod"]
                 },
                 "maxVolume": {
                   "type": "object",
@@ -186,10 +165,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
                       "$ref": "#/definitions/timePeriod"
                     }
                   },
-                  "required": [
-                    "threshold",
-                    "timePeriod"
-                  ]
+                  "required": ["threshold", "timePeriod"]
                 },
                 "volatilityThreshold": {
                   "$ref": "#/definitions/bigNumber"
@@ -225,9 +201,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
                       "$ref": "#/definitions/nonNegativeInteger"
                     }
                   },
-                  "required": [
-                    "min"
-                  ]
+                  "required": ["min"]
                 },
                 "volatilityThreshold": {
                   "$ref": "#/definitions/bigNumber"
@@ -250,17 +224,10 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
                   "$ref": "#/definitions/ethereumAddress"
                 }
               },
-              "required": [
-                "name",
-                "address"
-              ]
+              "required": ["name", "address"]
             }
           },
-          "required": [
-            "portfolio",
-            "tokens",
-            "participation"
-          ]
+          "required": ["portfolio", "tokens", "participation"]
         }
       },
       "required": [
@@ -293,11 +260,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
             }
           }
         },
-        "required": [
-          "token",
-          "quantity",
-          "priceHistory"
-        ]
+        "required": ["token", "quantity", "priceHistory"]
       }
     },
     "trades": {
@@ -321,13 +284,7 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
             "$ref": "#/definitions/ethereumAddress"
           }
         },
-        "required": [
-          "buy",
-          "sell",
-          "exchange",
-          "timestamp",
-          "transaction"
-        ]
+        "required": ["buy", "sell", "exchange", "timestamp", "transaction"]
       }
     },
     "participations": {
@@ -382,28 +339,19 @@ The Schema _Fund Report_ is a JSON to define our data JSON files (acutal instanc
             "$ref": "#/definitions/nonNegativeInteger"
           }
         },
-        "required": [
-          "auditor",
-          "dataHash",
-          "timespanStart",
-          "timespanEnd"
-        ]
+        "required": ["auditor", "dataHash", "timespanStart", "timespanEnd"]
       }
     }
   },
-  "required": [
-    "meta",
-    "holdings",
-    "trades",
-    "participations",
-    "audits"
-  ]
+  "required": ["meta", "holdings", "trades", "participations", "audits"]
 }
 ```
 
 # Example Data
-TO DISCUSS: 
-* maybe use schema built-in date-time type for readability?
+
+TO DISCUSS:
+
+- maybe use schema built-in date-time type for readability?
 
 ```json
 {
@@ -484,11 +432,7 @@ TO DISCUSS:
         "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
       },
       "quantity": "5.4910000000000",
-      "priceHistory": [
-        "1.000000",
-        "1.506000",
-        "1.406860"
-      ]
+      "priceHistory": ["1.000000", "1.506000", "1.406860"]
     },
     {
       "token": {
@@ -496,11 +440,7 @@ TO DISCUSS:
         "address": "0xad0E75B07cb4b1004A96Fa9a8D6F5e0B4b4fdA16"
       },
       "quantity": "0.2530000000000",
-      "priceHistory": [
-        "2.100123",
-        "2.306630",
-        "2.206153"
-      ]
+      "priceHistory": ["2.100123", "2.306630", "2.206153"]
     },
     {
       "token": {
@@ -508,11 +448,7 @@ TO DISCUSS:
         "address": "0x9A0Bd6b8c445D67277A8b4b4cEf2339d4b7C9772"
       },
       "quantity": "106.3490000000000",
-      "priceHistory": [
-        "1.51198",
-        "1.69279",
-        "1.76345"
-      ]
+      "priceHistory": ["1.51198", "1.69279", "1.76345"]
     }
   ],
   "trades": [

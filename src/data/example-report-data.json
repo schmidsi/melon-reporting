@@ -15,8 +15,7 @@
       "address": "0xAeEc31C192CcC234B1fB3b6E0346278A6343218F",
       "name": "Marvin Mellon"
     },
-    "exchanges": [
-      {
+    "exchanges": [{
         "name": "Radar Relay",
         "address": "0x2A3430a4875D0440F1Dd80Cd1eB406f2E063E61f"
       },
@@ -38,7 +37,7 @@
     "policy": {
       "portfolio": {
         "maxPositions": 100,
-        "bestPriceTolerance": 0.05,
+        "bestPriceTolerance": "0.05",
         "maxTrades": {
           "threshold": 50,
           "timePeriod": "month"
@@ -50,8 +49,7 @@
         "volatilityThreshold": 0.25
       },
       "tokens": {
-        "whitelist": [
-          {
+        "whitelist": [{
             "symbol": "MLN",
             "address": "0x153F602ad18BBD1546b674cFDBe05a8ba72A1d57"
           },
@@ -129,8 +127,7 @@
       }
     }
   },
-  "holdings": [
-    {
+  "holdings": [{
       "token": {
         "symbol": "MLN",
         "address": "0x3A1fBEccCD91cdA8afbAFcADAe5AFcFBCb0adceA"
@@ -535,8 +532,7 @@
       ]
     }
   ],
-  "trades": [
-    {
+  "trades": [{
       "buy": {
         "token": {
           "symbol": "MLN",
@@ -692,8 +688,7 @@
     }
   ],
   "participations": {
-    "investors": [
-      {
+    "investors": [{
         "address": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
         "kyc": "green",
         "name": "Marvin Mellon"
@@ -703,8 +698,7 @@
         "kyc": "orange"
       }
     ],
-    "list": [
-      {
+    "list": [{
         "investor": "0xcDcCB1259CF7388D9018009349C945Cc35d5AFbE",
         "token": {
           "symbol": "DAI",
@@ -728,8 +722,7 @@
       }
     ]
   },
-  "audits": [
-    {
+  "audits": [{
       "auditor": {
         "address": "0x9b8C165672b41725817a606c18C117C5a171D96b",
         "name": "Blockchain Audit AG"

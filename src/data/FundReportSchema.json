@@ -25,7 +25,7 @@
       "type": "string",
       "pattern": "^-?\\d*.\\d*$"
     },
-    "timePeriod": {
+    "timeperiod": {
       "type": "string",
       "enum": [
         "day",
@@ -168,13 +168,13 @@
                     "threshold": {
                       "$ref": "#/definitions/nonNegativeInteger"
                     },
-                    "timePeriod": {
-                      "$ref": "#/definitions/timePeriod"
+                    "timeperiod": {
+                      "$ref": "#/definitions/timeperiod"
                     }
                   },
                   "required": [
                     "threshold",
-                    "timePeriod"
+                    "timeperiod"
                   ]
                 },
                 "maxVolume": {
@@ -183,13 +183,13 @@
                     "threshold": {
                       "$ref": "#/definitions/bigNumber"
                     },
-                    "timePeriod": {
-                      "$ref": "#/definitions/timePeriod"
+                    "timeperiod": {
+                      "$ref": "#/definitions/timeperiod"
                     }
                   },
                   "required": [
                     "threshold",
-                    "timePeriod"
+                    "timeperiod"
                   ]
                 },
                 "volatilityThreshold": {
@@ -242,18 +242,7 @@
               ]
             },
             "participation": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "address": {
-                  "$ref": "#/definitions/ethereumAddress"
-                }
-              },
-              "required": [
-                "address"
-              ]
+              "type": "object"
             }
           },
           "required": [
@@ -377,7 +366,15 @@
         "type": "object",
         "properties": {
           "auditor": {
-            "$ref": "#/definitions/ethereumAddress"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "address": {
+                "$ref": "#/definitions/ethereumAddress"
+              }
+            }
           },
           "dataHash": {
             "type": "string"

@@ -60,8 +60,9 @@ const randomPolicy = tokenWhitelist => {
   const policy = {};
   policy.portfolio = {
     maxPositions: faker.random.number({ min: 50, max: 200, precision: 1 }),
-    bestPrice: faker.random.number({ min: 0.05, max: 0.3, precision: 0.01 }),
-    // bestPrice: randomPercentage(0.05, 0.3),
+    bestPriceTolerance: faker.random
+      .number({ min: 0.05, max: 0.3, precision: 0.01 })
+      .toString(),
     maxTrades: {
       threshold: faker.random.number({ min: 20, max: 120, precision: 1 }),
       timeperiod: 'month',
@@ -72,7 +73,7 @@ const randomPolicy = tokenWhitelist => {
       ),
       timeperiod: 'month',
     },
-    volatilityThreshold: randomPercentage(0.1, 0.5),
+    volatilityThreshold: randomPercentage(0.1, 0.5).toString(),
   };
   policy.tokens = {
     whitelist: tokenWhitelist,
@@ -85,7 +86,7 @@ const randomPolicy = tokenWhitelist => {
         precision: 10000,
       }),
     },
-    volatilityThreshold: randomPercentage(0.1, 0.5),
+    volatilityThreshold: randomPercentage(0.1, 0.5).toString(),
   };
   policy.participation = {
     complianceModule: {
