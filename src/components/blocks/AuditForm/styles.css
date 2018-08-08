@@ -1,0 +1,38 @@
+.AuditForm {
+  width: 50%;
+}
+
+select {
+  font-size: 1rem;
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid black;
+  background-color: transparent;
+  border-radius: 0 !important;
+  padding: calc(8rem / 18);
+  width: 100%;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#444' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+}
+
+textarea {
+  font-size: 1rem;
+  padding: calc(8rem / 18) 0;
+  font-family: 'Source Serif Pro', serif;
+  border: none;
+  border-bottom: 1px solid black;
+  background-color: transparent;
+  width: 100%;
+}
+
+button {
+  font-size: 1rem;
+  padding: calc(8rem / 18);
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid black;
+  background-color: transparent;
+  width: 100%;
+
+}

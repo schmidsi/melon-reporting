@@ -47,7 +47,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
               [
                 'Profit',
                 <ColorCondition>
-                  {formatBigNumber(calculations.profit)}%
+                  {displayPercent(calculations.profit)}
                 </ColorCondition>,
               ],
               [''],
@@ -100,7 +100,7 @@ const FactSheet = ({ data, calculations, calculationsHistory }) => {
               // ['Transaction Fees (Gas + Fees)', calculations.transactionFees],
             ]}
           </DescriptionList>
-          <Heading4>Volatility / Risk Indicator</Heading4>
+          <Heading4>Volatility / Risk Indicator:</Heading4>
           <VolatilityChart>{calculations.volatility}</VolatilityChart>
           {differenceInYears(timeSpanStart, timeSpanEnd) === 0 && (
             <Warning>

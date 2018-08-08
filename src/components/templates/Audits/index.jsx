@@ -1,14 +1,15 @@
 import React from 'react';
 import { format } from 'date-fns';
 
-import { Heading1 } from '~/components/design/typography';
-import { Container, PageBreak } from '~/components/design/layout';
+import { Heading1, Heading2 } from '~/components/design/typography';
+import { Container, PageBreak, Spacer } from '~/components/design/layout';
 import HexValue from '~/components/blocks/HexValue';
 import Table from '~/components/blocks/Table';
 import AuditChart from '~/components/blocks/AuditChart';
+import AuditForm from '~/components/blocks/AuditForm';
 import withErrorBoundary from '~/components/utils/withErrorBoundary';
 
-const Audits = ({ data, calculations }) => (
+const Audits = ({ data, calculations, doAudit }) => (
   <div>
     <PageBreak />
     <Container>
@@ -65,6 +66,15 @@ const Audits = ({ data, calculations }) => (
           ),
         }))}
       </Table>
+    </Container>
+    <Container>
+      <Heading2>Add Audit</Heading2>
+    </Container>
+    <Container>
+      <Spacer height={0.5} />
+    </Container>
+    <Container>
+      <AuditForm data={data} doAudit={doAudit} />
     </Container>
   </div>
 );

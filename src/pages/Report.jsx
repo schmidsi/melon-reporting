@@ -7,7 +7,7 @@ import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
 import Participations from '~/components/templates/Participations';
 import Audits from '~/components/templates/Audits';
-import Audit from './Audit';
+import auditReport from '~/api/auditReport';
 
 import getDebug from '~/utils/getDebug';
 
@@ -28,14 +28,13 @@ const Report = ({ data, calculations, calculationsHistory }) =>
         calculations={calculations}
         calculationsHistory={calculationsHistory}
       />
-      <Audits data={data} calculations={calculations} />
-      <Audit data={data} />
+      <Audits data={data} calculations={calculations} doAudit={auditReport} />
 
       {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
     </div>
   ) : (
-      <h1>Missing data</h1>
-    );
+    <h1>Missing data</h1>
+  );
 
 const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');
