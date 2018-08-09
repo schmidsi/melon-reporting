@@ -4,7 +4,7 @@
   left: 0px;
   height: 1684px;
   width: 100%;
-  /* background-image: url(./01-factsheet@2x.png); */
+  background-image: url(./01-factsheet@2x.png);
   background-position: center top;
   background-repeat: no-repeat;
   background-size: calc(1190px * (16/18));
