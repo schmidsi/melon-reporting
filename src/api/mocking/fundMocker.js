@@ -174,6 +174,8 @@ const fundMocker = initialData => {
 
   const finalState = fund.getState();
 
+  finalState.calculationsHistory = R.tail(finalState.calculationsHistory); // hack
+
   debug('Final Mock State', finalState);
 
   return finalState;

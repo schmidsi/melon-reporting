@@ -183,7 +183,7 @@ const mockRandomEmptyFund = async ({
   now = toTimestampSeconds(new Date()),
   tokenWhiteList = [
     'ETH',
-    'DAI',
+    // 'DAI',
     'MKR',
     'DGD',
     'REP',

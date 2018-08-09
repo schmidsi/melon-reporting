@@ -25,7 +25,7 @@ const reportDataGenerator = async (
     const mockData = fundMocker(emptyFund);
 
     const mockWithFinalCalculations = doFinalCalculations(mockData);
-    const mockWithValidation = validateReport(mockData);
+    const mockWithValidation = validateReport(mockWithFinalCalculations);
 
     return mockWithValidation;
   }
@@ -33,7 +33,7 @@ const reportDataGenerator = async (
   // get data from dataExtractor first
   const data = await dataExtractor(fundAddress, _timeSpanStart, _timeSpanEnd);
   const withFinalCalculations = doFinalCalculations(data);
-  const withValidation = validateReport(data);
+  const withValidation = validateReport(withFinalCalculations);
 
   return withValidation;
 };
