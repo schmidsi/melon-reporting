@@ -89,7 +89,6 @@ const calculateAfter = modifier => (state, action) => {
         );
 
   const uncalculatedSeconds = action.timestamp - lastCalculationTimestamp;
-  // const uncalculatedDays = Math.ceil(uncalculatedSeconds / secondsPerDay);
   const uncalculatedDays = Math.floor(uncalculatedSeconds / secondsPerDay);
 
   if (uncalculatedDays === 0) {

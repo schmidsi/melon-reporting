@@ -74,7 +74,7 @@ contract PriceHistoryReader {
     // The tokenIndex stems from the order of "getHistoryAt"
     function getAveragedPricesForDay(uint16 year, uint8 month, uint8 day)
     public view 
-    returns (address[] tokenAddresses, uint[TOKEN_COUNT] averagedPrices) {
+    returns (address[] tokenAddresses, uint[] averagedPrices) {
         
         require(month <= 12);
         require(day <= 31);

@@ -45,7 +45,7 @@ const enhance = withLoading(async ({ match: { params } }) => {
     params.timeSpanEnd,
   );
 
-  const { data, calculations, calculationsHistory } = res;
+  const { data, calculations, calculationsHistory, isValid } = res;
 
   // const calculations = {
   //   sharePrice: 123,
@@ -63,6 +63,7 @@ const enhance = withLoading(async ({ match: { params } }) => {
     data,
     calculations,
     calculationsHistory,
+    isValid,
   };
 });
 

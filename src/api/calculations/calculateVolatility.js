@@ -12,7 +12,7 @@ const calculateVolatility = setPath(
     // calculate continuously compounded return of each period
     const days = calculationsHistory.length - 1;
 
-    const returns = new Array(days - 1); // returns
+    const returns = new Array(days - 1);
     for (let i = days; i > 0; i -= 1) {
       const C = parseFloat(calculationsHistory[i].sharePrice);
       const Cprevious = parseFloat(calculationsHistory[i - 1].sharePrice);

@@ -13,15 +13,19 @@
       "type": "string",
       "pattern": "^0x(\\d|[A-F]|[a-f]){40}$"
     },
+    "ethereumTransaction": {
+      "type": "string",
+      "pattern": "^0x(\\d|[A-F]|[a-f]){64}$"
+    },
     "erc20TokenSymbol": {
       "type": "string",
-      "pattern": "^([A-Z]){1,9}$"
+      "pattern": "^([A-Z])*[-]*([A-Z])*$"
     },
     "bigNumber": {
       "type": "string",
-      "pattern": "^\\d*.\\d*$"
+      "pattern": "^-?\\d*.\\d*$"
     },
-    "timePeriod": {
+    "timeperiod": {
       "type": "string",
       "enum": [
         "day",
@@ -47,7 +51,7 @@
     "exchange": {
       "type": "object",
       "properties": {
-        "id": {
+        "name": {
           "type": "string"
         },
         "address": {
@@ -55,7 +59,7 @@
         }
       },
       "required": [
-        "id",
+        "name",
         "address"
       ]
     },
@@ -117,7 +121,18 @@
           ]
         },
         "manager": {
-          "$ref": "#/definitions/ethereumAddress"
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "$ref": "#/definitions/ethereumAddress"
+            }
+          },
+          "required": [
+            "address"
+          ]
         },
         "exchanges": {
           "type": "array",
@@ -135,6 +150,7 @@
           "type": "string"
         },
         "policy": {
+          "description": "The policy is optional, as different funds will have different policies in the future. It is a mix of informations from various Melon modules",
           "type": "object",
           "properties": {
             "portfolio": {
@@ -152,13 +168,13 @@
                     "threshold": {
                       "$ref": "#/definitions/nonNegativeInteger"
                     },
-                    "timePeriod": {
-                      "$ref": "#/definitions/timePeriod"
+                    "timeperiod": {
+                      "$ref": "#/definitions/timeperiod"
                     }
                   },
                   "required": [
                     "threshold",
-                    "timePeriod"
+                    "timeperiod"
                   ]
                 },
                 "maxVolume": {
@@ -167,13 +183,13 @@
                     "threshold": {
                       "$ref": "#/definitions/bigNumber"
                     },
-                    "timePeriod": {
-                      "$ref": "#/definitions/timePeriod"
+                    "timeperiod": {
+                      "$ref": "#/definitions/timeperiod"
                     }
                   },
                   "required": [
                     "threshold",
-                    "timePeriod"
+                    "timeperiod"
                   ]
                 },
                 "volatilityThreshold": {
@@ -226,19 +242,7 @@
               ]
             },
             "participation": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "address": {
-                  "$ref": "#/definitions/ethereumAddress"
-                }
-              },
-              "required": [
-                "name",
-                "address"
-              ]
+              "type": "object"
             }
           },
           "required": [
@@ -256,8 +260,7 @@
         "inception",
         "quoteToken",
         "manager",
-        "exchanges",
-        "policy"
+        "exchanges"
       ]
     },
     "holdings": {
@@ -303,7 +306,7 @@
             "$ref": "#/definitions/nonNegativeInteger"
           },
           "transaction": {
-            "$ref": "#/definitions/ethereumAddress"
+            "$ref": "#/definitions/ethereumTransaction"
           }
         },
         "required": [
@@ -316,37 +319,45 @@
       }
     },
     "participations": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "investor": {
-            "$ref": "#/definitions/ethereumAddress"
-          },
-          "token": {
-            "$ref": "#/definitions/token"
-          },
-          "type": {
-            "$ref": "#/definitions/participationType"
-          },
-          "amount": {
-            "$ref": "#/definitions/bigNumber"
-          },
-          "shares": {
-            "$ref": "#/definitions/bigNumber"
-          },
-          "timestamp": {
-            "$ref": "#/definitions/nonNegativeInteger"
+      "type": "object",
+      "properties": {
+        "investors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "address": {
+                "$ref": "#/definitions/ethereumAddress"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
           }
         },
-        "required": [
-          "investor",
-          "token",
-          "type",
-          "amount",
-          "shares",
-          "timestamp"
-        ]
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "$ref": "#/definitions/token"
+              },
+              "type": {
+                "$ref": "#/definitions/participationType"
+              },
+              "amount": {
+                "$ref": "#/definitions/bigNumber"
+              },
+              "shares": {
+                "$ref": "#/definitions/bigNumber"
+              },
+              "timestamp": {
+                "$ref": "#/definitions/nonNegativeInteger"
+              }
+            }
+          }
+        }
       }
     },
     "audits": {
@@ -355,23 +366,31 @@
         "type": "object",
         "properties": {
           "auditor": {
-            "$ref": "#/definitions/ethereumAddress"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "address": {
+                "$ref": "#/definitions/ethereumAddress"
+              }
+            }
           },
           "dataHash": {
             "type": "string"
           },
-          "timeSpanStart": {
+          "timespanStart": {
             "$ref": "#/definitions/nonNegativeInteger"
           },
-          "timeSpanEnd": {
+          "timespanEnd": {
             "$ref": "#/definitions/nonNegativeInteger"
           }
         },
         "required": [
           "auditor",
-          "dataHash",
-          "timeSpanStart",
-          "timeSpanEnd"
+          "timespanStart",
+          "timespanEnd",
+          "timestamp"
         ]
       }
     }

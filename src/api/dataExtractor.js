@@ -125,16 +125,11 @@ const getRelevantDates = (timeSpanStart, timeSpanEnd) => {
 
 const extractPrices = (address, priceHistory, config) =>
   priceHistory.map(priceEntry => {
-    if (priceEntry === null) {
-      return 0;
-    }
     const tokenAddresses = priceEntry.tokenAddresses.map(a => a.toLowerCase());
     const symbol = getSymbol(config, address);
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
     // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
-    return index === -1
-      ? 0
-      : toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
+    return toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -221,40 +216,24 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const fundInceptionTimestamp = informations.inception.getTime() / 1000;
-  const relevantDates = getRelevantDates(fundInceptionTimestamp, timeSpanEnd);
+  const timestampOfNow = new Date().getTime() / 1000;
+  const relevantDates = getRelevantDates(
+    fundInceptionTimestamp,
+    timestampOfNow,
+  );
 
   // TRADES
 
-  /*
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
-    inlastXDays: relevantDates.length,
+    inlastXdays: relevantDates.length,
   });
-  */
+  debug('old oasisdextrades', oasisDexTrades);
 
-  const oasisDexTrades = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    topics: [oasisDexLogTakeEventSignature],
-  }))
-    .map(log => {
-      const logTake = web3.eth.abi.decodeLog(
-        oasisDexLogTakeAbi.inputs,
-        log.data,
-        log.topics,
-      );
-      logTake.blockNumber = log.blockNumber;
-      logTake.transactionHash = log.transactionHash;
-      return logTake;
-    })
-    .filter(
-      logTake =>
-        logTake.maker.toLowerCase() === fundAddress.toLowerCase() ||
-        logTake.taker.toLowerCase() === fundAddress.toLowerCase(),
-    );
-
-  debug('oasisDexTrades', oasisDexTrades);
-
+  // TODO are partial orders missing?
+  // TODO problem is probably that maker is always the 0x contract
+  // TODO maybe get trades with OrderUpdated event of Fund.sol
+  // TODO maybe it is the manager
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -270,11 +249,14 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       return logFill;
     })
     .filter(
-      logFill => logFill.taker === fundAddress || logFill.maker === fundAddress,
+      logFill =>
+        logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
+        logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
 
   debug('zeroExTrades', zeroExTrades);
 
+  // TODO remove?
   const shares = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -291,8 +273,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const initialHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
   })).map(holding => ({
-    name: holding.name,
-    balance: '0',
+    symbol: holding.name,
+    balance: '0.0',
   }));
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
@@ -367,11 +349,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
-    // we cannot narrow the blocks by timestamp, so we get all events here
-    // fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    // toBlock: web3.utils.numberToHex(currentBlock),
     fromBlock: inceptionBlockApprox,
-    toBlock: currentBlock,
+    toBlock: 'latest',
   });
 
   const redeems = allRedeems
@@ -390,9 +369,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       timestamp: r.returnValues.atTimestamp,
     }));
 
-  const [
-    exchangeAddresses,
-  ] = await fundContract.instance.getExchangeInfo.call();
+  const [exchanges] = await fundContract.instance.getExchangeInfo.call();
 
   const ownCalculations = await fundContract.instance.performCalculations.call();
   const managementFee = ownCalculations[1].div(10 ** 18).toString();
@@ -411,7 +388,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       symbol: config.quoteAssetSymbol,
       address: getAddress(config, config.quoteAssetSymbol),
     },
-    exchanges: exchangeAddresses.map(entry => ({
+    exchanges: exchanges.map(entry => ({
       /* eslint-disable no-underscore-dangle */
       address: entry._value,
       name: getExchangeName(entry._value),
@@ -446,17 +423,19 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
     token: {
-      symbol: holding.name,
-      address: getAddress(config, holding.name),
+      symbol: holding.symbol,
+      address: getAddress(config, holding.symbol),
     },
     quantity: holding.balance.toString(),
     priceHistory: [],
   }));
 
+  debug('before');
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
+  debug('after');
 
   // PREPARE SIMULATOR ACTIONS
 
@@ -497,6 +476,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     zeroExTradeActionTasks.map(p => p()),
   );
 
+  /*
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
     sellToken: getTokenByAddress(holdings, trade.pay_gem.toLowerCase()),
@@ -512,6 +492,26 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       getSymbol(config, trade.buy_gem),
     ).toString(),
     timestamp: trade.timestamp,
+    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+    transaction: trade.transactionHash,
+  }));
+  */
+
+  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
+    type: 'TRADE',
+    sellToken: getTokenBySymbol(holdings, trade.buyToken),
+    sellHowMuch: toReadable(
+      config,
+      trade.buyQuantity,
+      trade.buyToken,
+    ).toString(),
+    buyToken: getTokenBySymbol(holdings, trade.sellToken),
+    buyHowMuch: toReadable(
+      config,
+      trade.sellQuantity,
+      trade.sellToken,
+    ).toString(),
+    timestamp: trade.timestamp.getTime() / 1000,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
     transaction: trade.transactionHash,
   }));

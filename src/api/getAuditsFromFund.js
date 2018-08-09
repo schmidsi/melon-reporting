@@ -36,7 +36,7 @@ const getAuditsFromFund = async (environment, { fundAddress }) => {
           comment,
           timestamp,
         ]) => ({
-          auditor,
+          auditor: { address: auditor, name: 'unknown' },
           dataHash: dataHash.reduce(
             (carry, current) => carry + current.toString(16),
             '0x',
