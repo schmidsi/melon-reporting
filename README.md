@@ -1,8 +1,13 @@
-# reporting
-
-Melon Fund Reporting
+# Melon Reporting and Auditing
 
 ## Getting started
+
+To locally run the app, the following tools have to be installed:
+- Node.js (8.11.3 or higher)
+- yarn (1.9.2 or higher)
+- git (2.18.0 or higher)
+
+In a terminal, run the following commands:
 
 ```bash
 git clone https://github.com/melonproject/reporting.git
