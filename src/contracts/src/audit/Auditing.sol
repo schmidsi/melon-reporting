@@ -2,9 +2,6 @@ pragma solidity ^0.4.23;
 
 import "./AuditingInterface.sol";
 
-// TO DISCUSS:
-// - require timespanEnd < now?
-
 /// @title Auditing smart contract for melon.
 contract Auditing is AuditingInterface {
 

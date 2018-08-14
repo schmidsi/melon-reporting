@@ -103,11 +103,11 @@ const Indicator = ({ start, end, y, type }) => (
 const AuditChart = ({
   start,
   end,
+  width = Math.round(960 * (16 / 18)),
   children = [],
   greenTimeSpans = [],
   redTimeSpans = [],
 }) => {
-  const width = Math.round(960 * (16 / 18));
   const lineHeight = Math.round((16 * 16) / 18);
 
   const xScale = scaleTime()

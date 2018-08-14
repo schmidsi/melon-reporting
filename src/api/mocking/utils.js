@@ -6,6 +6,8 @@ import {
   toFixed,
 } from '../../utils/functionalBigNumber';
 
+import { utils } from 'web3';
+
 export const toBigNum = number => `${number}.000000`;
 
 export const randomInt = (from, to) =>
@@ -39,12 +41,6 @@ export const randomHexaDecimal = count => {
       'd',
       'e',
       'f',
-      'A',
-      'B',
-      'C',
-      'D',
-      'E',
-      'F',
     ]);
   }
 
@@ -52,7 +48,9 @@ export const randomHexaDecimal = count => {
 };
 
 // helper because faker.finance.ethereumAddress() does not work
-export const randomEthereumAddress = () => randomHexaDecimal(40);
+//export const randomEthereumAddress = () => randomHexaDecimal(40);
+export const randomEthereumAddress = () =>
+  utils.toChecksumAddress(randomHexaDecimal(40));
 
 export const capitalizeFirstLetter = string =>
   string.charAt(0).toUpperCase() + string.slice(1);
