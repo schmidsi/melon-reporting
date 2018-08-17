@@ -1,10 +1,11 @@
 .wrapper {
   margin: 0 auto;
   width: 853px;
-
-  background-size: calc(16rem / 9) calc(16rem / 9),
-    calc(8rem / 9) calc(8rem / 9);
-  background-image: linear-gradient(to top, lightgrey 1px, transparent 1px),
-    linear-gradient(to top, grey 1px, transparent 1px);
+  background-size: calc(16rem / 9) calc(16rem / 9), calc(8rem / 9) calc(8rem / 9);
+  background-image: linear-gradient(to top, lightgrey 1px, transparent 1px), linear-gradient(to top, grey 1px, transparent 1px);
 }
 
+.nolines {
+  margin: 20px auto;
+  width: 853px;
+}

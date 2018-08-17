@@ -74,7 +74,7 @@ contract PriceHistoryReader {
     // The tokenIndex stems from the order of "getHistoryAt"
     function getAveragedPricesForDay(uint16 year, uint8 month, uint8 day)
     public view 
-    returns (address[] tokenAddresses, uint[] averagedPrices) {
+    returns (address[] tokenAddresses, uint[TOKEN_COUNT] averagedPrices) {
         
         require(month <= 12);
         require(day <= 31);
@@ -89,9 +89,11 @@ contract PriceHistoryReader {
         uint historyIndex = binarySearchForTimestamp(timeSpanStart, 0);
         uint historyEnd = binarySearchForTimestamp(timeSpanEnd, historyIndex);
 
+        uint[] memory prices;
+
         // do loop excluding the values at historyEnd, because they would be out of bound 
         while (historyIndex < historyEnd) {
-            (, uint[] memory prices, ) = getHistoryAt(historyIndex);
+            (, prices, ) = getHistoryAt(historyIndex);
             
             for (uint tokenIndex = 0; tokenIndex < TOKEN_COUNT; tokenIndex++) {
                 minutePrices[tokenIndex][minuteIndex] = prices[tokenIndex];

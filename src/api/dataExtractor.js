@@ -161,6 +161,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     track: 'kovan-demo',
   };
 
+  debug('Extractor start');
+
   // 'https://kovan.melonport.com' ~ 605ms
   // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
@@ -180,7 +182,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   );
 
   const config = await getConfig(environment);
-  debug({ addressBook, config, environment, url: environment.provider.url });
 
   const fundContract = await getFundContract(environment, fundAddress);
 
@@ -228,7 +229,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
     inlastXdays: relevantDates.length,
   });
-  debug('old oasisdextrades', oasisDexTrades);
 
   // TODO are partial orders missing?
   // TODO problem is probably that maker is always the 0x contract
@@ -254,8 +254,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
 
-  debug('zeroExTrades', zeroExTrades);
-
   // TODO remove?
   const shares = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -279,8 +277,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
-  // filter audits before timeSpan for determinism
-  const audits = allAudits.filter(audit => audit.timestamp <= timeSpanEnd);
+  // filter audits on timeSpan for determinism
+  const audits = allAudits.filter(
+    audit => audit.timestamp <= timeSpanEnd && audit.timestamp >= timeSpanStart,
+  );
 
   const lastRequestId = await fundContract.instance.getLastRequestId.call();
 
@@ -430,12 +430,10 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     priceHistory: [],
   }));
 
-  debug('before');
   const holdings = holdingsWithoutPriceHistory.map(holding => ({
     ...holding,
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
-  debug('after');
 
   // PREPARE SIMULATOR ACTIONS
 
@@ -526,7 +524,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
     unorderedSimulatorActions,
   );
-  debug('OrderedSimulatorActions', orderedSimulatorActions);
 
   const initialData = {
     meta,
@@ -540,8 +537,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   };
 
   const fund = fundSimulator(initialData);
-
-  debug('Initial Fund State', fund.getState());
 
   orderedSimulatorActions.forEach(action => fund.dispatch(action));
 

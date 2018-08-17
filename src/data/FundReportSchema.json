@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Fund Report",
-  "$version": "0.1",
+  "$version": "1.0",
   "description": "Fund data to generate a report from and create a hash for auditing.",
   "type": "object",
   "definitions": {
@@ -195,14 +195,7 @@
                 "volatilityThreshold": {
                   "$ref": "#/definitions/bigNumber"
                 }
-              },
-              "required": [
-                "maxPositions",
-                "bestPriceTolerance",
-                "maxTrades",
-                "maxVolume",
-                "volatilityThreshold"
-              ]
+              }
             },
             "tokens": {
               "type": "object",

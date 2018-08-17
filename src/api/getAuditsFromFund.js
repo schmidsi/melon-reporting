@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import Web3 from 'web3';
 import abi from '../contracts/abi/Auditing';
 
-const auditingContractAddress = '0xe05339048101af344575e651ce343e04cbbc93d8';
+const auditingContractAddress = '0x6fb37805dc69ddccf56b89fd22d25aec29650c17';
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
