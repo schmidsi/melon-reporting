@@ -1,5 +1,7 @@
 import React from 'react';
 
-const LoadingIndicator = () => <div>Loading...</div>;
+import styles from './styles.css';
+
+const LoadingIndicator = () => <div className={styles.spinner} />;
 
 export default LoadingIndicator;

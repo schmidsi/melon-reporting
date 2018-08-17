@@ -1,0 +1,15 @@
+.button {
+  font-size: 1rem;
+  padding: calc(8rem / 18);
+  font-family: 'Source Serif Pro', serif;
+  border: 1px solid black;
+  background-color: transparent;
+  width: 100%;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.button:hover {
+  background-color: black;
+  color: white;
+}
