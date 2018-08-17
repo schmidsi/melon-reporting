@@ -21,9 +21,6 @@ const auditReport = async (data, opinion, comment) => {
     notifications: true, // We want this if we want to recieve credentials
   });
 
-  console.log(credentials);
-
-  // const web3 = new Web3(Web3.givenProvider);
   const web3 = new Web3(uport.getProvider());
   const auditingContract = new web3.eth.Contract(
     auditingabi,
@@ -32,7 +29,6 @@ const auditReport = async (data, opinion, comment) => {
 
   // const accounts = await web3.eth.getAccounts();
   // const auditorAccount = accounts[0];
-  console.log(decode(credentials.address));
   const auditorAccount = decode(credentials.address).address;
   console.log(auditorAccount);
 
