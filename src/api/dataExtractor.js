@@ -246,6 +246,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         log.topics,
       );
       logFill.blockNumber = log.blockNumber;
+      logFill.transactionHash = log.transactionHash;
       return logFill;
     })
     .filter(
@@ -253,14 +254,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
         logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
-
-  // TODO remove?
-  const shares = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    address: fundAddress,
-    topics: [transferEventSignature],
-  })).map(parseTransferLog(config));
 
   const calculations = await performCalculations(environment, {
     fundAddress,
@@ -467,44 +460,23 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ).toString(),
     timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
     exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
-    transaction: trade.orderHash,
+    transaction: trade.transactionHash,
   }));
 
   const zeroExTradeActions = await Promise.all(
     zeroExTradeActionTasks.map(p => p()),
   );
 
-  /*
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
-    sellToken: getTokenByAddress(holdings, trade.pay_gem.toLowerCase()),
-    sellHowMuch: toReadable(
-      config,
-      trade.give_amt,
-      getSymbol(config, trade.pay_gem.toLowerCase()),
-    ).toString(),
-    buyToken: getTokenByAddress(holdings, trade.buy_gem.toLowerCase()),
+    buyToken: getTokenBySymbol(holdings, trade.buyToken),
     buyHowMuch: toReadable(
-      config,
-      trade.take_amt,
-      getSymbol(config, trade.buy_gem),
-    ).toString(),
-    timestamp: trade.timestamp,
-    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
-    transaction: trade.transactionHash,
-  }));
-  */
-
-  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
-    type: 'TRADE',
-    sellToken: getTokenBySymbol(holdings, trade.buyToken),
-    sellHowMuch: toReadable(
       config,
       trade.buyQuantity,
       trade.buyToken,
     ).toString(),
-    buyToken: getTokenBySymbol(holdings, trade.sellToken),
-    buyHowMuch: toReadable(
+    sellToken: getTokenBySymbol(holdings, trade.sellToken),
+    sellHowMuch: toReadable(
       config,
       trade.sellQuantity,
       trade.sellToken,
