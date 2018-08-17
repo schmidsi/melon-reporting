@@ -49,12 +49,11 @@ const Browse = ({ children }) => (
           rank: {},
           name: {},
           address: {
-            renderer: ({ children }) =>
-              console.log(children) || (
-                <Link to={getPath(routes.redirect, { fundAddress: children })}>
-                  <HexValue>{children}</HexValue>
-                </Link>
-              ),
+            renderer: ({ children }) => (
+              <Link to={getPath(routes.redirect, { fundAddress: children })}>
+                <HexValue>{children}</HexValue>
+              </Link>
+            ),
           },
           inception: {
             renderer: ({ children }) => format(children, 'YYYY-MM-DD HH:mm:ss'),
