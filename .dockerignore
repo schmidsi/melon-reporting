@@ -1,0 +1,13 @@
+
+
+ ```
+# Ignore as many files as possible. This keeps the build context small.
+*
+
+!src
+!yarn.lock
+!package.json
+!tsconfig.json
+!.env
+!.babelrc
+!.postcssrc
