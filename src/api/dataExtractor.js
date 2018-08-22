@@ -41,16 +41,8 @@ const priceHistoryReaderAddress = '0xbff03059206eba4427fba207c64ddfb5fa3b480b';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
-const transferAbi = Erc20Abi.find(
-  e => e.name === 'Transfer' && e.type === 'event',
-);
-
 const zeroExLogFillAbi = ZeroExAbi.find(
   e => e.name === 'LogFill' && e.type === 'event',
-);
-
-const oasisDexLogTakeAbi = OasisDexAbi.find(
-  e => e.name === 'LogTake' && e.type === 'event',
 );
 
 const getAddressBookForTrack = (track, addressBook) =>
@@ -226,6 +218,96 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     timestampOfNow,
   );
 
+  const calculations = await performCalculations(environment, {
+    fundAddress,
+  });
+
+  debug('Fund calculations', calculations);
+
+  const [exchanges] = await fundContract.instance.getExchangeInfo.call();
+
+  const ownCalculations = await fundContract.instance.performCalculations.call();
+  const managementFee = ownCalculations[1].div(10 ** 18).toString();
+  const performanceFee = ownCalculations[2].div(10 ** 18).toString();
+
+  const strategy = getStrategy();
+
+  const meta = {
+    fundName: informations.name,
+    fundAddress: informations.fundAddress,
+    timeSpanStart,
+    timeSpanEnd,
+    manager: getPersonFromAddress(informations.owner),
+    inception: Math.round(new Date(informations.inception).getTime() / 1000),
+    quoteToken: {
+      symbol: config.quoteAssetSymbol,
+      address: getAddress(config, config.quoteAssetSymbol),
+    },
+    exchanges: exchanges.map(entry => ({
+      /* eslint-disable no-underscore-dangle */
+      address: entry._value,
+      name: getExchangeName(entry._value),
+      /* eslint-enable */
+    })),
+    totalSupply: calculations.totalSupply.toString(),
+    legalEntity: getLegalEntity(),
+    managementFee,
+    performanceFee,
+    strategy,
+  };
+
+  debug('Meta', meta);
+
+  // HOLDINGS AND PRICES
+
+  // this returns the holdings of 'now', but we would start by inception
+  // we erase the holdings further below
+  const initialHoldings = (await getHoldingsAndPrices(environment, {
+    fundAddress,
+  })).map(holding => ({
+    symbol: holding.name,
+    balance: '0.0',
+  }));
+
+  debug('Initial holdings', initialHoldings);
+
+  const priceHistoryTasks = relevantDates.map(date => () =>
+    priceHistoryReader.methods
+      // .getAveragedPricesForDay(date.year, date.month, date.day)
+      .getFirstAvailablePricesForDay(date.year, date.month, date.day)
+      .call({})
+      .then(res => res)
+      .catch(err => console.warn(err) || null),
+  );
+
+  const priceHistory = await priceHistoryTasks.reduce(
+    async (carryPromise, currentTask) => {
+      const carry = await carryPromise;
+      const currentResult = await currentTask();
+      // if current result is null (i.e. there was an error), we just repeat the last
+      return [...carry, currentResult || R.last(carry)];
+    },
+    new Promise(resolve => resolve([])),
+  );
+
+  debug('Price history', priceHistory);
+
+  const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
+    token: {
+      symbol: holding.symbol,
+      address: getAddress(config, holding.symbol),
+    },
+    quantity: holding.balance.toString(),
+    priceHistory: [],
+  }));
+
+  const holdings = holdingsWithoutPriceHistory.map(holding => ({
+    ...holding,
+    priceHistory: extractPrices(holding.token.address, priceHistory, config),
+  }));
+
+  debug('Holdings', holdings);
+
   // TRADES
 
   const oasisDexTrades = await getFundRecentTrades(environment, {
@@ -261,23 +343,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     );
 
   debug('0x trades', zeroExTrades);
-
-  const calculations = await performCalculations(environment, {
-    fundAddress,
-  });
-
-  debug('Fund calculations', calculations);
-
-  // this returns the holdings of 'now', but we would start by inception
-  // we erase the holdings further below
-  const initialHoldings = (await getHoldingsAndPrices(environment, {
-    fundAddress,
-  })).map(holding => ({
-    symbol: holding.name,
-    balance: '0.0',
-  }));
-
-  debug('Initial holdings', initialHoldings);
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
@@ -380,78 +445,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     }));
 
   debug('Redeems', redeems);
-
-  const [exchanges] = await fundContract.instance.getExchangeInfo.call();
-
-  const ownCalculations = await fundContract.instance.performCalculations.call();
-  const managementFee = ownCalculations[1].div(10 ** 18).toString();
-  const performanceFee = ownCalculations[2].div(10 ** 18).toString();
-
-  const strategy = getStrategy();
-
-  const meta = {
-    fundName: informations.name,
-    fundAddress: informations.fundAddress,
-    timeSpanStart,
-    timeSpanEnd,
-    manager: getPersonFromAddress(informations.owner),
-    inception: Math.round(new Date(informations.inception).getTime() / 1000),
-    quoteToken: {
-      symbol: config.quoteAssetSymbol,
-      address: getAddress(config, config.quoteAssetSymbol),
-    },
-    exchanges: exchanges.map(entry => ({
-      /* eslint-disable no-underscore-dangle */
-      address: entry._value,
-      name: getExchangeName(entry._value),
-      /* eslint-enable */
-    })),
-    totalSupply: calculations.totalSupply.toString(),
-    legalEntity: getLegalEntity(),
-    managementFee,
-    performanceFee,
-    strategy,
-  };
-
-  debug('Meta', meta);
-
-  // HOLDINGS AND PRICES
-
-  const priceHistoryTasks = relevantDates.map(date => () =>
-    priceHistoryReader.methods
-      // .getAveragedPricesForDay(date.year, date.month, date.day)
-      .getFirstAvailablePricesForDay(date.year, date.month, date.day)
-      .call({})
-      .then(res => res)
-      .catch(() => null),
-  );
-
-  const priceHistory = await priceHistoryTasks.reduce(
-    async (carryPromise, currentTask) => {
-      const carry = await carryPromise;
-      const currentResult = await currentTask();
-      return [...carry, currentResult];
-    },
-    new Promise(resolve => resolve([])),
-  );
-
-  debug('Price history', priceHistory);
-
-  const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
-    token: {
-      symbol: holding.symbol,
-      address: getAddress(config, holding.symbol),
-    },
-    quantity: holding.balance.toString(),
-    priceHistory: [],
-  }));
-
-  const holdings = holdingsWithoutPriceHistory.map(holding => ({
-    ...holding,
-    priceHistory: extractPrices(holding.token.address, priceHistory, config),
-  }));
-
-  debug('Holdings', holdings);
 
   // PREPARE SIMULATOR ACTIONS
 
