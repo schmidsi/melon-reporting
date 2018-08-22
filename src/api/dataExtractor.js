@@ -65,7 +65,7 @@ const getAddressBookForTrack = (track, addressBook) =>
 
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
-  (Object.entries(getAddressBookForTrack(process.env.TRACK)).find(
+  (Object.entries(getAddressBookForTrack(process.env.TRACK, addressBook)).find(
     ([, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
@@ -172,11 +172,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     track: process.env.TRACK,
   };
 
-  debug('Extractor start');
-
-  const informations = await getFundInformations(environment, {
-    fundAddress,
-  });
+  debug('Extractor start', { environment });
 
   const timeSpanStart = parseInt(_timeSpanStart, 10);
   const timeSpanEnd = parseInt(_timeSpanEnd, 10);
@@ -190,7 +186,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     },
   );
 
+  const informations = await getFundInformations(environment, {
+    fundAddress,
+  });
+
   const config = await getConfig(environment);
+
+  debug('Config & fund informations', { informations, config });
 
   const fundContract = await getFundContract(environment, fundAddress);
 
@@ -199,20 +201,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     priceHistoryReaderAddress,
   );
 
-  /*
-    web3.js contract
-  */
-
   const currentBlock = await web3.eth.getBlockNumber();
 
-  const transferEventSignature = web3.eth.abi.encodeEventSignature(transferAbi);
+  debug('Current block', currentBlock);
 
   const zeroExLogFillEventSignature = web3.eth.abi.encodeEventSignature(
     zeroExLogFillAbi,
-  );
-
-  const oasisDexLogTakeEventSignature = web3.eth.abi.encodeEventSignature(
-    oasisDexLogTakeAbi,
   );
 
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
@@ -239,6 +233,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     inlastXdays: relevantDates.length,
   });
 
+  debug('Oasis Dex trades', oasisDexTrades);
+
   // TODO are partial orders missing?
   // TODO problem is probably that maker is always the 0x contract
   // TODO maybe get trades with OrderUpdated event of Fund.sol
@@ -264,9 +260,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
 
+  debug('0x trades', zeroExTrades);
+
   const calculations = await performCalculations(environment, {
     fundAddress,
   });
+
+  debug('Fund calculations', calculations);
 
   // this returns the holdings of 'now', but we would start by inception
   // we erase the holdings further below
@@ -277,7 +277,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     balance: '0.0',
   }));
 
+  debug('Initial holdings', initialHoldings);
+
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
+
+  debug('Audits', allAudits);
 
   // filter audits on timeSpan for determinism
   const audits = allAudits.filter(
@@ -315,6 +319,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const requests = await Promise.all(requestPromises.map(p => p()));
 
+  debug('Participation requests', requests);
+
   const invests = requests
     .filter(r => r.status.eq(2))
     .filter(r => onlyInTimespan(r.timestamp, timeSpanStart, timeSpanEnd))
@@ -350,6 +356,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     getPersonFromAddress(invest.investor),
   );
 
+  debug('Filtered participation requests for invests', { invests, investors });
+
   const allRedeems = await web3jsFundContract.getPastEvents('Redeemed', {
     fromBlock: inceptionBlockApprox,
     toBlock: 'latest',
@@ -370,6 +378,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
       ),
       timestamp: r.returnValues.atTimestamp,
     }));
+
+  debug('Redeems', redeems);
 
   const [exchanges] = await fundContract.instance.getExchangeInfo.call();
 
@@ -403,6 +413,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     strategy,
   };
 
+  debug('Meta', meta);
+
   // HOLDINGS AND PRICES
 
   const priceHistoryTasks = relevantDates.map(date => () =>
@@ -423,6 +435,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     new Promise(resolve => resolve([])),
   );
 
+  debug('Price history', priceHistory);
+
   const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
     token: {
       symbol: holding.symbol,
@@ -436,6 +450,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     ...holding,
     priceHistory: extractPrices(holding.token.address, priceHistory, config),
   }));
+
+  debug('Holdings', holdings);
 
   // PREPARE SIMULATOR ACTIONS
 
@@ -505,6 +521,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
     unorderedSimulatorActions,
   );
+
+  debug('Simulator actions', orderedSimulatorActions);
 
   const initialData = {
     meta,
