@@ -8,8 +8,8 @@ import {
   greaterThan,
 } from '~/utils/functionalBigNumber';
 
-import fundSimulator from '~/api/fundSimulator';
-import isSameToken from '~/api/queries/isSameToken';
+import fundSimulator from '~/api/simulator';
+import isSameToken from '~/api/simulator/queries/isSameToken';
 import { randomBigNumber, randomHexaDecimal } from './utils';
 
 import getDebug from '~/utils/getDebug';
@@ -74,7 +74,7 @@ const fundMocker = initialData => {
 
   const reportDays = Math.round(
     (initialData.meta.timeSpanEnd - initialData.meta.timeSpanStart) /
-      secondsPerDay,
+    secondsPerDay,
   );
 
   R.range(0, reportDays).map(dayIndex => {
@@ -113,21 +113,21 @@ const fundMocker = initialData => {
             Math.random() >= 0.5
               ? data.meta.quoteToken
               : getToken(
-                  faker.random.arrayElement(
-                    data.holdings.filter(holding =>
-                      greaterThan(holding.quantity, 0),
-                    ),
+                faker.random.arrayElement(
+                  data.holdings.filter(holding =>
+                    greaterThan(holding.quantity, 0),
                   ),
-                );
+                ),
+              );
 
           const buyToken = isSameToken(sellToken, data.meta.quoteToken)
             ? getToken(
-                faker.random.arrayElement(
-                  data.holdings.filter(
-                    holding => !isSameToken(sellToken, holding.token),
-                  ),
+              faker.random.arrayElement(
+                data.holdings.filter(
+                  holding => !isSameToken(sellToken, holding.token),
                 ),
-              )
+              ),
+            )
             : data.meta.quoteToken;
 
           const type = isSameToken(sellToken, data.meta.quoteToken)
@@ -143,9 +143,9 @@ const fundMocker = initialData => {
           const sellHowMuch =
             type === 'buy'
               ? randomBigNumber(
-                  0,
-                  divide(getHolding(calculations, sellToken), 2),
-                )
+                0,
+                divide(getHolding(calculations, sellToken), 2),
+              )
               : randomBigNumber(0, getHolding(calculations, sellToken));
 
           const buyHowMuch = multiply(sellHowMuch, orthogonalPrice);

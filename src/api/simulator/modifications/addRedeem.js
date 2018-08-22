@@ -1,5 +1,5 @@
 import { multiply } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
+import setPath from '../utils/setPath';
 
 const addRedeem = (shares, timestamp, investor) =>
   setPath(['data', 'participations', 'list'], ({ data, calculations }) => [

@@ -1,5 +1,5 @@
 import { subtract, multiply, divide } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
+import setPath from '../utils/setPath';
 
 /**
  * Redeem in slices: Remove the same proportion of every holding.

@@ -2,13 +2,13 @@ import * as R from 'ramda';
 import { createStore, applyMiddleware, compose } from 'redux';
 
 import { isFinite } from '~/utils/functionalBigNumber';
-import doHistoricCalculations from '~/api/calculations/doHistoricCalculations';
-import addInvest from '~/api/modifications/addInvest';
-import addRedeem from '~/api/modifications/addRedeem';
-import addTrade from '~/api/modifications/addTrade';
-import increaseHolding from '~/api/modifications/increaseHolding';
-import decreaseHoldings from '~/api/modifications/decreaseHoldings';
-import updateHoldings from '~/api/modifications/updateHoldings';
+import doHistoricCalculations from './calculations/doHistoricCalculations';
+import addInvest from './modifications/addInvest';
+import addRedeem from './modifications/addRedeem';
+import addTrade from './modifications/addTrade';
+import increaseHolding from './modifications/increaseHolding';
+import decreaseHoldings from './modifications/decreaseHoldings';
+import updateHoldings from './modifications/updateHoldings';
 
 const initialState = {
   data: {},
@@ -85,8 +85,8 @@ const calculateAfter = modifier => (state, action) => {
     lastCalculationTimestamp === data.meta.inception
       ? -1
       : Math.floor(
-          (lastCalculationTimestamp - data.meta.inception) / secondsPerDay,
-        );
+        (lastCalculationTimestamp - data.meta.inception) / secondsPerDay,
+      );
 
   const uncalculatedSeconds = action.timestamp - lastCalculationTimestamp;
   const uncalculatedDays = Math.floor(uncalculatedSeconds / secondsPerDay);
@@ -175,7 +175,7 @@ const fundSimulator = initialData =>
       applyMiddleware(errorReporter, guards),
       /* eslint-disable no-underscore-dangle */
       global.__REDUX_DEVTOOLS_EXTENSION__ &&
-        global.__REDUX_DEVTOOLS_EXTENSION__(),
+      global.__REDUX_DEVTOOLS_EXTENSION__(),
       /* eslint-enable */
     ),
   );

@@ -1,4 +1,4 @@
-import setPath from '~/api/utils/setPath';
+import setPath from '../utils/setPath';
 
 const addTrade = ({
   buyToken,

@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
 import { multiply } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
+import setPath from '../utils/setPath';
 
 const calculateHoldingsChart = setPath(
   ['calculations', 'holdingsChart'],

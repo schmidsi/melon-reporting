@@ -1,6 +1,6 @@
 import { add } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
-import isSameToken from '~/api/queries/isSameToken';
+import setPath from '../utils/setPath';
+import isSameToken from '../queries/isSameToken';
 
 const increaseHolding = (amount, token) =>
   setPath(['data', 'holdings'], ({ data }) =>

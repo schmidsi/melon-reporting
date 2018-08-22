@@ -1,8 +1,8 @@
 import * as R from 'ramda';
 
 import { add, subtract } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
-import isSameToken from '~/api/queries/isSameToken';
+import setPath from '../utils/setPath';
+import isSameToken from '../queries/isSameToken';
 
 const updateHoldings = ({ buyToken, buyHowMuch, sellToken, sellHowMuch }) =>
   setPath(['data', 'holdings'], ({ data }) =>

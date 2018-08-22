@@ -1,6 +1,6 @@
 import dataExtractor from './dataExtractor';
 
-import doFinalCalculations from '~/api/calculations/doFinalCalculations';
+import doFinalCalculations from '~/api/simulator/calculations/doFinalCalculations';
 import fundMocker from './mocking/fundMocker';
 
 import {

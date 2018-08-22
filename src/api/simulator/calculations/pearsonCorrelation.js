@@ -15,7 +15,7 @@
 
 import * as R from 'ramda';
 import * as math from 'mathjs';
-import { toNumber } from '../../utils/functionalBigNumber';
+import { toNumber } from '~/utils/functionalBigNumber';
 
 const pearsonCorrelation = (bigNumX, bigNumY) => {
   const x = bigNumX.map(toNumber);

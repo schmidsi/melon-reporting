@@ -1,5 +1,5 @@
-import setPath from '~/api/utils/setPath';
 import * as math from 'mathjs';
+import setPath from '../utils/setPath';
 
 const calculateVolatility = setPath(
   ['calculations', 'volatility'],

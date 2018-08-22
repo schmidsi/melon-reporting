@@ -25,7 +25,7 @@ import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/
 
 import getDebug from '~/utils/getDebug';
 
-import fundSimulator from '~/api/fundSimulator';
+import fundSimulator from '~/api/simulator';
 
 import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
 import getAuditsFromFund from './getAuditsFromFund';

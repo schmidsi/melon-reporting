@@ -1,5 +1,5 @@
 import { divide } from '~/utils/functionalBigNumber';
-import setPath from '~/api/utils/setPath';
+import setPath from '../utils/setPath';
 
 const calculateSharePrice = () =>
   setPath(['calculations', 'sharePrice'], ({ calculations }) =>
