@@ -12,6 +12,7 @@ import {
   getSymbol,
   performCalculations,
   toReadable,
+  tracks,
 } from '@melonproject/melon.js';
 
 import Web3 from 'web3';
@@ -36,7 +37,7 @@ const web3 = new Web3(
   new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
 );
 
-const priceHistoryReaderAddress = '0x1f1173e263ba65923D62730cDA64aCeFF9f15a2C';
+const priceHistoryReaderAddress = '0xbff03059206eba4427fba207c64ddfb5fa3b480b';
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -52,9 +53,19 @@ const oasisDexLogTakeAbi = OasisDexAbi.find(
   e => e.name === 'LogTake' && e.type === 'event',
 );
 
+const getAddressBookForTrack = (track, addressBook) =>
+  R.cond([
+    [R.equals(tracks.LIVE), (_, addressBook) => addressBook.live],
+    [R.equals(tracks.KOVAN_DEMO), (_, addressBook) => addressBook.kovan],
+    [
+      R.equals(tracks.KOVAN_COMPETITION),
+      (_, addressBook) => addressBook.kovanCompetition,
+    ],
+  ])(track, addressBook);
+
 // TODO: Remove kovan from addressBook
 const getExchangeName = ofAddress =>
-  (Object.entries(addressBook.kovan).find(
+  (Object.entries(getAddressBookForTrack(process.env.TRACK)).find(
     ([, address]) => address.toLowerCase() === ofAddress.toLowerCase(),
   ) || ['n/a'])[0];
 
@@ -158,13 +169,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const provider = await getParityProvider(process.env.JSON_RPC_ENDPOINT);
   const environment = {
     ...provider,
-    track: 'kovan-demo',
+    track: process.env.TRACK,
   };
 
   debug('Extractor start');
 
-  // 'https://kovan.melonport.com' ~ 605ms
-  // 'https://kovan.infura.io/l8MnVFI1fXB7R6wyR22C' ~ 2000ms
   const informations = await getFundInformations(environment, {
     fundAddress,
   });

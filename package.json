@@ -34,7 +34,8 @@
     "url": "https://github.com/melonproject/reporting/issues"
   },
   "dependencies": {
-    "@melonproject/melon.js": "0.8.21",
+    "@melonproject/melon.js": "0.8.24",
+    "@melonproject/smart-contracts": "0.8.3-naxos",
     "@soldoc/soldoc": "^0.4.3",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
@@ -88,6 +89,9 @@
     "prettier": "^1.14.0",
     "prettier-eslint": "^8.8.2",
     "rimraf": "^2.6.2"
+  },
+  "resolutions": {
+    "@melonproject/smart-contracts": "0.8.3-naxos"
   },
   "homepage": "https://github.com/melonproject/reporting#readme"
 }
