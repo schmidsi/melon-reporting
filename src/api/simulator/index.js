@@ -2,7 +2,7 @@ import * as R from 'ramda';
 import { createStore, applyMiddleware, compose } from 'redux';
 
 import { isFinite } from '~/utils/functionalBigNumber';
-import doHistoricCalculations from './calculations/doHistoricCalculations';
+import doHistoricCalculations from './calculations/historic';
 import addInvest from './modifications/addInvest';
 import addRedeem from './modifications/addRedeem';
 import addTrade from './modifications/addTrade';

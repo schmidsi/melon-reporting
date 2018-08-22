@@ -1,5 +1,5 @@
 import { add, subtract, divide, multiply } from '~/utils/functionalBigNumber';
-import setPath from '../utils/setPath';
+import setPath from '../../utils/setPath';
 
 const updateInvestor = (investor, participation, calculations) => {
   if (investor.address !== participation.investor) return investor;

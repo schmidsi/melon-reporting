@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import setPath from '../utils/setPath';
+import setPath from '../../utils/setPath';
 import { subtract, divide } from '~/utils/functionalBigNumber';
 
 const calculateProfit = setPath(

@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
-import setPath from '../utils/setPath';
-import pearsonCorrelation from './pearsonCorrelation';
+import setPath from '../../utils/setPath';
+import pearsonCorrelation from '../utils/pearsonCorrelation';
 
 const calcCorrelation = R.cond([
   [

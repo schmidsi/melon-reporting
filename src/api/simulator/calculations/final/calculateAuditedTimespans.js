@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { areRangesOverlapping, min, max } from 'date-fns';
 
-import setPath from '../utils/setPath';
+import setPath from '../../utils/setPath';
 
 import { parseTimestamp, toTimestamp } from '~/utils/timestamp';
 

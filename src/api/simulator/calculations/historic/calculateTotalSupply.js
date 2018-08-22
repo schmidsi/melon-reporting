@@ -1,5 +1,5 @@
 import { add, subtract } from '~/utils/functionalBigNumber';
-import setPath from '../utils/setPath';
+import setPath from '../../utils/setPath';
 
 const calculateTotalSupply = () =>
   setPath(['calculations', 'totalSupply'], ({ data }) =>

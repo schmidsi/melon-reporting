@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 
 import { divide, multiply, subtract } from '~/utils/functionalBigNumber';
-import setPath from '../utils/setPath';
+import setPath from '../../utils/setPath';
 
 const calcPercentage = (start, end) => divide(subtract(end, start), start);
 
