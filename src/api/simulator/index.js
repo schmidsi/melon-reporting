@@ -4,6 +4,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { isFinite } from '~/utils/functionalBigNumber';
 import doHistoricCalculations from './calculations/historic';
 import addInvest from './modifications/addInvest';
+import upsertInvestor from './modifications/upsertInvestor';
 import addRedeem from './modifications/addRedeem';
 import addTrade from './modifications/addTrade';
 import increaseHolding from './modifications/increaseHolding';
@@ -42,6 +43,7 @@ const modifiers = {
     const modifiyData = R.compose(
       addInvest(action),
       increaseHolding(action.value),
+      upsertInvestor(action.investor),
     );
 
     const result = modifiyData({ data, calculations });
