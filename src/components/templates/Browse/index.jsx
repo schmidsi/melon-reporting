@@ -21,18 +21,15 @@ const Browse = ({ children }) => (
       <div>
         <p>
           Welcome. Please choose a Melon Fund below to view its report. These
-          are the Melon Funds from the Kovan test network. You can setup your
-          own test fund on{' '}
-          <a href="https://melon.fund" target="_blank">
-            melon.fund
+          are the Melon Funds from the recent Naxos olympiad on the main net:{' '}
+          <a href="https://olympiad.melon.fund" target="_blank">
+            olympiad.melon.fund
           </a>
-          . And view its report here later.
         </p>
 
         <p>
-          Because the Melon Funds on Kovan do not have enough data to make the
-          report meaningful, you can generate a mock fund with our fund
-          simulator.
+          Because the Olympiad Funds do not have enough data to make the report
+          meaningful, you can generate a mock fund with our fund simulator:
         </p>
         <Link
           className={styles.button}

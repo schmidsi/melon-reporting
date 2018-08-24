@@ -9,3 +9,11 @@
   background-position: center;
   background-size: 4rem;
 }
+
+.spinner p {
+  position: relative;
+  margin: 0 auto;
+  width: 300px;
+  margin-top: 20%;
+  text-align: center;
+}
