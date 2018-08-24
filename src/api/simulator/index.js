@@ -25,9 +25,9 @@ export const initialState = {
   actionHistory: [],
   calculations: {
     timestamp: 0,
-    sharePrice: 1,
-    aum: 0,
-    totalSupply: 0,
+    sharePrice: '1',
+    aum: '0',
+    totalSupply: '0',
     allocation: [],
     investors: [],
   },
@@ -137,7 +137,7 @@ const calculateAfter = modifier => (state, action) => {
     data,
     calculations: lastCalculations,
     calculationsHistory: [...calculationsHistory, ...newCalculations],
-    actionHistory: [action, ...actionHistory],
+    actionHistory: [...actionHistory, action],
   };
 
   return result;

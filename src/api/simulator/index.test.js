@@ -51,7 +51,9 @@ describe('Walkthrough', () => {
 
   test('Setup', () => {
     const state = fund.getState();
-    expect(state.calculations.sharePrice).toBe(1);
+    expect(state.calculations.sharePrice).toBe('1');
+    expect(state.calculations.aum).toBe('0');
+    expect(state.calculations.totalSupply).toBe('0');
     expect(state.data.holdings[0].quantity).toBe('0');
   });
 
@@ -72,6 +74,7 @@ describe('Walkthrough', () => {
   test('A calculation on the next day should create a new calculationHistory entry', () => {
     fund.dispatch({ type: 'CALCULATE', timestamp: inception + secondsPerDay });
     const state = fund.getState();
+    expect(state.calculations.sharePrice).toBe('1');
     expect(state.calculations.timestamp).toBe(inception + secondsPerDay);
     expect(state.calculationsHistory.length).toBe(2);
     expect(state.actionHistory.length).toBe(3);
@@ -88,6 +91,9 @@ describe('Walkthrough', () => {
 
     const state = fund.getState();
     console.log(JSON.stringify(state, null, 4));
+    expect(state.calculations.aum).toBe('10');
+    expect(state.calculations.totalSupply).toBe('10');
+    expect(state.calculations.sharePrice).toBe('1');
     expect(state.calculationsHistory.length).toBe(3);
     expect(state.data.participations.investors.length).toBe(1);
     expect(state.data.participations.list.length).toBe(1);
