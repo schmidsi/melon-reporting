@@ -42,7 +42,7 @@ const modifiers = {
 
     const modifiyData = R.compose(
       addInvest(action),
-      increaseHolding(action.value),
+      increaseHolding(action.value, action.token),
       upsertInvestor(action.investor),
     );
 

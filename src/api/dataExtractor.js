@@ -8,6 +8,7 @@ import {
   getFundRecentTrades,
   getFundInformations,
   getHoldingsAndPrices,
+  getOrdersHistory,
   getParityProvider,
   getSymbol,
   performCalculations,
@@ -310,6 +311,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // TRADES
 
+  // const oasisDexTrades = [];
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
     inlastXdays: relevantDates.length,
@@ -321,6 +323,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   // TODO problem is probably that maker is always the 0x contract
   // TODO maybe get trades with OrderUpdated event of Fund.sol
   // TODO maybe it is the manager
+
+  // const zeroExTrades = [];
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
     toBlock: web3.utils.numberToHex(currentBlock),
@@ -342,7 +346,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
 
+
   debug('0x trades', zeroExTrades);
+
+  const orders = await getOrdersHistory(environment, { fundAddress });
+  debug('Fund orders', orders);
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
@@ -395,6 +403,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         participant,
         shareQuantity,
         giveQuantity,
+        receiveQuantity,
         timestamp,
       }) => ({
         investor: participant,
@@ -407,12 +416,12 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
           config,
           giveQuantity,
           getSymbol(config, requestAsset),
-        ),
+        ).toString(),
         shares: toReadable(
           config,
           shareQuantity,
           getSymbol(config, requestAsset),
-        ),
+        ).toString(),
         timestamp,
       }),
     );
@@ -450,15 +459,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const investActions = invests.map(invest => ({
     type: 'INVEST',
-    value: invest.amount.toString(),
-    investor: invest.investor,
+    value: invest.amount,
+    token: invest.token,
+    shares: invest.shares,
+    investor: { address: invest.investor },
     timestamp: parseInt(invest.timestamp.toString(), 10),
   }));
 
   const redeemActions = redeems.map(redeem => ({
     type: 'REDEEM',
     shares: redeem.shares.toString(),
-    investor: redeem.investor,
+    investor: { address: redeem.investor },
     timestamp: parseInt(redeem.timestamp, 10),
   }));
 
