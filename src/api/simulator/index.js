@@ -10,8 +10,17 @@ import increaseHolding from './modifications/increaseHolding';
 import decreaseHoldings from './modifications/decreaseHoldings';
 import updateHoldings from './modifications/updateHoldings';
 
-const initialState = {
-  data: {},
+export const initialState = {
+  data: {
+    meta: {},
+    trades: [],
+    participations: {
+      investors: [],
+      list: [],
+    },
+    holdings: [],
+    audits: [],
+  },
   actionHistory: [],
   calculations: {
     timestamp: 0,
@@ -167,15 +176,16 @@ const guards = () => next => action => {
   return next(action);
 };
 
-const fundSimulator = initialData =>
+const fundSimulator = (initialData = initialState.data) =>
   createStore(
     reducer,
     R.assocPath(['data'], initialData, initialState),
     compose(
       applyMiddleware(errorReporter, guards),
       /* eslint-disable no-underscore-dangle */
-      global.__REDUX_DEVTOOLS_EXTENSION__ &&
-      global.__REDUX_DEVTOOLS_EXTENSION__(),
+      global.__REDUX_DEVTOOLS_EXTENSION__
+        ? global.__REDUX_DEVTOOLS_EXTENSION__()
+        : R.identity,
       /* eslint-enable */
     ),
   );
