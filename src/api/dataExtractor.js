@@ -25,6 +25,7 @@ import OasisDexAbi from '@melonproject/smart-contracts/out/exchange/adapter/Matc
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
 
 import getDebug from '~/utils/getDebug';
+import { toFixed } from '~/utils/functionalBigNumber';
 
 import fundSimulator from '~/api/simulator';
 
@@ -223,13 +224,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     fundAddress,
   });
 
-  debug('Fund calculations', calculations);
+  debug(
+    'Fund calculations',
+    R.mapObjIndexed(value => value.toString())(calculations),
+  );
 
   const [exchanges] = await fundContract.instance.getExchangeInfo.call();
 
-  const ownCalculations = await fundContract.instance.performCalculations.call();
-  const managementFee = ownCalculations[1].div(10 ** 18).toString();
-  const performanceFee = ownCalculations[2].div(10 ** 18).toString();
+  const feeCalculations = await fundContract.instance.performCalculations.call();
+  const managementFee = feeCalculations[1].div(10 ** 18).toString();
+  const performanceFee = feeCalculations[2].div(10 ** 18).toString();
 
   const strategy = getStrategy();
 
@@ -261,16 +265,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // HOLDINGS AND PRICES
 
-  // this returns the holdings of 'now', but we would start by inception
-  // we erase the holdings further below
-  const initialHoldings = (await getHoldingsAndPrices(environment, {
+  const currentHoldings = (await getHoldingsAndPrices(environment, {
     fundAddress,
   })).map(holding => ({
+    ...holding,
     symbol: holding.name,
-    balance: '0.0',
+    balance: holding.balance.toString(),
+    price: holding.price.toString(),
   }));
 
-  debug('Initial holdings', initialHoldings);
+  debug('Initial holdings', currentHoldings);
 
   const priceHistoryTasks = relevantDates.map(date => () =>
     priceHistoryReader.methods
@@ -293,12 +297,15 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   debug('Price history', priceHistory);
 
-  const holdingsWithoutPriceHistory = initialHoldings.map(holding => ({
+  const holdingsWithoutPriceHistory = currentHoldings.map(holding => ({
     token: {
       symbol: holding.symbol,
       address: getAddress(config, holding.symbol),
     },
-    quantity: holding.balance.toString(),
+    // set the holdings to zero since the fund simulation starts empty.
+    // currentHoldings are from the last state.
+    // in the end, we can compare the simulation with the actual holdings.
+    quantity: '0',
     priceHistory: [],
   }));
 
@@ -345,7 +352,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
         logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
     );
-
 
   debug('0x trades', zeroExTrades);
 
@@ -403,7 +409,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
         participant,
         shareQuantity,
         giveQuantity,
-        receiveQuantity,
         timestamp,
       }) => ({
         investor: participant,
@@ -551,6 +556,41 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   const finalState = fund.getState();
 
   debug('Final Fund State', finalState);
+
+  const checks = [
+    {
+      name: 'sharePrice',
+      simulator: finalState.calculations.sharePrice,
+      protocol: calculations.sharePrice.toString(),
+    },
+    {
+      name: 'totalSupply',
+      simulator: finalState.calculations.totalSupply,
+      protocol: calculations.totalSupply.toString(),
+    },
+    {
+      name: 'aum',
+      simulator: finalState.calculations.aum,
+      protocol: calculations.gav.toString(),
+    },
+    ...R.zipWith((protocol, simulator) => ({
+      name: protocol.symbol,
+      protocol: protocol.balance,
+      simulator: simulator.quantity,
+    }))(currentHoldings, finalState.data.holdings),
+  ];
+
+  const allGood = checks.reduce((carry, check) => {
+    const checkPasses = toFixed(check.protocol) === toFixed(check.simulator);
+
+    if (!checkPasses) {
+      console.warn('Check failed', check);
+      return false;
+    }
+    return true && carry;
+  }, true);
+
+  debug('Checks', checks, 'allGood:', allGood);
 
   return finalState;
 };
