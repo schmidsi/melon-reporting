@@ -88,17 +88,18 @@ const calculateAfter = modifier => (state, action) => {
     calculationsHistory,
   } = stateAfterAction;
 
-  const lastCalculationTimestamp =
-    calculations.timestamp || data.meta.inception;
-  const lastCalculatedDayIndex =
-    lastCalculationTimestamp === data.meta.inception
-      ? -1
-      : Math.floor(
-        (lastCalculationTimestamp - data.meta.inception) / secondsPerDay,
-      );
+  // Daystamp is days since unix timestamp start to the specific date
+  // DayIndex = 0 is therefore the daystamp of inception
+  const inceptionDayStamp = Math.floor(data.meta.inception / secondsPerDay);
 
-  const uncalculatedSeconds = action.timestamp - lastCalculationTimestamp;
-  const uncalculatedDays = Math.floor(uncalculatedSeconds / secondsPerDay);
+  const lastCalculatedDayStamp = calculations.timestamp
+    ? Math.floor(calculations.timestamp / secondsPerDay)
+    : inceptionDayStamp - 1;
+
+  const lastCalculatedDayIndex = lastCalculatedDayStamp - inceptionDayStamp;
+  const actionDayStamp = Math.floor(action.timestamp / secondsPerDay);
+
+  const uncalculatedDays = actionDayStamp - lastCalculatedDayStamp;
 
   if (uncalculatedDays === 0) {
     const lastRecalculation = doHistoricCalculations(lastCalculatedDayIndex)({
@@ -176,7 +177,7 @@ const guards = () => next => action => {
   return next(action);
 };
 
-const fundSimulator = (initialData = initialState.data) =>
+export const fundSimulator = (initialData = initialState.data) =>
   createStore(
     reducer,
     R.assocPath(['data'], initialData, initialState),

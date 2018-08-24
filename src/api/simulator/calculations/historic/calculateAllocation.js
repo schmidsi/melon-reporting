@@ -1,6 +1,11 @@
 import * as R from 'ramda';
 
-import { divide, multiply, subtract } from '~/utils/functionalBigNumber';
+import {
+  divide,
+  multiply,
+  subtract,
+  isZero,
+} from '~/utils/functionalBigNumber';
 import setPath from '../../utils/setPath';
 
 const calcPercentage = (start, end) => divide(subtract(end, start), start);
@@ -17,7 +22,9 @@ const calculateAllocation = dayIndex =>
         change: calcPercentage(R.head(holding.priceHistory), price),
         quantity: holding.quantity,
         value,
-        percentage: divide(value, calculations.aum),
+        percentage: isZero(calculations.aum)
+          ? '0'
+          : divide(value, calculations.aum),
       };
     }),
   );
