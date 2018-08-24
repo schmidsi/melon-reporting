@@ -6,5 +6,11 @@
         "src/*"
       ],
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "_book",
+    ".docs"
+  ]
 }
