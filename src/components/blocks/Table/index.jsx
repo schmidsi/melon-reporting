@@ -36,7 +36,7 @@ const Table = ({ columnConfig, children, design }) => (
             key={key}
           >
             {config.headerText || titleCase(key)}
-            {config.sortable && <i>▼</i>}
+            {/* {config.sortable && <i>▼</i>} */}
           </th>
         ))}
       </tr>
