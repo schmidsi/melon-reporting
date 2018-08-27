@@ -7,14 +7,14 @@ import Holdings from '~/components/templates/Holdings';
 import Trades from '~/components/templates/Trades';
 import Participations from '~/components/templates/Participations';
 import { Spacer } from '~/components/design/layout/';
-// import Audits from '~/components/templates/Audits';
-// import auditReport from '~/api/auditReport';
+import Audits from '~/components/templates/Audits';
+import auditReport from '~/api/auditReport';
 
 import getDebug from '~/utils/getDebug';
 
 const debug = getDebug(__filename);
 
-const Report = ({ data, calculations, calculationsHistory }) =>
+const Report = ({ data, calculations, calculationsHistory, fundAddress }) =>
   data && calculations && calculationsHistory ? (
     <div>
       <FactSheet
@@ -29,14 +29,17 @@ const Report = ({ data, calculations, calculationsHistory }) =>
         calculations={calculations}
         calculationsHistory={calculationsHistory}
       />
-      {/* <Audits data={data} calculations={calculations} doAudit={auditReport} /> */}
+
+      {fundAddress === '0xbada55' && (
+        <Audits data={data} calculations={calculations} doAudit={auditReport} />
+      )}
 
       {/* <pre style={{ fontSize: 10 }}>{JSON.stringify(data, null, 4)}</pre> */}
       <Spacer height="4" />
     </div>
   ) : (
-      <h1>Missing data</h1>
-    );
+    <h1>Missing data</h1>
+  );
 
 const enhance = withLoading(async ({ match: { params } }) => {
   debug('Loading report data ...');
@@ -62,6 +65,7 @@ const enhance = withLoading(async ({ match: { params } }) => {
   debug('Report data loaded', res);
 
   return {
+    fundAddress: params.fundAddress,
     data,
     calculations,
     calculationsHistory,
