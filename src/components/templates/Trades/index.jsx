@@ -34,25 +34,30 @@ const Trades = ({ data, calculations }) => (
           price: defaultColumnConfig,
           amount: defaultColumnConfig,
           exchange: defaultColumnConfig,
-          profit: {
-            sortable: true,
-            renderer: ColorCondition,
-            align: 'right',
-          },
+          // TODO: enable profit
+          // profit: {
+          //   sortable: true,
+          //   renderer: ColorCondition,
+          //   align: 'right',
+          // },
           txHash: {
             headerText: 'TX Hash',
             align: 'right',
-            renderer: ({ children }) => (
-              <a
-                href={`https://etherscan.io/tx/${children}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <HexValue short>{children}</HexValue>
-              </a>
-            ),
+            renderer: ({ children }) =>
+              children ? (
+                <a
+                  href={`https://etherscan.io/tx/${children}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <HexValue short>{children}</HexValue>
+                </a>
+              ) : (
+                'unknown'
+              ),
           },
-          fee: defaultColumnConfig,
+          // TODO: enable fee
+          // fee: defaultColumnConfig,
           timestamp: defaultColumnConfig,
         }}
       >

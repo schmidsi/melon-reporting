@@ -323,6 +323,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // TRADES
 
+  const orders = await getOrdersHistory(environment, { fundAddress });
+  debug('Fund orders', orders);
+
   // const oasisDexTrades = [];
   const oasisDexTrades = await getFundRecentTrades(environment, {
     fundAddress,
@@ -336,32 +339,30 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   // TODO maybe get trades with OrderUpdated event of Fund.sol
   // TODO maybe it is the manager
 
-  const orders = await getOrdersHistory(environment, { fundAddress });
-  debug('Fund orders', orders);
-
   // const zeroExTrades = [];
-  const zeroExTrades = (await web3.eth.getPastLogs({
-    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-    toBlock: web3.utils.numberToHex(currentBlock),
-    topics: [zeroExLogFillEventSignature],
-  }))
-    .map(log => {
-      const logFill = web3.eth.abi.decodeLog(
-        zeroExLogFillAbi.inputs,
-        log.data,
-        log.topics,
-      );
-      logFill.blockNumber = log.blockNumber;
-      logFill.transactionHash = log.transactionHash;
-      return logFill;
-    })
-    .filter(
-      logFill =>
-        logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
-        logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
-    );
 
-  debug('0x trades', zeroExTrades);
+  // const zeroExTrades = (await web3.eth.getPastLogs({
+  //   fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+  //   toBlock: web3.utils.numberToHex(currentBlock),
+  //   topics: [zeroExLogFillEventSignature],
+  // }))
+  //   .map(log => {
+  //     const logFill = web3.eth.abi.decodeLog(
+  //       zeroExLogFillAbi.inputs,
+  //       log.data,
+  //       log.topics,
+  //     );
+  //     logFill.blockNumber = log.blockNumber;
+  //     logFill.transactionHash = log.transactionHash;
+  //     return logFill;
+  //   })
+  //   .filter(
+  //     logFill =>
+  //       logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
+  //       logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
+  //   );
+
+  // debug('0x trades', zeroExTrades);
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
@@ -478,28 +479,42 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     timestamp: parseInt(redeem.timestamp, 10),
   }));
 
-  const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
-    type: 'TRADE',
-    sellToken: getTokenByAddress(holdings, trade.takerToken),
-    sellHowMuch: toReadable(
-      config,
-      trade.filledTakerTokenAmount,
-      getSymbol(config, trade.takerToken),
-    ).toString(),
-    buyToken: getTokenByAddress(holdings, trade.makerToken),
-    buyHowMuch: toReadable(
-      config,
-      trade.filledMakerTokenAmount,
-      getSymbol(config, trade.makerToken),
-    ).toString(),
-    timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
-    exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
-    transaction: trade.transactionHash,
-  }));
+  // Only ZeroEx orders are stored properly
+  const fundTradeActions = orders
+    .filter(o => o.exchangeName === 'ZeroEx')
+    .map(order => ({
+      type: 'TRADE',
+      sellToken: getTokenBySymbol(holdings, order.sellSymbol),
+      sellHowMuch: order.sellHowMuch,
+      buyToken: getTokenBySymbol(holdings, order.buySymbol),
+      buyHowMuch: order.buyHowMuch,
+      timestamp: toTimestamp(new Date(order.timestamp)),
+      exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
+      // transaction is unknown here since data comes from a on-chain call
+    }));
 
-  const zeroExTradeActions = await Promise.all(
-    zeroExTradeActionTasks.map(p => p()),
-  );
+  // const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
+  //   type: 'TRADE',
+  //   sellToken: getTokenByAddress(holdings, trade.takerToken),
+  //   sellHowMuch: toReadable(
+  //     config,
+  //     trade.filledTakerTokenAmount,
+  //     getSymbol(config, trade.takerToken),
+  //   ).toString(),
+  //   buyToken: getTokenByAddress(holdings, trade.makerToken),
+  //   buyHowMuch: toReadable(
+  //     config,
+  //     trade.filledMakerTokenAmount,
+  //     getSymbol(config, trade.makerToken),
+  //   ).toString(),
+  //   timestamp: (await web3.eth.getBlock(trade.blockNumber)).timestamp,
+  //   exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
+  //   transaction: trade.transactionHash,
+  // }));
+
+  // const zeroExTradeActions = await Promise.all(
+  //   zeroExTradeActionTasks.map(p => p()),
+  // );
 
   const oasisDexTradeActions = oasisDexTrades.map(trade => ({
     type: 'TRADE',
@@ -524,7 +539,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const unorderedSimulatorActions = investActions
     .concat(redeemActions)
-    .concat(zeroExTradeActions)
+    // .concat(zeroExTradeActions)
+    .concat(fundTradeActions)
     .concat(oasisDexTradeActions);
 
   const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
