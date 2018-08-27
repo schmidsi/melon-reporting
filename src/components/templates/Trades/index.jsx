@@ -44,7 +44,7 @@ const Trades = ({ data, calculations }) => (
             align: 'right',
             renderer: ({ children }) => (
               <a
-                href={`https://kovan.etherscan.io/tx/${children}`}
+                href={`https://etherscan.io/tx/${children}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

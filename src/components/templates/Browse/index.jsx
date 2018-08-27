@@ -57,6 +57,7 @@ const Browse = ({ children }) => (
           },
           sharePrice: {
             renderer: ({ children }) => numberFormat(children),
+            align: 'right',
           },
         }}
       >
