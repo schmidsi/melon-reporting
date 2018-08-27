@@ -53,20 +53,13 @@ const modifiers = {
   redeem: (state, action) => {
     const { data, calculations } = state;
 
-    const investor = calculations.investors.find(
-      i => i.address === R.path(['investor', 'address'], action),
+    const modifiyData = R.compose(
+      addRedeem(action.shares, action.timestamp, action.investor),
+      decreaseHoldings(action.shares),
+      upsertInvestor(action.investor),
     );
 
-    if (investor) {
-      const modifiyData = R.compose(
-        addRedeem(action.shares, action.timestamp, investor),
-        decreaseHoldings(action.shares),
-      );
-
-      return R.merge(state, modifiyData({ data, calculations }));
-    }
-
-    return { data };
+    return R.merge(state, modifiyData({ data, calculations }));
   },
   trade: (state, action) => {
     const { data, calculations } = state;

@@ -134,7 +134,7 @@ const extractPrices = (address, priceHistory, config) =>
     const symbol = getSymbol(config, address);
     const index = R.findIndex(R.equals(address.toLowerCase()))(tokenAddresses);
     // return index === -1 ? 0 : priceEntry.averagedPrices[index]; // for average prices
-    return toReadable(config, priceEntry.prices[index], symbol).toString(); // for first prices
+    return toReadable(config, priceEntry.prices[index] || 0, symbol).toString(); // for first prices
   });
 
 const getTokenByAddress = (holdings, address) => {
@@ -289,8 +289,13 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     async (carryPromise, currentTask) => {
       const carry = await carryPromise;
       const currentResult = await currentTask();
+
       // if current result is null (i.e. there was an error), we just repeat the last
-      return [...carry, currentResult || R.last(carry)];
+      if (!currentResult || !currentResult.prices[0]) {
+        return [...carry, R.last(carry)];
+      }
+
+      return [...carry, currentResult];
     },
     new Promise(resolve => resolve([])),
   );
@@ -331,6 +336,9 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   // TODO maybe get trades with OrderUpdated event of Fund.sol
   // TODO maybe it is the manager
 
+  const orders = await getOrdersHistory(environment, { fundAddress });
+  debug('Fund orders', orders);
+
   // const zeroExTrades = [];
   const zeroExTrades = (await web3.eth.getPastLogs({
     fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
@@ -354,9 +362,6 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     );
 
   debug('0x trades', zeroExTrades);
-
-  const orders = await getOrdersHistory(environment, { fundAddress });
-  debug('Fund orders', orders);
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 
@@ -442,21 +447,16 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     toBlock: 'latest',
   });
 
-  const redeems = allRedeems
-    // we only need the redeem events that were emitted in the provided report timespan
-    .filter(r =>
-      onlyInTimespan(r.returnValues.atTimestamp, timeSpanStart, timeSpanEnd),
-    )
-    .map(r => ({
-      investor: r.returnValues.ofParticipant,
-      type: 'redeem',
-      shares: toReadable(
-        config,
-        r.returnValues.shareQuantity,
-        config.quoteAssetSymbol,
-      ),
-      timestamp: r.returnValues.atTimestamp,
-    }));
+  const redeems = allRedeems.map(r => ({
+    investor: r.returnValues.ofParticipant,
+    type: 'redeem',
+    shares: toReadable(
+      config,
+      r.returnValues.shareQuantity,
+      config.quoteAssetSymbol,
+    ),
+    timestamp: r.returnValues.atTimestamp,
+  }));
 
   debug('Redeems', redeems);
 

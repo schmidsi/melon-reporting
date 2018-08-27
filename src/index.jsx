@@ -14,7 +14,7 @@ const debug = getDebug(__filename);
 
 window.localStorage.debug = process.env.DEBUG;
 
-debug('Starting ...');
+debug('Starting ...', { DEBUG: process.env.DEBUG, JSON_RPC_ENDPOINT: process.env.JSON_RPC_ENDPOINT });
 
 ReactDOM.render(
   <BrowserRouter>
