@@ -39,7 +39,16 @@ const web3 = new Web3(
   new Web3.providers.HttpProvider(process.env.JSON_RPC_ENDPOINT),
 );
 
-const priceHistoryReaderAddress = '0xbff03059206eba4427fba207c64ddfb5fa3b480b';
+const priceHistoryReaderAddress = R.cond([
+  [
+    R.equals(tracks.LIVE),
+    R.always('0xbff03059206eba4427fba207c64ddfb5fa3b480b'),
+  ],
+  [
+    R.equals(tracks.KOVAN_DEMO),
+    R.always('0x1f1173e263ba65923D62730cDA64aCeFF9f15a2C'),
+  ],
+])(process.env.TRACK);
 
 const AVERAGE_BLOCKTIME = 7; // 7.52
 
@@ -354,28 +363,28 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   debug('Oasis Dex trades', oasisDexTrades);
 
   // const zeroExTrades = [];
-  // const zeroExTrades = (await web3.eth.getPastLogs({
-  //   fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
-  //   toBlock: web3.utils.numberToHex(currentBlock),
-  //   topics: [zeroExLogFillEventSignature],
-  // }))
-  //   .map(log => {
-  //     const logFill = web3.eth.abi.decodeLog(
-  //       zeroExLogFillAbi.inputs,
-  //       log.data,
-  //       log.topics,
-  //     );
-  //     logFill.blockNumber = log.blockNumber;
-  //     logFill.transactionHash = log.transactionHash;
-  //     return logFill;
-  //   })
-  //   .filter(
-  //     logFill =>
-  //       logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
-  //       logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
-  //   );
+  const zeroExTrades = (await web3.eth.getPastLogs({
+    fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+    toBlock: web3.utils.numberToHex(currentBlock),
+    topics: [zeroExLogFillEventSignature],
+  }))
+    .map(log => {
+      const logFill = web3.eth.abi.decodeLog(
+        zeroExLogFillAbi.inputs,
+        log.data,
+        log.topics,
+      );
+      logFill.blockNumber = log.blockNumber;
+      logFill.transactionHash = log.transactionHash;
+      return logFill;
+    })
+    .filter(
+      logFill =>
+        logFill.taker.toLowerCase() === fundAddress.toLowerCase() ||
+        logFill.maker.toLowerCase() === fundAddress.toLowerCase(),
+    );
 
-  // debug('0x trades', zeroExTrades);
+  debug('0x trades', zeroExTrades);
 
   const allAudits = await getAuditsFromFund(environment, { fundAddress });
 

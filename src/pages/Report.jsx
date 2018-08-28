@@ -30,7 +30,7 @@ const Report = ({ data, calculations, calculationsHistory, fundAddress }) =>
         calculationsHistory={calculationsHistory}
       />
 
-      {fundAddress === '0xbada55' && (
+      {(fundAddress === '0xbada55' || process.env.TRACK === 'kovan-demo') && (
         <Audits data={data} calculations={calculations} doAudit={auditReport} />
       )}
 
