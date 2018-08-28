@@ -23,13 +23,13 @@ import FundAbi from '@melonproject/smart-contracts/out/version/Fund.abi.json';
 import Erc20Abi from '@melonproject/smart-contracts/out/ERC20Interface.abi.json';
 import OasisDexAbi from '@melonproject/smart-contracts/out/exchange/adapter/MatchingMarket.abi.json';
 import ZeroExAbi from '@melonproject/smart-contracts/out/exchange/thirdparty/0x/Exchange.abi.json';
+import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
 
 import getDebug from '~/utils/getDebug';
 import { toFixed } from '~/utils/functionalBigNumber';
 
 import fundSimulator from '~/api/simulator';
 
-import priceHistoryReaderAbi from '~/contracts/abi/PriceHistoryReader.json';
 import getAuditsFromFund from './getAuditsFromFund';
 import { toTimestamp } from '~/utils/timestamp';
 
@@ -205,6 +205,11 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const web3jsFundContract = new web3.eth.Contract(FundAbi, fundAddress);
 
+  const web3MatchingMarketContract = new web3.eth.Contract(
+    OasisDexAbi,
+    config.matchingMarketAddress,
+  );
+
   const fundAgeInSeconds = Math.floor(
     (new Date() - informations.inception) / 1000,
   );
@@ -323,6 +328,20 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   // TRADES
 
+  const matchingMarketTrades = await web3MatchingMarketContract.getPastEvents(
+    'LogTake',
+    {
+      fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
+      toBlock: web3.utils.numberToHex(currentBlock),
+      filter: {
+        maker: fundAddress,
+        // taker: [fundAddress],
+      },
+    },
+  );
+
+  debug('matchingMarketTrades', matchingMarketTrades);
+
   const orders = await getOrdersHistory(environment, { fundAddress });
   debug('Fund orders', orders);
 
@@ -334,13 +353,7 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   debug('Oasis Dex trades', oasisDexTrades);
 
-  // TODO are partial orders missing?
-  // TODO problem is probably that maker is always the 0x contract
-  // TODO maybe get trades with OrderUpdated event of Fund.sol
-  // TODO maybe it is the manager
-
   // const zeroExTrades = [];
-
   // const zeroExTrades = (await web3.eth.getPastLogs({
   //   fromBlock: web3.utils.numberToHex(inceptionBlockApprox),
   //   toBlock: web3.utils.numberToHex(currentBlock),
