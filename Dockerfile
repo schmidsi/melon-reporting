@@ -46,5 +46,7 @@ RUN yarn app:build
 # -----------------------------------------------------------------------------
 FROM nginxinc/nginx-unprivileged:stable
 
-COPY --from=build /app/build/production /usr/share/nginx/html
+# Use UTF-8 in the nginx config.
+RUN sed 's/#charset koi8-r/charset utf-8/g' /etc/nginx/conf.d/default.conf > /etc/nginx/conf.d/default.conf
 
+COPY --from=build /app/build/production /usr/share/nginx/html
