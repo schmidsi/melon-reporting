@@ -501,19 +501,45 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     timestamp: parseInt(redeem.timestamp, 10),
   }));
 
-  // Only ZeroEx orders are stored properly
+  // Only take orders are stored properly (this includes all 0x trades, since it's only possible to take with dec-orderbooks)
   const fundTradeActions = orders
-    .filter(o => o.exchangeName === 'ZeroEx')
+    .filter(R.propEq('orderType', 'take'))
     .map(order => ({
       type: 'TRADE',
       sellToken: getTokenBySymbol(holdings, order.sellSymbol),
-      sellHowMuch: order.sellHowMuch,
+      sellHowMuch: order.sellHowMuch.toString(),
       buyToken: getTokenBySymbol(holdings, order.buySymbol),
-      buyHowMuch: order.buyHowMuch,
-      timestamp: toTimestamp(new Date(order.timestamp)),
-      exchange: getExchangeByName(meta.exchanges, 'ZeroExExchange'),
+      buyHowMuch: order.buyHowMuch.toString(),
+      timestamp: Math.floor(order.timestamp.getTime() / 1000),
+      exchange: getExchangeByName(
+        meta.exchanges,
+        R.cond([
+          [R.equals('ZeroEx'), R.always('ZeroExExchange')],
+          [R.equals('MatchingMarket'), R.always('MatchingMarket')],
+          [R.T, R.identity],
+        ])(order.exchangeName),
+      ),
       // transaction is unknown here since data comes from a on-chain call
     }));
+
+  const matchingMarketTradesActions = matchingMarketTrades.map(trade => ({
+    type: 'TRADE',
+    buyToken: getTokenByAddress(holdings, trade.returnValues.pay_gem),
+    buyHowMuch: toReadable(
+      config,
+      trade.returnValues.give_amt,
+      getSymbol(config, trade.returnValues.pay_gem),
+    ).toString(),
+    sellToken: getTokenByAddress(holdings, trade.returnValues.buy_gem),
+    sellHowMuch: toReadable(
+      config,
+      trade.returnValues.take_amt,
+      getSymbol(config, trade.returnValues.buy_gem),
+    ).toString(),
+    timestamp: trade.returnValues.timestamp,
+    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+    transaction: trade.transactionHash,
+  }));
 
   // const zeroExTradeActionTasks = zeroExTrades.map(trade => async () => ({
   //   type: 'TRADE',
@@ -538,24 +564,24 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
   //   zeroExTradeActionTasks.map(p => p()),
   // );
 
-  const oasisDexTradeActions = oasisDexTrades.map(trade => ({
-    type: 'TRADE',
-    buyToken: getTokenBySymbol(holdings, trade.buyToken),
-    buyHowMuch: toReadable(
-      config,
-      trade.buyQuantity,
-      trade.buyToken,
-    ).toString(),
-    sellToken: getTokenBySymbol(holdings, trade.sellToken),
-    sellHowMuch: toReadable(
-      config,
-      trade.sellQuantity,
-      trade.sellToken,
-    ).toString(),
-    timestamp: trade.timestamp.getTime() / 1000,
-    exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
-    transaction: trade.transactionHash,
-  }));
+  // const oasisDexTradeActions = oasisDexTrades.map(trade => ({
+  //   type: 'TRADE',
+  //   buyToken: getTokenBySymbol(holdings, trade.buyToken),
+  //   buyHowMuch: toReadable(
+  //     config,
+  //     trade.buyQuantity,
+  //     trade.buyToken,
+  //   ).toString(),
+  //   sellToken: getTokenBySymbol(holdings, trade.sellToken),
+  //   sellHowMuch: toReadable(
+  //     config,
+  //     trade.sellQuantity,
+  //     trade.sellToken,
+  //   ).toString(),
+  //   timestamp: trade.timestamp.getTime() / 1000,
+  //   exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),
+  //   transaction: trade.transactionHash,
+  // }));
 
   // SIMULATOR
 
@@ -563,7 +589,8 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
     .concat(redeemActions)
     // .concat(zeroExTradeActions)
     .concat(fundTradeActions)
-    .concat(oasisDexTradeActions);
+    .concat(matchingMarketTradesActions);
+  // .concat(oasisDexTradeActions);
 
   const orderedSimulatorActions = R.sortBy(action => action.timestamp)(
     unorderedSimulatorActions,

@@ -12,7 +12,7 @@
     "deploy": "yarn app:deploy && yarn storybook:deploy",
     "lint": "yarn eslint src/",
     "app:build": "parcel build src/index.html --out-dir build/production --cache-dir build/cache/production --detailed-report",
-    "app:deploy": "yarn app:build && cp config/deployment/now.json build/production && cd build/production && now && now alias olympiad-reporting",
+    "app:deploy": "yarn app:build && cp config/deployment/now.json build/production && cd build/production && now && now alias melon-reporting",
     "app:dev": "parcel src/index.html --out-dir build/development --cache-dir build/cache/development --port 3010",
     "storybook:dev": "start-storybook -p 3050 -c config/storybook -s design/mockups",
     "storybook:build": "build-storybook -c config/storybook -s design/mockups -o build/storybook",
