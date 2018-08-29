@@ -8,6 +8,7 @@
 !yarn.lock
 !package.json
 !tsconfig.json
+!vhost.conf
 !.env
 !.babelrc
 !.postcssrc
