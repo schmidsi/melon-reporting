@@ -524,17 +524,17 @@ const dataExtractor = async (fundAddress, _timeSpanStart, _timeSpanEnd) => {
 
   const matchingMarketTradesActions = matchingMarketTrades.map(trade => ({
     type: 'TRADE',
-    buyToken: getTokenByAddress(holdings, trade.returnValues.pay_gem),
+    buyToken: getTokenByAddress(holdings, trade.returnValues.buy_gem),
     buyHowMuch: toReadable(
       config,
       trade.returnValues.give_amt,
-      getSymbol(config, trade.returnValues.pay_gem),
+      getSymbol(config, trade.returnValues.buy_gem),
     ).toString(),
-    sellToken: getTokenByAddress(holdings, trade.returnValues.buy_gem),
+    sellToken: getTokenByAddress(holdings, trade.returnValues.pay_gem),
     sellHowMuch: toReadable(
       config,
       trade.returnValues.take_amt,
-      getSymbol(config, trade.returnValues.buy_gem),
+      getSymbol(config, trade.returnValues.pay_gem),
     ).toString(),
     timestamp: trade.returnValues.timestamp,
     exchange: getExchangeByName(meta.exchanges, 'MatchingMarket'),

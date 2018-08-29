@@ -46,7 +46,8 @@ const Trades = ({ data, calculations }) => (
             renderer: ({ children }) =>
               children ? (
                 <a
-                  href={`https://etherscan.io/tx/${children}`}
+                  href={`https://${process.env.TRACK === 'kovan-demo' &&
+                    'kovan.'}etherscan.io/tx/${children}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
